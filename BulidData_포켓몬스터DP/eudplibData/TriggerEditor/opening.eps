@@ -1,0 +1,119 @@
+import Player.playerSetting as pps;
+import Variables.mainSentence as vms;
+
+
+const s = StringBuffer(1024);
+const t = StringBuffer(1024);
+const opStep    = PVariable();
+const opDelay   = PVariable();
+const opSpeech  = [
+    Db("\x13흐음!!\n\x13잘 왔다!"),
+    Db("\x13포켓몬스터의 세계에 온 것을\n\x13환영한다!"),
+    Db("\x13내 이름은 마박사!\n"),
+    Db("\x13모두가\n\x13포켓몬 박사님이라 부르고 있단다"),
+    Db("\x13이 세계에는\n\x13포켓몬스터"),
+    Db("\x13줄여서 '포켓몬'이라 불리는\n\x13신기한 생명체가 도처에 살고 있다!"),
+    Db("\x13우리 인간은\n\x13포켓몬과 사이좋게 살고 있지"),
+    Db("\x13함께 놀기도 하고\n\x13힘을 합쳐 일을 하기도 하고"),
+    Db("\x13그리고 포켓몬끼리 싸우게 하여\n\x13유대감을 돈독히 다지기도 하고..."),
+    Db("\x13나는 그런 포켓몬들을\n\x13자세히 알기 위해"),
+    Db("\x13연구하고 있는 것이란다!\n"),
+    Db("\x13흐음...\n\x13광휘라고 하는가!"),
+    Db("\x13광휘!!\n\x13이제부터 너만의 이야기가 시작된다!"),
+    Db("\x13거기서 너는\n\x13여러 포켓몬이나"),
+    Db("\x13많은 사람들과 만나\n\x13무언가를 발견하게 되겠지!"),
+    Db("\x13그럼\n\x13포켓몬스터의 세계로!")
+];
+
+function openingStep(cp){
+    if(opStep[cp] == 0){
+        if(opDelay[cp] < 96){opDelay[cp] += 1;}
+        else{opDelay[cp] = 0; opStep[cp] = 1;}
+    }
+    else if(opStep[cp] == 1){
+        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04ⓒ 2008 Pokemon\n\x13\x04ⓒ 1995-2008 Nintendo\n\x13\x04ⓒ 1995-2008 Creatures Inc.\n\x13\x04ⓒ 1995-2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
+        if(opDelay[cp] < 216){opDelay[cp] += 1;}
+        else{opDelay[cp] = 0; opStep[cp] = 2;}
+    }
+    else if(opStep[cp] == 2){
+        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\n\x13\x17GAME FREAK\n\x13\x17·PRESENTS·\n\n\x13\x1C└─────────────────────┘");
+        if(opDelay[cp] < 216){opDelay[cp] += 1;}
+        else{opDelay[cp] = 0; opStep[cp] = 3;}
+    }
+    else if(opStep[cp] == 3){
+        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n\n\x13\x04ⓒ 2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
+        if(opDelay[cp] < 216){opDelay[cp] += 1;}
+        else{opDelay[cp] = 0; opStep[cp] = 4;}
+    }
+    else if(opStep[cp] == 4){
+        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n\n\x13\x04ⓒ 2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
+        if(opDelay[cp] < 36){s.printfAt(7, "\x13\x02F키를 누르면 게임을 시작합니다.");}
+        else{s.printfAt(7, "\x13");}
+        if(opDelay[cp] < 72){opDelay[cp] += 1;}
+        else{opDelay[cp] = 0;}
+        if(Deaths(cp, Exactly, 16, "A Key")){
+            PlayWAV("staredit\\wav\\se_gui_choose.wav");
+            s.printfAt(0, "\n\n\n\n\n\n\n");
+            opDelay[cp] = 0; opStep[cp] = 5;
+            pps.guiUpdate[cp] = 1;
+        }
+    }
+    else if(opStep[cp] == 5){
+        const index = pps.selectMenu[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            if(IsUserCP()){
+                t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
+                t.appendf("\x13{:s}\x04새로하기\n", pps.selectIcon1[index]);
+                t.appendf("\x13{:s}\x04이어하기\n", pps.selectIcon2[index]);
+                t.appendf("\x13\x1C└─────────────────────┘");
+            }
+        }
+        t.DisplayAt(0);
+        if(Deaths(cp, Exactly, 1, "A Stick")){
+            if(index == 0){pps.selectMenu[cp] = 1;}
+            else{pps.selectMenu[cp] = 0;}
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+            pps.guiUpdate[cp] = 1;
+        }
+        if(Deaths(cp, Exactly, 2, "A Stick")){
+            if(index == 0){pps.selectMenu[cp] = 1;}
+            else{pps.selectMenu[cp] = 0;}
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+            pps.guiUpdate[cp] = 1;
+        }
+        if(Deaths(cp, Exactly, 8, "A Stick")){
+            if(index == 0){
+                opStep[cp] = 20; opDelay[cp] = 0; vms.sphIndex[cp] = 0;
+                s.printfAt(0, "\n\n\n\n\n\n\n");
+                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+                pps.settingMusic[cp] = 2;
+            }
+            else if(index == 1){
+                s.printf("\x08！\x04현재는 지원되지 않는 기능입니다.");
+                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+            }
+        }
+        eprintf("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소\x08 ]");
+    } //오프닝
+    else if(opStep[cp] == 20){
+        s.insert(0, "\n");
+        s.appendf("\x13{:s}\n", vms.sph1);
+        s.appendf("\n\n", vms.sph1);
+        //s.appendf("{:s}", opSpeech[vms.sphIndex[cp]]);
+        s.appendf("\x13{:s}", vms.sph2);
+        s.DisplayAt(0);
+        const tecolor = 4, 2, 0x1E, 5, 0;
+        t.fadeIn(ptr2s(opSpeech[vms.sphIndex[cp]]), color=tecolor, wait=1, line=2, tag=py_str("op"));
+        if(Deaths(cp, Exactly, 16, "A Key")){
+            if(vms.sphIndex[cp] < opSpeech._arrlen-1){
+                TextFX_SetTimer("op", SetTo, 0); vms.sphIndex[cp]++;
+                PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+            } else{
+                vms.sphIndex[cp] = 0;
+                pps.settingMusic[cp] = 3;
+                pps.mainStory[cp] = 1;
+            }
+        }
+    }
+}

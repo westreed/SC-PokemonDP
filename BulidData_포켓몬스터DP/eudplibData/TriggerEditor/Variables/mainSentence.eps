@@ -1,0 +1,224 @@
+import functions as fc;
+import Player.movementUnit as pmu;
+import Player.playerSetting as pps;
+import Player.playerUnit as ppu;
+import Variables.locationInfo as vli;
+import Variables.npcInfo as vni;
+import Variables.sentenceLog as vsl;
+
+const s = StringBuffer(1024);
+const t = StringBuffer(1024);
+const actionStep    = PVariable();
+const restrictStep  = PVariable();
+const sphIndex      = PVariable();
+const sphDelay      = PVariable();
+const sphUpdate     = PVariable();
+
+const action        = 0;
+const restrict      = 1;
+
+const npcNum    = 4; //메인스토리 진행 중 움직이는 NPC 관리용
+const npcEPD    = EUDArray(4*npcNum);
+
+const sph1      = Db("\x04────────────────");
+const sph2      = Db("\x04──────────\x11다음 F키\x04──");
+const sph3      = Db("\n\n\n\n\n\n\n\x13\x11｜\n\x13\x11·");
+
+function restrictAction(cp);
+
+function removeText(cp){
+    t.printfAt(0, "\n\n\n\n\n\n\n\n");
+}
+
+function createNPC(cp, tp, loc:TrgLocation, npc, slot){
+    const cpi = cp*npcNum;
+    const epd = fc.SetNextUnitEPD();
+    CreateUnit(1, npc, loc, tp);
+    SetMemoryXEPD(epd+0xDC/4, SetTo, 0x10A00000, 0x10A00000); //발업+isGathering+NoCoilde
+    npcEPD[cpi+slot] = epd;
+}
+
+function resetNPC(cp){
+    const cpi = cp*npcNum;
+    for(var i=0; i<npcNum; i++){npcEPD[cpi+i] = 0;}
+}
+
+function removeNPC(cp){
+    const cpi = cp*npcNum;
+    for(var i=0; i<npcNum; i++){
+        if(MemoryEPD(EPD(npcEPD)+cpi+i, AtLeast, 1)){
+            const epd = npcEPD[cpi+i];
+            if(MemoryXEPD(epd+0x110/4, Exactly, 0x1, 0xFFFF)){
+                SetMemoryXEPD(epd+0x64/4, SetTo, 0xD5, 0xFFFF);
+                RemoveUnit(213, maskread_epd(epd+0x4C/4, 0xFF));
+                npcEPD[cpi+i] = 0;
+            }
+        }
+    }
+}
+
+function speechText(cp, name, log:EUDArray, type){
+    if(sphUpdate[cp]){
+        sphUpdate[cp] = 0;
+        t.insert(0, "\n");
+        t.appendf("\x17{:s}\n", name);
+        t.appendf("{:s}\n", sph1);
+        t.appendf("\n\n");
+        //t.appendf("{:s}", log[sphIndex[cp]]);
+        t.appendf("{:s}", sph2);
+    }
+    t.DisplayAt(0);
+    const tecolor = 4, 2, 0x1E, 5, 0;
+    s.fadeIn(ptr2s(log[sphIndex[cp]]), color=tecolor, wait=1, line=3, tag=py_str("log"));
+    if(Deaths(cp, Exactly, 16, "A Key")){
+        if(log[sphIndex[cp]+1] != 0){
+            TextFX_SetTimer("log", SetTo, 0);
+            sphIndex[cp]+= 1; sphUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        } else {
+            sphIndex[cp] = 0;
+            if(type == 0){actionStep[cp] += 1;}
+            else{restrictStep[cp] += 1;}
+            t.printAt(0, "\n\n\n\n\n\n");
+            pmu.changeMoveState(cp, true);
+        }
+    }
+}
+
+//메인시나리오 진행
+function speechSystem(cp){
+    removeNPC(cp);
+    restrictAction(cp);
+    const main = pps.mainStory[cp];
+    const step = actionStep[cp];
+    if(main == 1){
+        t.insert(0);
+        t.appendf("\t{:s}\n", sph1);
+        t.appendf("\t\t\x04결국 수색대의\n");
+        t.appendf("\t\t\x04노력에도 불구하고\n");
+        t.appendf("\t\t\x04색깔이 다른 희귀한 포켓몬\n");
+        t.appendf("\t\t\x04빨간 갸라도스의 모습은\n");
+        t.appendf("\t\t\x04목격조차 한 번\n");
+        t.appendf("\t\t\x04할 수 없었습니다...\n");
+        t.appendf("\t{:s}", sph1);
+        t.DisplayAt(0);
+        if(sphDelay[cp] < 480){sphDelay[cp] += 1;}
+        else{sphDelay[cp] = 0; pps.mainStory[cp] += 1;}
+    }
+    else if(main == 2){
+        removeText(cp);
+        SetDeaths(cp, SetTo, 31, "A Light");
+        pps.settingMusic[cp] = 4;
+        ppu.createPlayer(cp);
+        pps.mainStory[cp] += 1;
+        if(IsUserCP()){SetVariables(vli.locationText,1);}
+    }
+    //집에서 엄마가 용식과의 약속에 관한 이야기를 해줌.
+    else if(main == 3){
+        if(step == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit, "[Story]1")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                MoveLocation(vli.npcLoc+cp, vni.medic, P5, vli.mapLoc[0]);
+                pmu.changeMoveState(cp, false);
+                actionStep[cp] += 1;
+            }
+        }
+        else if(step == 1){
+            CenterView(vli.npcLoc+cp);
+            t.printfAt(0,"{:s}", sph3);
+            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
+            else{sphDelay[cp] = 0; actionStep[cp] += 1; sphUpdate[cp] = 1;}
+        }
+        else if(step == 2){
+            speechText(cp, vni.npcName[0], vsl.storyLog1, action);
+        }
+        else if(actionStep[cp] == 3){
+            actionStep[cp] = 0; pps.mainStory[cp] += 1;
+        }
+    }
+    //용식이의 집 앞에서 대화
+    else if(main == 4){
+        if(step == 0){
+            if(Deaths(cp, Exactly, 16, "A Key") && Bring(cp, Exactly, 1, pps.playerUnit, "[Story]2")){
+                PlayWAV("staredit\\wav\\Door enter.wav");
+                createNPC(cp, 5, "[Story]2", vni.friend, 0);
+                pmu.changeMoveState(cp, false);
+                actionStep[cp] += 1;
+            }
+        }
+        else if(step == 1){
+            CenterView("[Story]2");
+            t.printfAt(0,"{:s}", sph3);
+            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
+            else{sphDelay[cp] = 0; actionStep[cp] += 1; sphUpdate[cp] = 1;}
+        }
+        else if(step == 2){
+            speechText(cp, vni.npcName[1], vsl.storyLog2, action);
+        }
+        else if(step == 3){
+            const epd = npcEPD[cp*npcNum+0];
+            fc.COrderLocEPD(epd, 6, vli.mapLoc[2]);
+            SetMemoryXEPD(epd+0x110/4, SetTo, 0x32, 0xFFFF);
+            actionStep[cp] = 0; pps.mainStory[cp] += 1;
+        }
+    }
+    //201번 도로로 나갔을 때, 용식이와 대화
+    else if(main == 5){
+        if(step == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit, "[Story]3")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                MoveLocation(vli.tempMoveLoc, pps.playerUnit, cp, vli.moveLoc+cp);
+                addloc(vli.tempMoveLoc, 0, -32);
+                createNPC(cp, 5, vli.tempMoveLoc, vni.friend, 0);
+                pmu.changeMoveState(cp, false);
+                actionStep[cp] += 1; sphUpdate[cp] = 1;
+            }
+            else if(step == 1){
+                speechText(cp, vni.npcName[1], vsl.storyLog3, action);
+            }
+            else if(step == 2){
+                const epd = npcEPD[cp*npcNum+0];
+                SetMemoryXEPD(epd+0x110/4, SetTo, 0x2, 0xFFFF);
+                actionStep[cp] = 0; pps.mainStory[cp] += 1;
+            }
+        }
+    }
+}
+
+function restrictAction(cp){
+    const main = pps.mainStory[cp];
+    //용식이와 대화를 하지 않고 나가려고 할 때
+    if(main <= 4){
+        if(restrictStep[cp] == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit, "[Story]3")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                pmu.changeMoveState(cp, false);
+                MoveLocation(vli.tempMoveLoc, pps.playerUnit, cp, vli.moveLoc+cp);
+                addloc(vli.tempMoveLoc, 0, 32);
+                Order(pps.playerUnit, cp, 64, Move, vli.tempMoveLoc);
+                restrictStep[cp] += 1; sphUpdate[cp] = 1;
+            }
+        }
+        else if(restrictStep[cp] == 1){
+            speechText(cp, vni.npcName[2], vsl.storyLog4, restrict);
+        }
+        else{restrictStep[cp] = 0;}
+    }
+    //마박사의 포켓몬 고르기 이벤트를 진행하지 않고 나가려고 할 때
+    else if(main <= 20){
+        if(restrictStep[cp] == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit, "[Back]1")){
+                pmu.changeMoveState(cp, false);
+                MoveLocation(vli.tempMoveLoc, pps.playerUnit, cp, vli.moveLoc+cp);
+                addloc(vli.tempMoveLoc, -32, 0);
+                Order(pps.playerUnit, cp, 64, Move, vli.tempMoveLoc);
+            }
+        }
+        else if(restrictStep[cp] < 12){
+            restrictStep[cp] += 1;
+        }
+        else{
+            restrictStep[cp] = 0; pmu.changeMoveState(cp, true);
+        }
+    }
+}

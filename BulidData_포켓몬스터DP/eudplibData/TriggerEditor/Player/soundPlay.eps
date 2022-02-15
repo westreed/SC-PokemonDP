@@ -1,0 +1,19 @@
+import functions as fc;
+import Player.playerSetting as pps;
+import TriggerEditor.BGMPlayer as BGM;
+/*------------------------------------------------------------------------------
+
+사운드 처리
+
+------------------------------------------------------------------------------*/
+
+function backgroundMusic(cp){
+    const setM = pps.settingMusic[cp];
+	if(setM != pps.playingMusic[cp]){
+		pps.playingMusic[cp] = setM;
+		BGM.SetBGM(setM-1);
+	}
+    if(IsUserCP() && pps.setMusic[cp] == 0 && pps.playingMusic[cp]){
+        BGM.Play();
+    }
+}

@@ -1,0 +1,27 @@
+[main]
+input: F:\StarCraft\Maps\포켓몬스터 DP\[EUD]포켓몬스터DP.scx
+output: F:\StarCraft\Maps\포켓몬스터 DP\[EUD]포켓몬스터DP_Output.scx
+[DataEditor.py]
+[ExtraDataEditor.py]
+[dataDumper]
+..\temp\custom_txt.tbl : 0x6D5A30, copy
+
+[TriggerEditor\main.eps]
+
+
+[chatEvent]
+__addr__ : 0x58D900
+__ptrAddr__ : 0x58D904
+__patternAddr__ : 0x58D908
+__lenAddr__ : 0x58D90C
+
+
+[MSQC]
+QCDebug : False
+MouseDown(R) : A Key, 1
+F; NotTyping : A Key, 16
+W; NotTyping : A Stick, 1
+S; NotTyping : A Stick, 2
+A; NotTyping : A Stick, 4
+D; NotTyping : A Stick, 8
+

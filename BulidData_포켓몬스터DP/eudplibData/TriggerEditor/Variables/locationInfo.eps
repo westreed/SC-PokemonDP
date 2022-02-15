@@ -1,0 +1,71 @@
+import Player.playerSetting as pps;
+import Variables.statusLine as vsl;
+
+
+const l = StringBuffer(1024);
+var locationText    = 0;
+const updateDelay   = PVariable(list(0,6,12,18,0,0,0,0));
+const textHeight    = 0;
+const tempLoc       = $L("Temp");
+const tempMoveLoc   = $L("Move");
+const moveLoc       = $L("[Move]P1"); //moveLoc+cp
+const npcLoc        = $L("NPC1"); //npcLoc+cp
+const mapLoc        = [
+    $L("[Map]광휘의집"),
+    $L("[Map]떡잎마을"),
+    $L("[Map]201"),
+    $L("[Map]진실호수근처"),
+    $L("[Map]잔모래마을"),
+];
+const mapName       = [
+    Db("광휘의집"),
+    Db("떡잎마을"),
+    Db("201번도로"),
+    Db("진실호수근처"),
+    Db("잔모래마을"),
+];
+const mapMusic      = [
+    4,
+    4,
+    5,
+    5,
+    6,
+];
+
+
+function printLocation(cp){
+    if(IsUserCP()){
+        if(locationText > 0){
+            locationText++;
+            const room = pps.currentLocation[cp];
+            if(locationText < 72){
+                const tecolor = 0x1B, 0x04, 0x1E, 0x14;
+                l.fadeIn("\x13\x17P\x04okemon \x1FD\x04iamond·\x08P\x04earl", color=tecolor, wait=2, line=textHeight);
+                l.fadeIn("\x13\x19( \x04",ptr2s(mapName[room])," \x19)", color=tecolor, wait=2, line=textHeight+1);
+            }
+            else if(locationText < 74){l.printAt(textHeight, "\x13\x1BPokemon Diamond·Pearl\n\x13\x1B( ",ptr2s(mapName[room])," )");}
+            else if(locationText < 76){l.printAt(textHeight, "\x13\x04Pokemon Diamond·Pearl\n\x13\x04( ",ptr2s(mapName[room])," )");}
+            else if(locationText < 78){l.printAt(textHeight, "\x13\x1EPokemon Diamond·Pearl\n\x13\x1E( ",ptr2s(mapName[room])," )");}
+            else if(locationText == 79){locationText = 0; l.printAt(textHeight, "\x13\n\x13");}
+        }
+    }
+}
+
+function updateLocation(cp){
+    printLocation(cp);
+    if(updateDelay[cp] == 0){
+        updateDelay[cp] = 24;
+        if(pps.battleState[cp] == 0){
+            const currentLoc = pps.currentLocation[cp];
+            for(var i=0; i<mapLoc._arrlen; i++){
+                if(i != currentLoc && Bring(cp, AtLeast, 1, pps.playerUnit, mapLoc[i])){
+                    pps.currentLocation[cp] = i;
+                    pps.settingMusic[cp] = mapMusic[i];
+                    if(IsUserCP()){locationText = 1;}
+                }
+            }
+        }
+        vsl.printStatusLine(cp);
+    }
+    else{updateDelay[cp]--;}
+}

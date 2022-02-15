@@ -1,0 +1,18 @@
+import functions as fc;
+import Player.playerSetting as pps;
+import Variables.locationInfo as vli;
+
+const playerEPD     = PVariable();
+const playerPosX    = PVariable();
+const playerPosY    = PVariable();
+const playerGridX   = PVariable(); //32로 나뉜값
+const playerGridY   = PVariable();
+
+
+function createPlayer(cp){
+    setloc(vli.tempMoveLoc, 672, 7872);
+    playerEPD[cp] = fc.SetNextUnitEPD();
+    CreateUnit(1, pps.playerUnit, vli.tempMoveLoc, cp);
+    CenterView(vli.tempMoveLoc);
+    pps.moveState[cp] = 1;
+}

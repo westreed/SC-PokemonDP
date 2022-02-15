@@ -1,0 +1,63 @@
+import PluginVariables as msqcvar;
+import readTile as rt;
+import functions as fc;
+import opening as op;
+import Player.playerUnit as ppu;
+import Player.movementUnit as pmu;
+import Player.playerSetting as pps;
+import Player.soundPlay as psp;
+import Player.teleportSystem as pts;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.weakRelation as pwr;
+import Pokemon.calculateMethod as pcm;
+import Variables.mainSentence as vms;
+import Variables.locationInfo as vli;
+import Variables.flagText as vft;
+import TriggerEditor.BGMPlayer as BGM;
+import updatelight as ul;
+
+
+const s = StringBuffer(1024);
+function onPluginStart(){
+
+	randomize();
+	BGM.loadSound();
+	rt.TilesetInit();
+	ppi.pokemonInit();
+	fc.SpeedBan(); //방제배속방지
+	fc.exitObserver(); //옵저버밴
+	fc.ComputerCheck(4);
+	fc.ComputerCheck(5);
+	fc.ComputerCheck(6);
+	fc.ComputerCheck(7);
+	SetMemoryEPD(EPD(0x657A9C), SetTo, 0); //화면밝기
+	SetMemory(0x5124F0, SetTo, 29); //2배속
+	foreach(cp : EUDLoopPlayer(None, Force1)){
+		pps.settingMusic[cp] = 1;
+	}
+}
+
+function beforeTriggerExec(){
+
+	SetMemory(0x6509A0, SetTo, 0); //EUD터보
+	ul.UpdateLight("A Light", "A LightDelay");
+	foreach(cp : EUDLoopPlayer(None, Force1)){
+		setcurpl(cp);
+		psp.backgroundMusic(cp);
+	}
+}
+
+function afterTriggerExec(){
+
+	foreach(cp : EUDLoopPlayer(None, Force1)){
+		setcurpl(cp);
+		if(pps.mainStory[cp] == 0){op.openingStep(cp);}
+		else{
+			pmu.movePlayer(cp);
+			vms.speechSystem(cp); //메인스토리
+			vli.updateLocation(cp); //현재위치 표시
+			pts.teleportPlayer(cp); //위치이동
+			vft.printFlagText(cp); //표지판 텍스트
+		}
+	}
+}

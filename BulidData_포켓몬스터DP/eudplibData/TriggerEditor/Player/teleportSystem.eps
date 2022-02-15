@@ -1,0 +1,26 @@
+import Player.playerSetting as pps;
+import Variables.locationInfo as vli;
+
+
+
+function teleportPlayer(cp){
+    if(pps.battleState[cp] == 0 && Deaths(cp, Exactly, 16, "A Key")){
+        const currentLoc = pps.currentLocation[cp];
+        if(currentLoc == 0){
+            if(Bring(P5, Exactly, 1, 50, vli.moveLoc+cp)){
+                MoveLocation(vli.tempMoveLoc, 50, P5, vli.mapLoc[1]);
+                MoveUnit(1, pps.playerUnit, cp, 64, vli.tempMoveLoc);
+                CenterView(vli.tempMoveLoc);
+                PlayWAV("staredit\\wav\\Door exit.wav");
+            }
+        }
+        else if(currentLoc == 1){
+            if(Bring(P5, Exactly, 1, 50, vli.moveLoc+cp)){
+                MoveLocation(vli.tempMoveLoc, 50, P5, vli.mapLoc[0]);
+                MoveUnit(1, pps.playerUnit, cp, 64, vli.tempMoveLoc);
+                CenterView(vli.tempMoveLoc);
+                PlayWAV("staredit\\wav\\Door enter.wav");
+            }
+        }
+    }
+}

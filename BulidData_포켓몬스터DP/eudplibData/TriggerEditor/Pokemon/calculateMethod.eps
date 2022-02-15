@@ -1,0 +1,73 @@
+import dataTable as dT;
+
+
+function divideType(type){
+    var type1 = 0; var type2 = 0;
+    while(type > 16){type -= 16; type1 += 1;}
+    type2 = type;
+    return type1, type2;
+}
+
+//합쳐진 능력치를 4개의 스탯으로 나누는 함수
+function divideStats(st){
+    var hp = 0;
+    var atk = 0;
+    var amr = 0;
+    var spd = 0;
+    while(16777216 <= st){st -= 16777216; spd += 1;}
+    while(65536 <= st){st -= 65536; amr += 1;}
+    while(256 <= st){st -= 256; atk += 1;}
+    hp = st;
+    return hp, atk, amr, spd;
+}
+
+//4개의 스탯을 1개의 합쳐진 능력치로 바꾸는 함수
+function combineStats(hp, atk, amr, spd){
+    return hp + atk*256 + amr*65536 + spd*16777216;
+}
+
+//합쳐진 능력치를 4개의 스탯으로 나누는 함수
+function divideIVs(st){
+    var hp = 0;
+    var atk = 0;
+    var amr = 0;
+    var spd = 0;
+    while(32768 <= st){st -= 32768; spd += 1;}
+    while(1024 <= st){st -= 1024; amr += 1;}
+    while(32 <= st){st -= 32; atk += 1;}
+    hp = st;
+    return hp, atk, amr, spd;
+}
+
+//4개의 스탯을 1개의 합쳐진 능력치로 바꾸는 함수
+function combineIVs(hp, atk, amr, spd){
+    return hp + atk*32 + amr*1024 + spd*32768;
+}
+
+//0~31 범위의 랜덤한 값을 생성하는 함수
+function rand32(){
+    var rd = 0;
+    foreach(i : py_range(5)){SetSwitch(i+250, Random);}
+    if(Switch(250, Set)){rd += 1;}
+    if(Switch(251, Set)){rd += 2;}
+    if(Switch(252, Set)){rd += 4;}
+    if(Switch(253, Set)){rd += 8;}
+    if(Switch(254, Set)){rd += 16;}
+    return rd;
+}
+
+//개체값 생성
+function createIVs(){
+    var IVs = 0;
+    foreach(i : py_range(4)){
+        const rd = rand32();
+        IVs += rd*dT.n32[i];
+    }
+    return IVs;
+}
+
+// const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);
+// const po2 = ppi.Pokemon2.cast(po.next);
+// const hp, atk, amr, spd = pcm.divideStats(po.BTs);
+// const type1, type2 = pcm.divideType(po2.type);
+// s.printf("\x04이름:{:s} 신오도감:{} 종족값:{} {} {} {} 포획률:{} 경험치:{} 타입:{:s} {:s}", po.name, po.book, hp, atk, amr, spd, po.catch, po2.exp, pwr.typeText[type1], pwr.typeText[type2]);
