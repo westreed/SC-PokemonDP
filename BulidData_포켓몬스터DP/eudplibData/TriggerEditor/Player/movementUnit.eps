@@ -20,7 +20,7 @@ function movePlayer(cp){
         //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
         if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
             setloc_epd(vli.tempMoveLoc, epd+0x10/4);
-            const angle = fc.LocationAngle(vli.moveLoc, vli.tempMoveLoc);
+            const angle = fc.LocationAngle(vli.moveLoc+cp, vli.tempMoveLoc);
             //s.printf("각도:{}",angle);
         }
     }
@@ -30,7 +30,8 @@ function changeMoveState(cp, value){
     pps.moveState[cp] = value;
     if(value == 0){
         SetMemoryXEPD(EPD(0x662098 + 0), SetTo, 6, 0xFF);
-        SetMemoryXEPD(ppu.playerEPD[cp]+0x4C/4, SetTo, 0x100, 0xFF00);
+        Order(pps.playerUnit, cp, 64, Move, vli.moveLoc+cp);
+        //SetMemoryXEPD(ppu.playerEPD[cp]+0x4C/4, SetTo, 0x100, 0xFF00);
     }
     else{SetMemoryXEPD(EPD(0x662098 + 0), SetTo, 2, 0xFF);}
 }

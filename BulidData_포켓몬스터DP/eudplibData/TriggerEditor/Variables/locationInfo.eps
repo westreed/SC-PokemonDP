@@ -10,26 +10,22 @@ const tempLoc       = $L("Temp");
 const tempMoveLoc   = $L("Move");
 const moveLoc       = $L("[Move]P1"); //moveLoc+cp
 const npcLoc        = $L("NPC1"); //npcLoc+cp
+const lastLoc       = $L("LastPos1"); //lastLoc+cp
+const battleLoc     = $L("[Battle]Wild1"); //battleLoc+cp
+const gymLoc        = $L("[Battle]Gym1"); //gymLoc+cp
+
 const mapLoc        = [
-    $L("[Map]광휘의집"),
-    $L("[Map]떡잎마을"),
-    $L("[Map]201"),
-    $L("[Map]진실호수근처"),
-    $L("[Map]잔모래마을"),
+    $L("[Map]광휘의집"), $L("[Map]떡잎마을"), $L("[Map]201"), $L("[Map]진실호수근처"), $L("[Map]잔모래마을"),
 ];
 const mapName       = [
-    Db("광휘의집"),
-    Db("떡잎마을"),
-    Db("201번도로"),
-    Db("진실호수근처"),
-    Db("잔모래마을"),
+    Db("광휘의집"), Db("떡잎마을"), Db("201번도로"), Db("진실호수근처"), Db("잔모래마을"),
 ];
 const mapMusic      = [
-    4,
-    4,
-    5,
-    5,
-    6,
+    4, 4, 5, 5, 6,
+];
+//mapType 0:건물안 1:마을(포켓몬센터없음) 2:마을(포켓몬센터있음) 3:도시 4:도로 5:동굴(모든길에서적) 6:동굴(길에서안나옴)
+const mapType       = [
+    0, 1, 4, 8, 2,
 ];
 
 
@@ -59,8 +55,17 @@ function updateLocation(cp){
             const currentLoc = pps.currentLocation[cp];
             for(var i=0; i<mapLoc._arrlen; i++){
                 if(i != currentLoc && Bring(cp, AtLeast, 1, pps.playerUnit, mapLoc[i])){
+                    //현재 위치 바꾸기
                     pps.currentLocation[cp] = i;
-                    pps.settingMusic[cp] = mapMusic[i];
+                    const mapSet = mapType[i];
+                    if(mapSet == 1 || mapSet == 2 || mapSet == 3 || mapSet == 4){
+                        //마지막으로 방문한 마을 갱신
+                        pps.lastVisitVillage[cp] = i;
+                    }
+                    if(mapMusic[i] != pps.settingMusic[cp]){
+                        //방문한 장소의 음악으로 변경하기
+                        pps.settingMusic[cp] = mapMusic[i];
+                    }
                     if(IsUserCP()){locationText = 1;}
                 }
             }

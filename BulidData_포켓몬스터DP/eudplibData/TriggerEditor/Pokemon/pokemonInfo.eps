@@ -4,22 +4,24 @@ const pokemonNum    = 151;
 const pokemonList  = EUDArray(pokemonNum);
 
 object Pokemon1 {
-    var name; //포켓몬이름
-    var nameEPD; //포켓몬이름(tbl)
-    var book; //신오도감 번호
-    var BTs; //종족값 (HP + 256*공격 + 65536*방어 + 16777216*스피드)
-    var IVs; //개체값 (random 0~31)
-    var catch; //포획률
-    var next; //포인터
+    var name;       //0포켓몬이름
+    var nameEPD;    //1포켓몬이름(tbl)
+    var book;       //2신오도감 번호
+    var BTs;        //3종족값 (HP + 256*공격 + 65536*방어 + 16777216*스피드)
+    var IVs;        //4개체값 (random 0~31)
+    var catch;      //5포획률
+    var exp;        //6경험치
+    var next;       //7포인터
 };
 object Pokemon2 {
-    var exp; //경험치
-    var ownEXP; //보유경험치
-    var type; //포켓몬타입
-    var evoTarget; //진화대상 (객체번호)
-    var evoCond; //진화조건
-    var unit; //포켓몬 (유닛 + 256*포트레잇번호)
-    var next; //포인터
+    var ownEXP;     //0보유경험치
+    var type;       //1포켓몬타입
+    var evoTarget;  //2진화대상 (객체번호)
+    var evoCond;    //3진화조건
+    var unit;       //4포켓몬 (유닛 + 256*포트레잇번호)
+    var weapon;     //5무기정보 (무기번호 + 130*사거리)
+    var item;       //6지니고있는아이템 (통신교환)
+    var next;       //7포인터
 };
 
 function pokemonInit(){

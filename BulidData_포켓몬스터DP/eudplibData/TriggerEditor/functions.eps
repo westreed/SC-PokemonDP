@@ -349,3 +349,7 @@ function __LocOrderBase(
 function COrderLocEPD(epd, order, loc: TrgLocation) {
     __LocOrderBase(epd, order << 8, loc);
 }
+
+function setLight(value){
+    if(IsUserCP())SetMemoryEPD(EPD(0x657A9C), SetTo, value);
+}

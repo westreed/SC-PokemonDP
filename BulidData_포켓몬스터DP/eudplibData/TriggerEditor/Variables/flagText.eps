@@ -5,10 +5,18 @@ import Variables.mainSentence as vms;
 const printCheck    = PVariable();
 
 const f = StringBuffer(1024);
+
+function printFlagEnd(cp){
+    if(printCheck[cp] == 1){
+        printCheck[cp] = 0;
+        f.printfAt(4,"\n\n\n\n");
+    }
+}
 function printFlagText(cp){
     const currentLoc = pps.currentLocation[cp];
     const mLoc = vli.moveLoc+cp;
-    if(currentLoc == 1){ //떡잎마을
+    //떡잎마을
+    if(currentLoc == 1){
         if(Bring(P12, Exactly, 1, 215, mLoc)){
             f.insert(0);
             f.appendf("\n\x13{:s}\n",vms.sph1);
@@ -33,11 +41,26 @@ function printFlagText(cp){
             f.DisplayAt(3);
             printCheck[cp] = 1;
         }
-        else{
-            if(printCheck[cp] == 1){
-                printCheck[cp] = 0;
-                f.printfAt(4,"\n\n\n\n");
-            }
+        else{printFlagEnd(cp);}
+    }
+    //201번도로
+    else if(currentLoc == 2){
+        if(Bring(P12, Exactly, 1, 215, mLoc)){
+            f.insert(0);
+            f.appendf("\n\x13{:s}\n",vms.sph1);
+            f.appendf("\x13\x02여기는 201번도로\n\x13\x02↓떡잎마을\n");
+            f.appendf("\x13{:s}",vms.sph1);
+            f.DisplayAt(3);
+            printCheck[cp] = 1;
         }
+        else if(Bring(P5, Exactly, 1, 215, mLoc)){
+            f.insert(0);
+            f.appendf("\n\x13{:s}\n",vms.sph1);
+            f.appendf("\x13\x02↑진실호수 입구\n\x13\x02마음을 표현하는 호수\n");
+            f.appendf("\x13{:s}",vms.sph1);
+            f.DisplayAt(3);
+            printCheck[cp] = 1;
+        }
+        else{printFlagEnd(cp);}
     }
 }
