@@ -403,6 +403,13 @@ def onPluginStart():
         SetMemory(0x6571D4, Add, 52),# weapons:Damage Upgrade  index:4    from 8 To 60
         SetMemory(0x6571D4, Add, 13312),# weapons:Damage Upgrade  index:5    from 8 To 60
         SetMemory(0x6571D4, Add, 872415232),# weapons:Damage Upgrade  index:7    from 8 To 60
+        SetMemory(0x657258, Add, -2),# weapons:Weapon Type  index:0    from 3 To 1
+        SetMemory(0x657258, Add, -512),# weapons:Weapon Type  index:1    from 3 To 1
+        SetMemory(0x657258, Add, -65536),# weapons:Weapon Type  index:2    from 2 To 1
+        SetMemory(0x657258, Add, -16777216),# weapons:Weapon Type  index:3    from 2 To 1
+        SetMemory(0x65725C, Add, -1),# weapons:Weapon Type  index:4    from 2 To 1
+        SetMemory(0x65725C, Add, -256),# weapons:Weapon Type  index:5    from 2 To 1
+        SetMemory(0x65725C, Add, -33554432),# weapons:Weapon Type  index:7    from 3 To 1
         SetMemory(0x6566F8, Add, 0),# weapons:Explosion Type  index:0    from 1 To 1
         SetMemory(0x656990, Add, 16),# weapons:Attack Angle  index:0    from 16 To 32
         SetMemory(0x656990, Add, 4096),# weapons:Attack Angle  index:1    from 16 To 32

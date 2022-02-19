@@ -21,6 +21,7 @@ const battleLocation= PVariable();
 const battleUnit    = PVariable(); //배틀상대유닛
 const battleName    = PVariable(); //배틀상대이름
 const battleEPD     = PVariable(); //포켓몬 EPD (cp:유저 cp+4:적)
+const pokemonIndex  = PVariable(); //포켓몬 번호 (cp:유저 cp+4:적)
 const pokemonName   = PVariable(); //포켓몬 이름 (cp:유저 cp+4:적)
 const pokemonLevel  = PVariable(); //포켓몬 레벨 (cp:유저 cp+4:적)
 const pokemonHP     = PVariable(); //포켓몬 체력 (cp:유저 cp+4:적)
@@ -44,6 +45,7 @@ function isBattleType(type){
 function battleSetting(cp, type, pokemon, level){
     const cp6 = cp*6;
     battleType[cp] = type;
+    pokemonIndex[cp+4] = pokemon;
     if(isBattleType(type) == 0){
         const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
         battleName[cp] = pk.name;
@@ -84,10 +86,12 @@ function battleSystem(cp){
     const step = battleStep[cp];
     //battleStep값이 1이상일 때 작동하기
     if(step){
+        if(step >= 4){CenterView(battleLocation[cp]);}
         if(step >= 7){bbg.battleTextGUI(cp);}
         //전투 시작전 필요데이터 저장하기
         if(step == 1){
             pmu.changeMoveState(cp, false);
+            pps.battleState[cp] = true;
             vms.restoreMusic[cp] = pps.settingMusic[cp]; //배틀시작전 음악저장
             MoveLocation(vli.lastLoc+cp, pps.playerUnit[cp], cp, 64); //마지막 위치 저장
             pps.settingMusic[cp] = battleMusic[battleType[cp]];
@@ -153,6 +157,11 @@ function battleSystem(cp){
             //내 포켓몬의 이전체력 가져오기
             const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cp*18+0]);
             SetMemoryEPD(battleEPD[cp]+2, SetTo, mk.hitpoint*256);
+            pokemonIndex[cp] = mk.index;
+
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index]);
+            const ck = ppi.Pokemon1.cast(ppi.pokemonList[pokemonIndex[cp+4]]);
+            pwr.calculateWeak_PVE(cp, pk.type, ck.type);
             battleStep[cp] += 1;
         }
         else if(step == 5){

@@ -5,5 +5,10 @@ import Variables.locationInfo as vli;
 
 
 function printStatusLine(cp){
-    eprintf("{:s}", vli.mapName[pps.currentLocation[cp]]);
+    if(pps.battleState[cp] == 0){
+        eprintf("{:s}", vli.mapName[pps.currentLocation[cp]]);
+    }
 }
+
+
+const dataTable = [0, 16777216, 16777216*2, 16777216*3];

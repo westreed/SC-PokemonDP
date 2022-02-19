@@ -3,6 +3,7 @@ import readTile as rt;
 import functions as fc;
 import opening as op;
 import Battle.battleStart as bbs;
+import Item.itemInfo as iif;
 import Player.playerUnit as ppu;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
@@ -26,8 +27,10 @@ function onPluginStart(){
 	BGM.loadSound();
 	rt.TilesetInit();
 	ppi.pokemonInit();
+	pwr.weakInit();
 	pwd.weaponInit();
 	pmp.pokemonListInit();
+	iif.itemInit();
 	fc.SpeedBan(); //방제배속방지
 	fc.exitObserver(); //옵저버밴
 	fc.ComputerCheck(4);

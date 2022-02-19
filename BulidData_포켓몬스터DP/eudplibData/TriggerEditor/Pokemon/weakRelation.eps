@@ -1,35 +1,124 @@
-//상성관계
+import Pokemon.calculateMethod as pcm;
+import Pokemon.pokemonStatus as pps;
 
-//효과없음 0 (0)
-//효과는 별로였다 1 (1/2)
-//상성없음 2 (1)
-//효과는 굉장했다 3 (2)
+/*상성관계
+효과없음 1 (0)
+효과는 별로였다 2 (1/2)
+상성없음 3 (1)
+효과는 굉장했다 4 (2)*/
+
+//첫 상성비교는 여기서 처리함.
+//여기서 return된 값을 밑의 calculateTable에서 비교.
 const weakTable = [
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 2, 2, 1,
-    2, 1, 1, 2, 3, 3, 2, 2, 2, 2, 2, 3, 1, 2, 1, 2, 3,
-    2, 3, 1, 2, 1, 2, 2, 2, 3, 2, 2, 2, 3, 2, 1, 2, 2,
-    2, 2, 3, 1, 1, 2, 2, 2, 0, 3, 2, 2, 2, 2, 1, 2, 2,
-    2, 1, 3, 2, 1, 2, 2, 1, 3, 1, 2, 1, 3, 2, 1, 2, 1,
-    2, 1, 1, 2, 3, 1, 2, 2, 3, 3, 2, 2, 2, 2, 3, 2, 1,
-    3, 2, 2, 2, 2, 3, 2, 1, 2, 1, 1, 1, 3, 0, 2, 3, 3,
-    2, 2, 2, 2, 3, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 0,
-    2, 3, 2, 3, 1, 2, 2, 3, 2, 0, 2, 1, 3, 2, 2, 2, 3,
-    2, 2, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 1, 2, 2, 2, 1,
-    2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 2, 2, 2, 2, 0, 1,
-    2, 1, 2, 2, 3, 2, 1, 1, 2, 1, 3, 2, 2, 1, 2, 3, 1,
-    2, 3, 2, 2, 2, 3, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 1,
-    0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 2, 1, 2,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 1,
-    2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 3, 2, 2, 3, 2, 1, 2,
-    2, 1, 1, 1, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 1
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 3, 3, 2,
+    3, 2, 2, 3, 4, 4, 3, 3, 3, 3, 3, 4, 2, 3, 2, 3, 4,
+    3, 4, 2, 3, 2, 3, 3, 3, 4, 3, 3, 3, 4, 3, 2, 3, 3,
+    3, 3, 4, 2, 2, 3, 3, 3, 1, 4, 3, 3, 3, 3, 2, 3, 3,
+    3, 2, 4, 3, 2, 3, 3, 2, 4, 2, 3, 2, 4, 3, 2, 3, 2,
+    3, 2, 2, 3, 4, 2, 3, 3, 4, 4, 3, 3, 3, 3, 4, 3, 2,
+    4, 3, 3, 3, 3, 4, 3, 2, 3, 2, 2, 2, 4, 1, 3, 4, 4,
+    3, 3, 3, 3, 4, 3, 3, 2, 2, 3, 3, 3, 2, 2, 3, 3, 1,
+    3, 4, 3, 4, 2, 3, 3, 4, 3, 1, 3, 2, 4, 3, 3, 3, 4,
+    3, 3, 3, 2, 4, 3, 4, 3, 3, 3, 3, 4, 2, 3, 3, 3, 2,
+    3, 3, 3, 3, 3, 3, 4, 4, 3, 3, 2, 3, 3, 3, 3, 1, 2,
+    3, 2, 3, 3, 4, 3, 2, 2, 3, 2, 4, 3, 3, 2, 3, 4, 2,
+    3, 4, 3, 3, 3, 4, 2, 3, 2, 4, 3, 4, 3, 3, 3, 3, 2,
+    1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 4, 3, 2, 3,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2,
+    3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 4, 3, 3, 4, 3, 2, 3,
+    3, 2, 2, 2, 3, 4, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 2
 ];
+
+//weakTable에서 상성을 1번 비교하고 난 이후로는
+//아래의 calculateTable 안에서 비교하는 방식.
+const calculateTable = [
+    1, 1, 2, 3,
+    1, 2, 3, 3,
+    2, 3, 3, 4,
+    3, 3, 4, 4
+];
+
 const typeText = [Db(''),Db('노말'),Db('불꽃'),Db('물'),Db('전기'),Db('풀'),Db('얼음'),Db('격투'),Db('독'),Db('땅'),Db('비행'),Db('에스퍼'),Db('벌레'),Db('바위'),Db('고스트'),Db('드래곤'),Db('악'),Db('강철')];
+const weakText = [Db('효과없음'),Db('효과별로'),Db('상성없음'),Db('효과굉장')];
+
+function weakInit(){
+    SetMemory(0x515B9C, SetTo, 64);
+    SetMemory(0x515BA0, SetTo, 128);
+    SetMemory(0x515BA4, SetTo, 256);
+    SetMemory(0x515BA8, SetTo, 512);
+}
 
 function loadWeak(me, you){
+    if(me == 0 || you == 0){return 0;}
     const index = 17*(me-1) + (you-1);
     return weakTable[index];
 }
 
-function calculateWeak(){
-    
+function calculateWeak(me1, me2){
+    if(me1 == 0 || me2 == 0){return 0;}
+    const index = 4*(me1-1) + (me2-1);
+    return calculateTable[index];
 }
+
+function calculateWeak_PVE(cp, cp_type, tp_type){
+    const typeList = EUDArray(4); //타입 저장
+    const pUnit = pps.returnPokemonUnit(cp, 1); //내 유닛
+    const cUnit = pps.returnPokemonUnit(cp, 0); //상대 유닛
+    typeList[0], typeList[1] = pcm.divideType(cp_type); //내 타입
+    typeList[2], typeList[3] = pcm.divideType(tp_type); //상대 타입
+
+    //내 상성 계산
+    const cp_weak = EUDArray(2);
+    for(var i=0; i<2; i++){
+        const temp_cp = EUDArray(2);
+        if(typeList[i]){ //타입이 있는 경우
+            temp_cp[0] = loadWeak(typeList[i], typeList[2]);
+            temp_cp[1] = loadWeak(typeList[i], typeList[3]);
+            cp_weak[i] = calculateWeak(temp_cp[0], temp_cp[1]);
+        }
+        else{ //타입이 없는 경우
+            cp_weak[i] = 3;
+        }
+    }
+    //한번 계산된 상성을 다시 한번더 calculateTable에서 비교하여 최종도출함.
+    const cp_weak_last = calculateWeak(cp_weak[0], cp_weak[1])-1;
+    bwrite(0x662180 + cUnit, cp_weak_last); //유닛타입(독립,소형,중형,대형)
+
+    //컴퓨터 상성 계산
+    const tp_weak = EUDArray(2);
+    for(var i=0; i<2; i++){
+        const temp_tp = EUDArray(2);
+        if(typeList[i]){ //타입이 있는 경우
+            temp_tp[0] = loadWeak(typeList[2], typeList[i]);
+            temp_tp[1] = loadWeak(typeList[3], typeList[i]);
+            tp_weak[i] = calculateWeak(temp_tp[0], temp_tp[1]);
+        }
+        else{ //타입이 없는 경우
+            tp_weak[i] = 3;
+        }
+    }
+    const tp_weak_last = calculateWeak(tp_weak[0], tp_weak[1])-1;
+    bwrite(0x662180 + pUnit, tp_weak_last); //유닛타입(독립,소형,중형,대형)
+}
+
+
+/*
+        독립 소형 중형 대형
+폭발형 : 25% 50% 100% 200%
+상성     없음 별로 평범 굉장
+
+나->상대 : 효과가 굉장함 (2배) // 나:폭발형 상대:대형
+상대->나 : 효과가 굉장함 (2배) // 나:대형 상대:폭발형
+
+
+Explosive damage
+0x515B9C vs independent - 0     >> 64 (25%)
+0x515BA0 vs small       - 128   >> 128 (50%)
+0x515BA4 vs medium      - 192   >> 256 (100%)
+0x515BA8 vs large       - 256   >> 512 (200%)
+
+SetMemory(0x515B9C, SetTo, 64);
+SetMemory(0x515BA0, SetTo, 128);
+SetMemory(0x515BA4, SetTo, 256);
+SetMemory(0x515BA8, SetTo, 512);
+ */
