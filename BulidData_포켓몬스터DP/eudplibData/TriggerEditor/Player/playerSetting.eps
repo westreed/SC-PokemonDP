@@ -1,7 +1,9 @@
 
 
 
-const playerUnit        = 0; //terran marine
+const playerUnit        = PVariable(list(0,7,9,10,0,0,0,0));
+const userSetLight      = PVariable();
+const userLight         = PVariable();
 const settingMusic      = PVariable(); //재생할 곡 선택
 const playingMusic      = PVariable(); //현재 재생중인 곡
 const setMusic          = PVariable(); //음악재생여부

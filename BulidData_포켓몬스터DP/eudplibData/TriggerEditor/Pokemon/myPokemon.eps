@@ -1,0 +1,101 @@
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.calculateMethod as pcm;
+
+const s = StringBuffer(1024);
+const playerPokemonList     = EUDArray(4*18);   //플레이어가 들고다니는 포켓몬리스트 index:6부터는 PC저장된 포켓몬리스트임
+const computerPokemonList   = EUDArray(4*6);    //플레이어와 상대하는 컴퓨터의 포켓몬데이터
+
+//포켓몬마다 다른 값을 가지는 개체정보 오브젝트
+object myPokemon {
+    var index;      //0포켓몬사전Index (빈자리는 999)
+    var level;      //1포켓몬레벨
+    var hitpoint;   //2포켓몬체력
+    var IVs;        //3포켓몬개체값 (random 0~31)
+    var ownEXP;     //4보유경험치
+    var item;       //5지니고 있는 아이템 (통신교환)
+};
+
+function pokemonListInit(){
+    for(var i=0; i<playerPokemonList._arrlen; i++){
+        playerPokemonList[i] = myPokemon.alloc();
+        const mpk = myPokemon.cast(playerPokemonList[i]);
+        mpk.index = 999;
+    }
+    for(var i=0; i<computerPokemonList._arrlen; i++){
+        computerPokemonList[i] = myPokemon.alloc();
+        const cpk = myPokemon.cast(computerPokemonList[i]);
+        cpk.index = 999;
+    }
+}
+
+function setPokemonData(cp, pokemon, index, lv, hitpoints, IV){
+    //pokemonData
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
+    const pkn = ppi.Pokemon2.cast(pk.next);
+
+    //playerData - 리스트 캐스팅
+    const mpk = myPokemon.cast(playerPokemonList[index]);
+
+    //객체 캐스팅 종료 - 개체데이터 생성하기
+    mpk.index = pokemon;
+    mpk.level = lv;
+    if(IV == 0){mpk.IVs = pcm.createIVs();} //개체값 생성하기
+    else{mpk.IVs = IV;} //야생포켓몬의 개체값 가져오기
+    
+    if(hitpoints == 0){ //야생포켓몬이 아닌 경우
+        const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
+        const vhp, vatk, vamr, vspd = pcm.divideIVs(mpk.IVs);
+        mpk.hitpoint = pcm.returnHitPoints(cp, lv, hp, vhp);
+    }
+    //야생포켓몬은 체력도 함께 그대로 대입하기
+    else{mpk.hitpoint = hitpoints;}
+}
+
+function setComputerData(cp, pokemon, index, lv, IV){
+    //pokemonData
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
+    const pkn = ppi.Pokemon2.cast(pk.next);
+
+    //computerData - 리스트 캐스팅
+    const mpk = myPokemon.cast(computerPokemonList[6*cp+index]);
+
+    //객체 캐스팅 종료 - 개체데이터 생성하기
+    mpk.index = pokemon;
+    mpk.level = lv;
+    if(IV == 0){mpk.IVs = pcm.createIVs();} //개체값 생성하기
+    else{mpk.IVs = IV;} //정해진 개체값 대입하기
+    
+    const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
+    const vhp, vatk, vamr, vspd = pcm.divideIVs(mpk.IVs);
+    mpk.hitpoint = pcm.returnHitPoints(cp, lv, hp, vhp);
+}
+
+function catchPokemon(cp, pokemon, level, hitpoints, IV){
+    const cp18 = 18*cp;
+    for(var i=0; i<6; i++){
+        //포켓몬 리스트에 자리가 있는 경우
+        const mpk = myPokemon.cast(computerPokemonList[cp18+i]);
+        if(mpk != 999){
+            setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
+            return;
+        }
+    }
+    //6개의 자리에 공간이 이미 다 찬 경우 (PC저장)
+    for(var i=6; i<18; i++){
+        const mpk = myPokemon.cast(computerPokemonList[cp18+i]);
+        if(mpk != 999){
+            setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
+            s.printf("\x17！\x1E{:s}\x04은(는) 이수진의 PC 박스로 전송되었다!",pk.name);
+            return;
+        }
+    }
+    //그래도 없는 경우
+    //(이 경우는 아마 없을거임, 더이상 공간이 없으면 포켓볼 자체를 못쓰게 막는게 효율적임)
+    DisplayText("\x08！\x04포켓몬을 저장할 공간이 없습니다.");
+}
+
+/*
+SCA 런처로 포켓몬 데이터를 저장할 때
+체력, 레벨, 보유경험치, 지니고 있는 아이템, 개체값
+*/

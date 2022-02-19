@@ -2,19 +2,21 @@ import PluginVariables as msqcvar;
 import readTile as rt;
 import functions as fc;
 import opening as op;
+import Battle.battleStart as bbs;
 import Player.playerUnit as ppu;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Player.soundPlay as psp;
 import Player.teleportSystem as pts;
+import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
 import Pokemon.calculateMethod as pcm;
+import Pokemon.weaponData as pwd;
 import Variables.mainSentence as vms;
 import Variables.locationInfo as vli;
 import Variables.flagText as vft;
-import TriggerEditor.BGMPlayer as BGM;
-import updatelight as ul;
+import BGMPlayer as BGM;
 
 
 const s = StringBuffer(1024);
@@ -24,6 +26,8 @@ function onPluginStart(){
 	BGM.loadSound();
 	rt.TilesetInit();
 	ppi.pokemonInit();
+	pwd.weaponInit();
+	pmp.pokemonListInit();
 	fc.SpeedBan(); //방제배속방지
 	fc.exitObserver(); //옵저버밴
 	fc.ComputerCheck(4);
@@ -34,16 +38,17 @@ function onPluginStart(){
 	SetMemory(0x5124F0, SetTo, 29); //2배속
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		pps.settingMusic[cp] = 1;
+		RunAIScript("Turn ON Shared Vision for Player 8");
 	}
 }
 
 function beforeTriggerExec(){
 
 	SetMemory(0x6509A0, SetTo, 0); //EUD터보
-	ul.UpdateLight("A Light", "A LightDelay");
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		setcurpl(cp);
 		psp.backgroundMusic(cp);
+		fc.updateLight(cp);
 	}
 }
 
@@ -58,6 +63,8 @@ function afterTriggerExec(){
 			vli.updateLocation(cp); //현재위치 표시
 			pts.teleportPlayer(cp); //위치이동
 			vft.printFlagText(cp); //표지판 텍스트
+			bbs.battleSystem(cp); //배틀시스템
 		}
 	}
+	KillUnit(33, 7); //스캔이펙트 제거
 }

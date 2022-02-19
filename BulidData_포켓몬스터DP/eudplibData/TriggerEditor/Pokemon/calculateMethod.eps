@@ -3,17 +3,15 @@ import dataTable as dT;
 
 function divideType(type){
     var type1 = 0; var type2 = 0;
-    while(type > 16){type -= 16; type1 += 1;}
+    while(type >= 16){type -= 16; type1 += 1;}
     type2 = type;
     return type1, type2;
 }
 
 //합쳐진 능력치를 4개의 스탯으로 나누는 함수
 function divideStats(st){
-    var hp = 0;
-    var atk = 0;
-    var amr = 0;
-    var spd = 0;
+    var hp = 0; var atk = 0;
+    var amr = 0; var spd = 0;
     while(16777216 <= st){st -= 16777216; spd += 1;}
     while(65536 <= st){st -= 65536; amr += 1;}
     while(256 <= st){st -= 256; atk += 1;}
@@ -28,10 +26,8 @@ function combineStats(hp, atk, amr, spd){
 
 //합쳐진 능력치를 4개의 스탯으로 나누는 함수
 function divideIVs(st){
-    var hp = 0;
-    var atk = 0;
-    var amr = 0;
-    var spd = 0;
+    var hp = 0; var atk = 0;
+    var amr = 0; var spd = 0;
     while(32768 <= st){st -= 32768; spd += 1;}
     while(1024 <= st){st -= 1024; amr += 1;}
     while(32 <= st){st -= 32; atk += 1;}
@@ -56,7 +52,7 @@ function rand32(){
     return rd;
 }
 
-//개체값 생성
+//개체값 생성 - 제일 좋은 개체값은 1048575
 function createIVs(){
     var IVs = 0;
     foreach(i : py_range(4)){
@@ -64,6 +60,33 @@ function createIVs(){
         IVs += rd*dT.n32[i];
     }
     return IVs;
+}
+
+function divideData256(value){
+    var type1 = 0; var type2 = 0;
+    while(value >= 256){value -= 256; type2 += 1;}
+    type1 = value;
+    return type1, type2;
+}
+
+function returnHitPoints(cp, level, hp, vhp){
+    //=ROUNDDOWN((((hp*10)+vhp*3)*level/100)+10+level, 0)
+    return (((20*hp)+5*vhp)*level/100)+50+level;
+}
+
+function returnAttacks(cp, level, atk, vatk){
+    //=ROUNDDOWN(((atk*2)+vatk)*level/100+5,0)
+    return (((2*atk)+vatk)*level/100)+5;
+}
+
+function returnArmor(cp, level, amr, vamr){
+    //=ROUNDDOWN((D2+D3)*G2/100,0)
+    return (amr+vamr)*level/100;
+}
+
+function returnSpeed(cp, level, spd, vspd){
+    //=ROUNDDOWN(((E2*2)+E3)*G2/200,0)
+    return ((2*spd)+vspd)*level/100;
 }
 
 // const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);

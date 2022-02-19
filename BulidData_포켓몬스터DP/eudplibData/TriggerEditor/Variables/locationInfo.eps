@@ -15,17 +15,21 @@ const battleLoc     = $L("[Battle]Wild1"); //battleLoc+cp
 const gymLoc        = $L("[Battle]Gym1"); //gymLoc+cp
 
 const mapLoc        = [
+    //0~4
     $L("[Map]광휘의집"), $L("[Map]떡잎마을"), $L("[Map]201"), $L("[Map]진실호수근처"), $L("[Map]잔모래마을"),
 ];
 const mapName       = [
+    //0~4
     Db("광휘의집"), Db("떡잎마을"), Db("201번도로"), Db("진실호수근처"), Db("잔모래마을"),
 ];
 const mapMusic      = [
-    4, 4, 5, 5, 6,
+    //0~4
+    4, 4, 5, 8, 6,
 ];
 //mapType 0:건물안 1:마을(포켓몬센터없음) 2:마을(포켓몬센터있음) 3:도시 4:도로 5:동굴(모든길에서적) 6:동굴(길에서안나옴)
 const mapType       = [
-    0, 1, 4, 8, 2,
+    //0~4
+    0, 1, 4, 4, 2,
 ];
 
 
@@ -54,7 +58,7 @@ function updateLocation(cp){
         if(pps.battleState[cp] == 0){
             const currentLoc = pps.currentLocation[cp];
             for(var i=0; i<mapLoc._arrlen; i++){
-                if(i != currentLoc && Bring(cp, AtLeast, 1, pps.playerUnit, mapLoc[i])){
+                if(i != currentLoc && Bring(cp, AtLeast, 1, pps.playerUnit[cp], mapLoc[i])){
                     //현재 위치 바꾸기
                     pps.currentLocation[cp] = i;
                     const mapSet = mapType[i];

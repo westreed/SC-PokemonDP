@@ -1,4 +1,4 @@
-
+import Player.playerSetting as pps;
 
 /* ------------------------------------------------------------------------------
   전역 함수
@@ -93,7 +93,6 @@ function ComputerCheck(player){
 function scanEffect(targetLoc:TrgLocation, targetImage){
     SetMemoryX(0x666458, SetTo, targetImage, 0xFFFF);
     CreateUnit(1, "Scanner Sweep", targetLoc, 7);
-    KillUnit("Scanner Sweep", 7);
 }
 
 function GetDeath(player, unit:TrgUnit){
@@ -350,6 +349,18 @@ function COrderLocEPD(epd, order, loc: TrgLocation) {
     __LocOrderBase(epd, order << 8, loc);
 }
 
-function setLight(value){
+function setLight(cp,value){
     if(IsUserCP())SetMemoryEPD(EPD(0x657A9C), SetTo, value);
+}
+
+function updateLight(cp){
+    const SetLightValue = pps.userSetLight[cp];
+    if(SetLightValue != 0 && pps.userLight[cp] <= SetLightValue-1){
+        pps.userLight[cp] += 1;
+        if(IsUserCP()){SetMemoryEPD(EPD(0x657A9C), Add, 1);}
+    }
+    if(pps.userLight[cp] >= SetLightValue+1){
+        pps.userLight[cp] -= 1;
+        if(IsUserCP()){SetMemoryEPD(EPD(0x657A9C), Subtract, 1);}
+    }
 }

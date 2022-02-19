@@ -1,0 +1,102 @@
+import Battle.battleStart as bbs;
+import Pokemon.myPokemon as pmp;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.weaponData as pwd;
+import Pokemon.calculateMethod as pcm;
+
+const playerPokemonUnit     = [1, 2, 8, 19];
+const computerPokemonUnit   = [20, 21, 43, 44];
+
+function returnPokemonUnit(cp, type){
+    if(type){return playerPokemonUnit[cp];}
+    else{return computerPokemonUnit[cp];}
+}
+
+function returnPokemonWeapon(cp, type){
+    if(type){return cp;}
+    else{return cp+4;}
+}
+
+function retrunPokemonList(cp, type, pokemon){
+    if(type){return pmp.playerPokemonList[cp*18+pokemon];}
+    else{return pmp.computerPokemonList[cp*6+pokemon];}
+}
+
+/*
+object Pokemon1 {
+    var name;       //0포켓몬이름
+    var nameEPD;    //1포켓몬이름(tbl)
+    var book;       //2신오도감 번호
+    var BTs;        //3종족값 (HP + 256*공격 + 65536*방어 + 16777216*스피드)
+    var type;       //4포켓몬타입
+    var catch;      //5포획률
+    var exp;        //6경험치
+    var next;       //7포인터
+};
+object Pokemon2 {
+    var evoTarget;  //0진화대상 (객체번호)
+    var evoCond;    //1진화조건
+    var unit;       //2포켓몬 (유닛 + 256*포트레잇번호)
+    var weapon;     //3무기정보 (무기번호 + 256*사거리)
+};
+object myPokemon {
+    var index;      //0포켓몬사전Index
+    var level;      //1포켓몬레벨
+    var hitpoint;   //2포켓몬체력
+    var IVs;        //3포켓몬개체값 (random 0~31)
+    var ownEXP;     //4보유경험치
+    var item;       //5지니고 있는 아이템 (통신교환)
+};*/
+
+function settingPokemon(cp, type, pokemon){
+    const z = StringBuffer(1024);
+    const unitType = returnPokemonUnit(cp, type);
+    const weaponType = returnPokemonWeapon(cp, type);
+    // var mk = 0;
+    // if(cp <= 3){mk = pmp.myPokemon.cast(pmp.playerPokemonList[cp*18+pokemon]);}
+    // else{mk = pmp.myPokemon.cast(pmp.computerPokemonList[cp*6+pokemon]);}
+    const mk = pmp.myPokemon.cast(retrunPokemonList(cp, type, pokemon));
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index]);
+    const pkn = ppi.Pokemon2.cast(pk.next);
+
+    const unitGrp, portrait = pcm.divideData256(pkn.unit);
+    const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
+    const vhp,vatk,vamr,vspd= pcm.divideIVs(mk.IVs);
+    const weapon, range = pcm.divideData256(pkn.weapon);
+
+    const wp = pwd.Weapon.cast(pwd.weaponList[weapon]);
+    const unitHP = pcm.returnHitPoints(cp, mk.level, hp, vhp);
+    const unitAtk = pcm.returnAttacks(cp, mk.level, atk, vatk);
+    const unitArmor = pcm.returnArmor(cp, mk.level, amr, vamr);
+    const unitSpeed = pcm.returnSpeed(cp, mk.level, spd, vspd);
+
+    bwrite(0x6644F8 + unitType, unitGrp); //유닛외형
+    wwrite(0x662F88 + 2*unitType, portrait); //유닛포트레잇
+    dwwrite(0x662350 + 4*unitType, unitHP*256); //유닛체력
+    bwrite(0x65FEC8 + unitType, unitArmor); //유닛아머
+
+    dwwrite(0x656CA8 + 4*weaponType, wp.grp); //무기외형
+    wwrite(0x656EB0 + 2*weaponType, unitAtk); //무기공격력
+    dwwrite(0x657470 + 4*weaponType, range); //무기사거리
+    bwrite(0x656FB8 + weaponType, unitSpeed); //무기공격속도 (임시설정, 이거 이대로 넣으면 안됨!!!!!!!!!!!!)
+    bwrite(0x656670 + weaponType, wp.action); //무기투사방식
+    wwrite(0x656780 + 2*weaponType, wp.icon); //무기아이콘
+    bwrite(0x6564E0 + weaponType, wp.bullet); //무기투사체
+    if(wp.splash == 0){
+        bwrite(0x6566F8 + weaponType, 1); //무기스플래시타입
+    }
+    else{
+        bwrite(0x6566F8 + weaponType, 3); //무기스플래시타입
+        wwrite(0x656888 + 2*weaponType, wp.splash); //무기스플범위1
+        wwrite(0x6570C8 + 2*weaponType, wp.splash); //무기스플범위2
+        wwrite(0x657780 + 2*weaponType, wp.splash); //무기스플범위3
+    }
+
+    var cp4 = 0;
+    if(type) cp4 = cp;
+    else cp4 = cp+4;
+    bbs.pokemonName[cp4] = pk.name;
+    bbs.pokemonLevel[cp4] = mk.level;
+    bbs.pokemonHP[cp4] = unitHP;
+    return unitType;
+}

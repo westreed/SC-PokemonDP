@@ -6,7 +6,7 @@ import Variables.locationInfo as vli;
 const s = StringBuffer(1024);
 
 function unitPosition(cp){
-    MoveLocation(vli.moveLoc+cp, pps.playerUnit, cp, 64);
+    MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
     const x,y = posread_epd(ppu.playerEPD[cp]+0x28/4);
     const x1,y1 = x/32, y/32;
     ppu.playerGridX[cp] = x1;
@@ -14,8 +14,8 @@ function unitPosition(cp){
 }
 
 function movePlayer(cp){
+    unitPosition(cp);
     if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
-        unitPosition(cp);
         const epd = ppu.playerEPD[cp];
         //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
         if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
@@ -28,12 +28,13 @@ function movePlayer(cp){
 
 function changeMoveState(cp, value){
     pps.moveState[cp] = value;
+    const pUnit = pps.playerUnit[cp];
     if(value == 0){
-        SetMemoryXEPD(EPD(0x662098 + 0), SetTo, 6, 0xFF);
-        Order(pps.playerUnit, cp, 64, Move, vli.moveLoc+cp);
+        SetMemoryXEPD(EPD(0x662098 + pUnit), SetTo, 6, 0xFF);
+        Order(pUnit, cp, 64, Move, vli.moveLoc+cp);
         //SetMemoryXEPD(ppu.playerEPD[cp]+0x4C/4, SetTo, 0x100, 0xFF00);
     }
-    else{SetMemoryXEPD(EPD(0x662098 + 0), SetTo, 2, 0xFF);}
+    else{SetMemoryXEPD(EPD(0x662098 + pUnit), SetTo, 2, 0xFF);}
 }
 
 // setcurpl(0);

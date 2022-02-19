@@ -1,0 +1,31 @@
+
+
+
+//Setting Option
+const screenWidth   = 320; //최소 x축 크기
+const screenWidthM  = 426; //최대 x축 크기
+var screenGridX		= 0; //화면 X좌표 (비공유)
+var screenGridY		= 0; //화면 Y좌표 (비공유)
+var screenSizeX		= 0; //화면X축 크기 (비공유)
+var screenSizeY		= 0; //화면Y축 크기 (비공유)
+const mapX          = 256*16; //맵중앙 x좌표
+const mapY          = 256*16; //맵중앙 y좌표
+
+
+const checkscreenLoc = $L("checkScreen");
+function checkScreen(){
+    if(IsUserCP()){
+        screenGridX = maskread_epd(EPD(0x62848C), 0x1FFF);
+        screenGridY = maskread_epd(EPD(0x6284A8), 0x1FFF);
+        setloc(checkscreenLoc, mapX, mapY); //중앙 (맵사이즈*16, 맵사이즈*16)
+        CenterView(checkscreenLoc);
+        const ScreenX2 = maskread_epd(EPD(0x62848C), 0x1FFF);
+        const ScreenY2 = maskread_epd(EPD(0x6284A8), 0x1FFF);
+        screenSizeX = mapX - ScreenX2;
+        screenSizeY = mapY - ScreenY2;
+        const screenX = screenGridX + screenSizeX;
+        const screenY = screenGridY + screenSizeY;
+        setloc(checkscreenLoc, screenX, screenY);
+        CenterView(checkscreenLoc);
+    }
+}

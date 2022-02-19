@@ -84,6 +84,7 @@ function openingStep(cp){
         }
         if(Deaths(cp, Exactly, 8, "A Stick")){
             if(index == 0){
+                pps.selectMenu[cp] = 0;
                 opStep[cp] = 20; opDelay[cp] = 0; vms.sphIndex[cp] = 0;
                 s.printfAt(0, "\n\n\n\n\n\n\n");
                 PlayWAV("staredit\\wav\\se_gui_misc6.wav");
@@ -94,7 +95,7 @@ function openingStep(cp){
                 PlayWAV("staredit\\wav\\se_gui_misc5.wav");
             }
         }
-        eprintf("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소\x08 ]");
+        eprintf("{:s}",vms.stickText);
     } //오프닝
     else if(opStep[cp] == 20){
         s.insert(0, "\n");

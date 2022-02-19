@@ -1,0 +1,78 @@
+import functions as fc;
+import mouseTracking as mt;
+import Battle.battleStart as bbs;
+import Player.playerSetting as pps;
+import Pokemon.myPokemon as pmp;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.weakRelation as pwr;
+import Pokemon.calculateMethod as pcm;
+import Pokemon.pokemonStatus as ppst;
+
+const t = StringBuffer(1024);
+const b = StringBuffer(1024);
+const battleUpdate  = PVariable();
+const pokemonCurHP  = PVariable();
+const hpread_epd    = py_eval('f_readgen_epd(0xFFFFFF00, (0, lambda x: x>>8))');
+
+function selectBattleGUI(cp, index);
+function battleMenuGUI(cp);
+function battleTextGUI(cp){
+    CenterView(bbs.battleLocation[cp]);
+    if(battleUpdate[cp]){
+        battleUpdate[cp] = 0;
+        pokemonCurHP[cp] = hpread_epd(bbs.battleEPD[cp]+2);
+        pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);
+        b.insert(0);
+        b.appendf("\t\t\t\t\t\t\t\x1E{:s}  \x04Lv.\x17{}\n",bbs.pokemonName[cp+4],bbs.pokemonLevel[cp+4]);
+        b.appendf("\t\t\t\t\t\t\t\x08HP \x04{}/{}\n\n\n\n\n\n",pokemonCurHP[cp+4],bbs.pokemonHP[cp+4]);
+        b.appendf("\x12\x1E{:s}  \x04Lv.\x17{}\t\t\t\t\t\t\t\n",bbs.pokemonName[cp],bbs.pokemonLevel[cp]);
+        b.appendf("\x12\x08HP \x04{}/{}\t\t\t\t\t\t\t",pokemonCurHP[cp],bbs.pokemonHP[cp]);
+    }
+    b.DisplayAt(0);
+
+    if(!MemoryEPD(bbs.battleEPD[cp]+2, Exactly, pokemonCurHP[cp])){battleUpdate[cp] = 1;}
+    else if(!MemoryEPD(bbs.battleEPD[cp+4]+2, Exactly, pokemonCurHP[cp+4])){battleUpdate[cp] = 1;}
+    if(bbs.battleStep[cp] >= 7){battleMenuGUI(cp);} //배틀메뉴 표시
+}
+
+
+function battleMenuGUI(cp){
+    const index = pps.selectMenu[cp];
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        t.insert(0);
+        t.appendf("\t\t\t\t\x17{:s}\x04은(는) 무엇을 할까?\n", bbs.pokemonName[cp]);
+        t.appendf("\t\t\t\t\t{:s}\x04가방\n", pps.selectIcon1[index]);
+        t.appendf("\t\t\t\t\t{:s}\x04포켓몬\n", pps.selectIcon2[index]);
+        t.appendf("\t\t\t\t\t{:s}\x04도망간다", pps.selectIcon3[index]);
+    }
+    t.DisplayAt(2);
+    selectBattleGUI(cp, index);
+}
+
+function selectBattleGUI(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 2;}
+        else{pps.selectMenu[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 2){pps.selectMenu[cp] = 0;}
+        else{pps.selectMenu[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        //pps.selectMenu[cp] = 0;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+}
+
+
+/*
+메뉴
+가방
+포켓몬
+도망간다
+*/

@@ -11,7 +11,7 @@ function ClassicTriggerExec(){
         const cp = 0;
         {
 
-                SetMemoryXEPD(EPD(0x662098 + 0 * 1), 7, 0, 0xFF);
+                bwrite(0x662098 + cp * 1 ,2);
         }
     }
     /*================End Player 1================*/

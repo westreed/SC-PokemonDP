@@ -1,17 +1,29 @@
 import functions as fc;
+import Battle.battleGUI as bbg;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
+import Variables.mainSentence as vms;
+import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
 import Pokemon.calculateMethod as pcm;
+import Pokemon.pokemonStatus as ppst;
+import BGMPlayer as BGM;
 
+const s = StringBuffer(1024);
 const battleStep    = PVariable(); //0:배틀종료 1이상:배틀시작
 const battleLoop    = PVariable();
 const battleDelay   = PVariable(); //딜레이계산용
-const battleType    = PVariable(); //0:야생, 1:트레이너, 2:라이벌, 3:체육관장, 4:갤럭시단, 5:갤럭시단간부, 6:갤럭시단보스
+const battleType    = PVariable(); //0:야생, 1:트레이너, 2:라이벌, 3:체육관장, 4:갤럭시단, 5:갤럭시단간부, 6:갤럭시단보스, 7:디아루가펄기아, 8:PVP
+const battleMusic   = [9, 10, 11, 12, 13, 14, 15, 16, 10];
+const battleLocation= PVariable();
+const battleUnit    = PVariable(); //배틀상대유닛
 const battleName    = PVariable(); //배틀상대이름
-const battlePokemon = EUDArray(4*6); //배틀상대포켓몬 [0] 255^0, 255^1, 255^2 / [1] 255^0, 255^1, 255^2
+const battleEPD     = PVariable(); //포켓몬 EPD (cp:유저 cp+4:적)
+const pokemonName   = PVariable(); //포켓몬 이름 (cp:유저 cp+4:적)
+const pokemonLevel  = PVariable(); //포켓몬 레벨 (cp:유저 cp+4:적)
+const pokemonHP     = PVariable(); //포켓몬 체력 (cp:유저 cp+4:적)
 const battleMap     = [0,0,0,1,1,1,1]; //battleType별로 맵지정 0:battleLoc, 1:gymLoc
 
 
@@ -22,59 +34,155 @@ const battleMap     = [0,0,0,1,1,1,1]; //battleType별로 맵지정 0:battleLoc,
 6P 저글링 : 상대트레이너 위치
 */
 
-function dividePokemon(value){
-    var result1 = 0; var result2 = 0; var result3 = 0;
-    while(value >= 255^2){value -= 255^2; result3 += 1;}
-    while(value >= 255^1){value -= 255^1; result2 += 1;}
-    result1 = value;
-    return result1,result2,result3;
+//포켓몬데이터 가져오는 용도로 사용
+function isBattleType(type){
+    if(type == 0 || type == 7){return 0;}
+    return type;
 }
 
-function battleSetting(cp, type, name, poke1, poke2){
+//pokemon은 야생인 경우 포켓몬의 번호, 아닌 경우 배틀상대의 데이터인덱스.
+function battleSetting(cp, type, pokemon, level){
     const cp6 = cp*6;
     battleType[cp] = type;
-    battleName[cp] = name;
-    battlePokemon[cp6+0],attlePokemon[cp6+1],attlePokemon[cp6+2] = dividePokemon(poke1);
-    battlePokemon[cp6+3],attlePokemon[cp6+4],attlePokemon[cp6+5] = dividePokemon(poke2);
+    if(isBattleType(type) == 0){
+        const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
+        battleName[cp] = pk.name;
+        //function setComputerData(cp, pokemon, index, lv, IV)
+        pmp.setComputerData(cp, pokemon, 0, level, 0);
+        battleUnit[cp] = 999;
+    }
+    else{
+        
+    }
     battleStep[cp] = 1; //Battle Start
+}
+
+const startPokemon = [0,3,6];
+function selectPokemon(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 2;}
+        else{pps.selectMenu[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 2){pps.selectMenu[cp] = 0;}
+        else{pps.selectMenu[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        pps.selectMenu[cp] = 0;
+        vms.removeText();
+        pmp.catchPokemon(cp, startPokemon[index], 5, 0, 1048575);
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        battleStep[cp] += 1;
+    }
 }
 
 function battleSystem(cp){
     const step = battleStep[cp];
     //battleStep값이 1이상일 때 작동하기
     if(step){
-        //전투 시작전 유저의 유닛움직임 멈추기
-        if(step == 1){pmu.changeMoveState(cp, false);}
+        if(step >= 7){bbg.battleTextGUI(cp);}
+        //전투 시작전 필요데이터 저장하기
+        if(step == 1){
+            pmu.changeMoveState(cp, false);
+            vms.restoreMusic[cp] = pps.settingMusic[cp]; //배틀시작전 음악저장
+            MoveLocation(vli.lastLoc+cp, pps.playerUnit[cp], cp, 64); //마지막 위치 저장
+            pps.settingMusic[cp] = battleMusic[battleType[cp]];
+            BGM.instantPlay();
+            SetDeaths(cp, SetTo, 0, "A LightDelay");
+            battleStep[cp] += 1;
+        }
         //전투 시작전 화면 깜박이기
         else if(step == 2){
-            if(battleDelay[cp] < 36){
+            CenterView(vli.moveLoc+cp);
+            if(battleDelay[cp] <= 18){
                 battleDelay[cp] += 1;
-                if(battleDelay[cp] == 1){
-                    fc.setLight(0);
-                }
-                else if(battleDelay[cp] == 19){
-                    fc.setLight(31);
-                }
+                if(battleDelay[cp] == 1){fc.setLight(cp, 31);}
+                else if(battleDelay[cp] == 10){fc.setLight(cp, 0);}
             }
             else{
                 battleDelay[cp] = 0;
                 battleLoop[cp] += 1;
             }
             if(battleLoop[cp] == 4){
+                SetDeaths(cp, SetTo, 31, "A LightDelay");
                 battleLoop[cp] = 0;
                 battleStep[cp] += 1;
+                pps.guiUpdate[cp] = 1;
             }
         }
         else if(step == 3){
+            if(pps.mainStory[cp] <= 9){
+                const index = pps.selectMenu[cp];
+                if(pps.guiUpdate[cp]){
+                    pps.guiUpdate[cp] = 0;
+                    s.insert(0);
+                    s.appendf("\n\x13\x02자... 어느 것으로 할까?\n");
+                    s.appendf("\x13{:s}\n",vms.sph1);
+                    s.appendf("\x13{:s}\x04어린잎포켓몬 모부기\n", pps.selectIcon1[index]);
+                    s.appendf("\x13{:s}\x04꼬마원숭이포켓몬 불꽃숭이\n", pps.selectIcon2[index]);
+                    s.appendf("\x13{:s}\x04펭귄포켓몬 팽도리\n", pps.selectIcon3[index]);
+                    s.appendf("\x13{:s}",vms.sph1);
+                }
+                s.DisplayAt(0);
+                eprintf("{:s}",vms.stickText);
+                selectPokemon(cp, index);
+            }
+            else{battleStep[cp] += 1;}
+        }
+        else if(step == 4){
+            pps.userSetLight[cp] = 31;
+            pps.userLight[cp] = 0;
             const type = battleType[cp];
-            var battleMapLoc = 0;
-            if(battleMap[type] == 0){battleMapLoc = vli.battleLoc+cp;}
-            else{battleMapLoc = vli.gymLoc+cp;}
-            MoveLocation(vli.tempMoveLoc, 50, P5, battleMapLoc); //내 포켓몬
+            if(battleMap[type] == 0){battleLocation[cp] = vli.battleLoc+cp;}
+            else{battleLocation[cp] = vli.gymLoc+cp;}
+            const battleMapLoc = battleLocation[cp];
+            const cUnit = ppst.settingPokemon(cp, false, 0); //컴퓨터 포켓몬 세팅
+
             MoveLocation(vli.tempMoveLoc, 50, P6, battleMapLoc); //내 트레이너
-            MoveUnit(1, pps.playerUnit, cp, 64, vli.tempMoveLoc);
+            MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
             MoveLocation(vli.tempMoveLoc, 37, P5, battleMapLoc); //상대 포켓몬
+            battleEPD[cp+4] = fc.SetNextUnitEPD();
+            CreateUnit(1, cUnit, vli.tempMoveLoc, P5);
             MoveLocation(vli.tempMoveLoc, 37, P6, battleMapLoc); //상대 트레이너
+            if(battleUnit[cp] != 999){CreateUnit(1, battleUnit[cp], vli.tempMoveLoc, P5);}
+
+            //내 포켓몬의 이전체력 가져오기
+            const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cp*18+0]);
+            SetMemoryEPD(battleEPD[cp]+2, SetTo, mk.hitpoint*256);
+            battleStep[cp] += 1;
+        }
+        else if(step == 5){
+            s.insert(0, "\n\n\n");
+            s.appendf("\x13{:s}\n",vms.sph1);
+            s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n\n",pokemonName[cp+4]);
+            s.appendf("\x13{:s}",vms.sph2);
+            s.DisplayAt(0);
+            if(Deaths(cp, Exactly, 16, "A Key")){
+                PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+                const pUnit = ppst.settingPokemon(cp, true, 0);
+                MoveLocation(vli.tempMoveLoc, 50, P5, battleLocation[cp]); //내 포켓몬
+                battleEPD[cp] = fc.SetNextUnitEPD();
+                CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
+                fc.scanEffect(vli.tempMoveLoc, 391);
+                battleStep[cp] += 1;
+            }
+        }
+        else if(step == 6){
+            s.insert(0, "\n\n\n");
+            s.appendf("\x13{:s}\n",vms.sph1);
+            s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n",pokemonName[cp+4]);
+            s.appendf("\x13\x04가랏! \x17{:s}\x04!\n",pokemonName[cp]);
+            s.appendf("\x13{:s}",vms.sph2);
+            s.DisplayAt(0);
+            if(Deaths(cp, Exactly, 16, "A Key")){
+                PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+                pps.guiUpdate[cp] = 1;
+                battleStep[cp] += 1;
+            }
         }
     }
 }
