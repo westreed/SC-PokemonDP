@@ -8,10 +8,11 @@ const settingMusic      = PVariable(); //재생할 곡 선택
 const playingMusic      = PVariable(); //현재 재생중인 곡
 const setMusic          = PVariable(); //음악재생여부
 const battleState       = PVariable(); //배틀상태
-const moveState         = PVariable(); //0 못움직임, 1 움직임
+const moveState         = PVariable(list(1,1,1,1,0,0,0,0)); //0 못움직임, 1 움직임
 const mainStory         = PVariable();
 const currentLocation   = PVariable(); //현재위치
 const lastVisitVillage  = PVariable(); //마지막으로 방문했던 마을,도시 위치
+const lastVisitHeal     = PVariable(); //마지막으로 방문했던 치료소
 
 
 const selectMenu        = PVariable(); //선택중인 메뉴의 index (GUI)

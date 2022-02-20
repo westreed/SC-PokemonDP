@@ -85,8 +85,13 @@ function returnArmor(cp, level, amr, vamr){
 }
 
 function returnSpeed(cp, level, spd, vspd){
-    //=ROUNDDOWN(((E2*2)+E3)*G2/200,0)
-    return ((2*spd)+vspd)*level/100;
+    //=ROUNDDOWN(E2,0)+ROUNDDOWN((E3-1)/2,0)+ROUNDDOWN(G2/5,0)
+    return spd+((vspd-1)/2)+(level/5);
+}
+
+function settingSpeed(spd){
+    if(spd <= 12) return 0;
+    return (spd-5)/8;
 }
 
 // const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);

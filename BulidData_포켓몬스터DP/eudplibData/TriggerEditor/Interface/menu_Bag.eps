@@ -1,0 +1,37 @@
+import Interface.userGUI as iug;
+import Item.itemInfo as iif;
+import Player.playerSetting as pps;
+
+
+
+const t = StringBuffer(1024);
+const bagMax        = 18;
+const bagLastPage   = bagMax/6 - 1;
+const BagItemList   = EUDArray(4*bagMax);
+const bagNumList    = EUDArray(4*bagMax);
+const bagIndex      = PVariable();
+const bagSubMenu    = PVariable();
+const bagPage       = PVariable();
+
+
+function subMenu_Book(cp, height){
+    if(bagSubMenu[cp] == 0){
+        const index = bagIndex[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            const cp200 = cp*bagMax;
+            const page = 6*bagPage[cp];
+            t.insert(0);
+            t.appendf("\t\t\x1D가방 \x1E({}/{})\n\n",bagPage[cp]+1,bagLastPage+1);
+
+            t.appendf("\t\t\x04");
+
+        }
+        t.DisplayAt(height);
+        subMenu_BookAction(cp, index);
+    }
+    else{
+        subMenu_BookInfo(cp, height);
+        subMenu_BookInfoAction(cp);
+    }
+}

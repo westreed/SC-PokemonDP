@@ -15,7 +15,7 @@ object Pokemon1 {
 };
 object Pokemon2 {
     var evoTarget;  //0진화대상 (객체번호)
-    var evoCond;    //1진화조건
+    var evoCond;    //1진화조건 (진화방식 + 16*값)
     var unit;       //2포켓몬 (유닛 + 256*포트레잇번호)
     var weapon;     //3무기정보 (무기번호 + 256*사거리)
     var expType;    //4경험치타입 (0:이상한 1:빠른 2:약간빠른 3:약간느린 4:느린)
@@ -63,9 +63,10 @@ function pokemonInit(){
     pk0.next = Pokemon2.alloc();
     const pkn0 = Pokemon2.cast(pk0.next);
     pkn0.evoTarget = 1;
-    pkn0.evoCond = 128;
+    pkn0.evoCond = 290;
     pkn0.unit = 6149;
     pkn0.weapon = 512;
+    pkn0.expType = 3;
     const pk1 = Pokemon1.cast(pokemonList[1]);
     pk1.name = Db('수풀부기');
     pk1.nameEPD = e.eDb('수풀부기');
@@ -77,9 +78,10 @@ function pokemonInit(){
     pk1.next = Pokemon2.alloc();
     const pkn1 = Pokemon2.cast(pk1.next);
     pkn1.evoTarget = 2;
-    pkn1.evoCond = 226;
+    pkn1.evoCond = 514;
     pkn1.unit = 5135;
     pkn1.weapon = 512;
+    pkn1.expType = 3;
     const pk2 = Pokemon1.cast(pokemonList[2]);
     pk2.name = Db('토대부기');
     pk2.nameEPD = e.eDb('토대부기');
@@ -94,6 +96,7 @@ function pokemonInit(){
     pkn2.evoCond = 0;
     pkn2.unit = 5646;
     pkn2.weapon = 512;
+    pkn2.expType = 3;
     const pk3 = Pokemon1.cast(pokemonList[3]);
     pk3.name = Db('불꽃숭이');
     pk3.nameEPD = e.eDb('불꽃숭이');
@@ -105,9 +108,10 @@ function pokemonInit(){
     pk3.next = Pokemon2.alloc();
     const pkn3 = Pokemon2.cast(pk3.next);
     pkn3.evoTarget = 4;
-    pkn3.evoCond = 100;
+    pkn3.evoCond = 226;
     pkn3.unit = 1873;
     pkn3.weapon = 512;
+    pkn3.expType = 3;
     const pk4 = Pokemon1.cast(pokemonList[4]);
     pk4.name = Db('파이숭이');
     pk4.nameEPD = e.eDb('파이숭이');
@@ -119,9 +123,10 @@ function pokemonInit(){
     pk4.next = Pokemon2.alloc();
     const pkn4 = Pokemon2.cast(pk4.next);
     pkn4.evoTarget = 5;
-    pkn4.evoCond = 254;
+    pkn4.evoCond = 578;
     pkn4.unit = 585;
     pkn4.weapon = 512;
+    pkn4.expType = 3;
     const pk5 = Pokemon1.cast(pokemonList[5]);
     pk5.name = Db('초염몽');
     pk5.nameEPD = e.eDb('초염몽');
@@ -136,6 +141,7 @@ function pokemonInit(){
     pkn5.evoCond = 0;
     pkn5.unit = 25531;
     pkn5.weapon = 512;
+    pkn5.expType = 3;
     const pk6 = Pokemon1.cast(pokemonList[6]);
     pk6.name = Db('팽도리');
     pk6.nameEPD = e.eDb('팽도리');
@@ -147,9 +153,10 @@ function pokemonInit(){
     pk6.next = Pokemon2.alloc();
     const pkn6 = Pokemon2.cast(pk6.next);
     pkn6.evoTarget = 7;
-    pkn6.evoCond = 114;
+    pkn6.evoCond = 258;
     pkn6.unit = 10026;
     pkn6.weapon = 512;
+    pkn6.expType = 3;
     const pk7 = Pokemon1.cast(pokemonList[7]);
     pk7.name = Db('팽태자');
     pk7.nameEPD = e.eDb('팽태자');
@@ -161,9 +168,10 @@ function pokemonInit(){
     pk7.next = Pokemon2.alloc();
     const pkn7 = Pokemon2.cast(pk7.next);
     pkn7.evoTarget = 8;
-    pkn7.evoCond = 254;
+    pkn7.evoCond = 578;
     pkn7.unit = 10536;
     pkn7.weapon = 512;
+    pkn7.expType = 3;
     const pk8 = Pokemon1.cast(pokemonList[8]);
     pk8.name = Db('엠페르트');
     pk8.nameEPD = e.eDb('엠페르트');
@@ -178,6 +186,7 @@ function pokemonInit(){
     pkn8.evoCond = 0;
     pkn8.unit = 11046;
     pkn8.weapon = 512;
+    pkn8.expType = 3;
     const pk9 = Pokemon1.cast(pokemonList[9]);
     pk9.name = Db('찌르꼬');
     pk9.nameEPD = e.eDb('찌르꼬');
@@ -189,9 +198,10 @@ function pokemonInit(){
     pk9.next = Pokemon2.alloc();
     const pkn9 = Pokemon2.cast(pk9.next);
     pkn9.evoTarget = 10;
-    pkn9.evoCond = 100;
+    pkn9.evoCond = 226;
     pkn9.unit = 7680;
     pkn9.weapon = 512;
+    pkn9.expType = 3;
     const pk10 = Pokemon1.cast(pokemonList[10]);
     pk10.name = Db('찌르버드');
     pk10.nameEPD = e.eDb('찌르버드');
@@ -203,9 +213,10 @@ function pokemonInit(){
     pk10.next = Pokemon2.alloc();
     const pkn10 = Pokemon2.cast(pk10.next);
     pkn10.evoTarget = 11;
-    pkn10.evoCond = 240;
+    pkn10.evoCond = 546;
     pkn10.unit = 6667;
     pkn10.weapon = 512;
+    pkn10.expType = 3;
     const pk11 = Pokemon1.cast(pokemonList[11]);
     pk11.name = Db('찌르호크');
     pk11.nameEPD = e.eDb('찌르호크');
@@ -220,6 +231,7 @@ function pokemonInit(){
     pkn11.evoCond = 0;
     pkn11.unit = 11563;
     pkn11.weapon = 512;
+    pkn11.expType = 3;
     const pk12 = Pokemon1.cast(pokemonList[12]);
     pk12.name = Db('비버니');
     pk12.nameEPD = e.eDb('비버니');
@@ -231,9 +243,10 @@ function pokemonInit(){
     pk12.next = Pokemon2.alloc();
     const pkn12 = Pokemon2.cast(pk12.next);
     pkn12.evoTarget = 13;
-    pkn12.evoCond = 107;
+    pkn12.evoCond = 242;
     pkn12.unit = 78;
     pkn12.weapon = 512;
+    pkn12.expType = 2;
     const pk13 = Pokemon1.cast(pokemonList[13]);
     pk13.name = Db('비버통');
     pk13.nameEPD = e.eDb('비버통');
@@ -248,6 +261,7 @@ function pokemonInit(){
     pkn13.evoCond = 0;
     pkn13.unit = 78;
     pkn13.weapon = 512;
+    pkn13.expType = 2;
     const pk14 = Pokemon1.cast(pokemonList[14]);
     pk14.name = Db('귀뚤뚜기');
     pk14.nameEPD = e.eDb('귀뚤뚜기');
@@ -259,9 +273,10 @@ function pokemonInit(){
     pk14.next = Pokemon2.alloc();
     const pkn14 = Pokemon2.cast(pk14.next);
     pkn14.evoTarget = 15;
-    pkn14.evoCond = 72;
+    pkn14.evoCond = 162;
     pkn14.unit = 5889;
     pkn14.weapon = 512;
+    pkn14.expType = 3;
     const pk15 = Pokemon1.cast(pokemonList[15]);
     pk15.name = Db('귀뚤톡크');
     pk15.nameEPD = e.eDb('귀뚤톡크');
@@ -276,6 +291,7 @@ function pokemonInit(){
     pkn15.evoCond = 0;
     pkn15.unit = 25274;
     pkn15.weapon = 512;
+    pkn15.expType = 3;
     const pk16 = Pokemon1.cast(pokemonList[16]);
     pk16.name = Db('꼬링크');
     pk16.nameEPD = e.eDb('꼬링크');
@@ -287,9 +303,10 @@ function pokemonInit(){
     pk16.next = Pokemon2.alloc();
     const pkn16 = Pokemon2.cast(pk16.next);
     pkn16.evoTarget = 17;
-    pkn16.evoCond = 107;
+    pkn16.evoCond = 242;
     pkn16.unit = 5135;
     pkn16.weapon = 512;
+    pkn16.expType = 3;
     const pk17 = Pokemon1.cast(pokemonList[17]);
     pk17.name = Db('럭시오');
     pk17.nameEPD = e.eDb('럭시오');
@@ -301,9 +318,10 @@ function pokemonInit(){
     pk17.next = Pokemon2.alloc();
     const pkn17 = Pokemon2.cast(pk17.next);
     pkn17.evoTarget = 18;
-    pkn17.evoCond = 212;
+    pkn17.evoCond = 482;
     pkn17.unit = 5135;
     pkn17.weapon = 512;
+    pkn17.expType = 3;
     const pk18 = Pokemon1.cast(pokemonList[18]);
     pk18.name = Db('렌트라');
     pk18.nameEPD = e.eDb('렌트라');
@@ -318,6 +336,7 @@ function pokemonInit(){
     pkn18.evoCond = 0;
     pkn18.unit = 5135;
     pkn18.weapon = 512;
+    pkn18.expType = 3;
     const pk19 = Pokemon1.cast(pokemonList[19]);
     pk19.name = Db('캐이시');
     pk19.nameEPD = e.eDb('캐이시');
@@ -329,9 +348,10 @@ function pokemonInit(){
     pk19.next = Pokemon2.alloc();
     const pkn19 = Pokemon2.cast(pk19.next);
     pkn19.evoTarget = 20;
-    pkn19.evoCond = 114;
+    pkn19.evoCond = 258;
     pkn19.unit = 10026;
     pkn19.weapon = 512;
+    pkn19.expType = 3;
     const pk20 = Pokemon1.cast(pokemonList[20]);
     pk20.name = Db('윤겔라');
     pk20.nameEPD = e.eDb('윤겔라');
@@ -346,6 +366,7 @@ function pokemonInit(){
     pkn20.evoCond = 4;
     pkn20.unit = 10797;
     pkn20.weapon = 512;
+    pkn20.expType = 3;
     const pk21 = Pokemon1.cast(pokemonList[21]);
     pk21.name = Db('후딘');
     pk21.nameEPD = e.eDb('후딘');
@@ -360,6 +381,7 @@ function pokemonInit(){
     pkn21.evoCond = 0;
     pkn21.unit = 12590;
     pkn21.weapon = 512;
+    pkn21.expType = 3;
     const pk22 = Pokemon1.cast(pokemonList[22]);
     pk22.name = Db('잉어킹');
     pk22.nameEPD = e.eDb('잉어킹');
@@ -371,9 +393,10 @@ function pokemonInit(){
     pk22.next = Pokemon2.alloc();
     const pkn22 = Pokemon2.cast(pk22.next);
     pkn22.evoTarget = 23;
-    pkn22.evoCond = 142;
+    pkn22.evoCond = 322;
     pkn22.unit = 6149;
     pkn22.weapon = 512;
+    pkn22.expType = 4;
     const pk23 = Pokemon1.cast(pokemonList[23]);
     pk23.name = Db('갸라도스');
     pk23.nameEPD = e.eDb('갸라도스');
@@ -388,6 +411,7 @@ function pokemonInit(){
     pkn23.evoCond = 0;
     pkn23.unit = 6667;
     pkn23.weapon = 512;
+    pkn23.expType = 4;
     const pk24 = Pokemon1.cast(pokemonList[24]);
     pk24.name = Db('꼬몽울');
     pk24.nameEPD = e.eDb('꼬몽울');
@@ -402,6 +426,7 @@ function pokemonInit(){
     pkn24.evoCond = 1;
     pkn24.unit = 9225;
     pkn24.weapon = 512;
+    pkn24.expType = 3;
     const pk25 = Pokemon1.cast(pokemonList[25]);
     pk25.name = Db('로젤리아');
     pk25.nameEPD = e.eDb('로젤리아');
@@ -413,9 +438,10 @@ function pokemonInit(){
     pk25.next = Pokemon2.alloc();
     const pkn25 = Pokemon2.cast(pk25.next);
     pkn25.evoTarget = 26;
-    pkn25.evoCond = 80;
+    pkn25.evoCond = 179;
     pkn25.unit = 5384;
     pkn25.weapon = 512;
+    pkn25.expType = 3;
     const pk26 = Pokemon1.cast(pokemonList[26]);
     pk26.name = Db('로즈레이드');
     pk26.nameEPD = e.eDb('로즈레이드');
@@ -430,6 +456,7 @@ function pokemonInit(){
     pkn26.evoCond = 0;
     pkn26.unit = 5384;
     pkn26.weapon = 512;
+    pkn26.expType = 3;
     const pk27 = Pokemon1.cast(pokemonList[27]);
     pk27.name = Db('주뱃');
     pk27.nameEPD = e.eDb('주뱃');
@@ -441,9 +468,10 @@ function pokemonInit(){
     pk27.next = Pokemon2.alloc();
     const pkn27 = Pokemon2.cast(pk27.next);
     pkn27.evoTarget = 28;
-    pkn27.evoCond = 156;
+    pkn27.evoCond = 354;
     pkn27.unit = 7680;
     pkn27.weapon = 512;
+    pkn27.expType = 2;
     const pk28 = Pokemon1.cast(pokemonList[28]);
     pk28.name = Db('골뱃');
     pk28.nameEPD = e.eDb('골뱃');
@@ -458,6 +486,7 @@ function pokemonInit(){
     pkn28.evoCond = 1;
     pkn28.unit = 7680;
     pkn28.weapon = 512;
+    pkn28.expType = 2;
     const pk29 = Pokemon1.cast(pokemonList[29]);
     pk29.name = Db('크로뱃');
     pk29.nameEPD = e.eDb('크로뱃');
@@ -472,6 +501,7 @@ function pokemonInit(){
     pkn29.evoCond = 0;
     pkn29.unit = 25017;
     pkn29.weapon = 512;
+    pkn29.expType = 2;
     const pk30 = Pokemon1.cast(pokemonList[30]);
     pk30.name = Db('꼬마돌');
     pk30.nameEPD = e.eDb('꼬마돌');
@@ -483,9 +513,10 @@ function pokemonInit(){
     pk30.next = Pokemon2.alloc();
     const pkn30 = Pokemon2.cast(pk30.next);
     pkn30.evoTarget = 31;
-    pkn30.evoCond = 177;
+    pkn30.evoCond = 402;
     pkn30.unit = 1356;
     pkn30.weapon = 512;
+    pkn30.expType = 3;
     const pk31 = Pokemon1.cast(pokemonList[31]);
     pk31.name = Db('데구리');
     pk31.nameEPD = e.eDb('데구리');
@@ -500,6 +531,7 @@ function pokemonInit(){
     pkn31.evoCond = 4;
     pkn31.unit = 1356;
     pkn31.weapon = 512;
+    pkn31.expType = 3;
     const pk32 = Pokemon1.cast(pokemonList[32]);
     pk32.name = Db('딱구리');
     pk32.nameEPD = e.eDb('딱구리');
@@ -514,6 +546,7 @@ function pokemonInit(){
     pkn32.evoCond = 0;
     pkn32.unit = 11046;
     pkn32.weapon = 512;
+    pkn32.expType = 3;
     const pk33 = Pokemon1.cast(pokemonList[33]);
     pk33.name = Db('롱스톤');
     pk33.nameEPD = e.eDb('롱스톤');
@@ -528,6 +561,7 @@ function pokemonInit(){
     pkn33.evoCond = 4;
     pkn33.unit = 10536;
     pkn33.weapon = 512;
+    pkn33.expType = 2;
     const pk34 = Pokemon1.cast(pokemonList[34]);
     pk34.name = Db('강철톤');
     pk34.nameEPD = e.eDb('강철톤');
@@ -542,6 +576,7 @@ function pokemonInit(){
     pkn34.evoCond = 0;
     pkn34.unit = 10536;
     pkn34.weapon = 512;
+    pkn34.expType = 2;
     const pk35 = Pokemon1.cast(pokemonList[35]);
     pk35.name = Db('두개도스');
     pk35.nameEPD = e.eDb('두개도스');
@@ -553,9 +588,10 @@ function pokemonInit(){
     pk35.next = Pokemon2.alloc();
     const pkn35 = Pokemon2.cast(pk35.next);
     pkn35.evoTarget = 36;
-    pkn35.evoCond = 212;
+    pkn35.evoCond = 482;
     pkn35.unit = 5135;
     pkn35.weapon = 512;
+    pkn35.expType = 0;
     const pk36 = Pokemon1.cast(pokemonList[36]);
     pk36.name = Db('램펄드');
     pk36.nameEPD = e.eDb('램펄드');
@@ -570,6 +606,7 @@ function pokemonInit(){
     pkn36.evoCond = 0;
     pkn36.unit = 9225;
     pkn36.weapon = 512;
+    pkn36.expType = 0;
     const pk37 = Pokemon1.cast(pokemonList[37]);
     pk37.name = Db('방패톱스');
     pk37.nameEPD = e.eDb('방패톱스');
@@ -581,9 +618,10 @@ function pokemonInit(){
     pk37.next = Pokemon2.alloc();
     const pkn37 = Pokemon2.cast(pk37.next);
     pkn37.evoTarget = 38;
-    pkn37.evoCond = 212;
+    pkn37.evoCond = 482;
     pkn37.unit = 5384;
     pkn37.weapon = 512;
+    pkn37.expType = 0;
     const pk38 = Pokemon1.cast(pokemonList[38]);
     pk38.name = Db('바리톱스');
     pk38.nameEPD = e.eDb('바리톱스');
@@ -598,6 +636,7 @@ function pokemonInit(){
     pkn38.evoCond = 0;
     pkn38.unit = 5646;
     pkn38.weapon = 512;
+    pkn38.expType = 0;
     const pk39 = Pokemon1.cast(pokemonList[39]);
     pk39.name = Db('알통몬');
     pk39.nameEPD = e.eDb('알통몬');
@@ -609,9 +648,10 @@ function pokemonInit(){
     pk39.next = Pokemon2.alloc();
     const pkn39 = Pokemon2.cast(pk39.next);
     pkn39.evoTarget = 40;
-    pkn39.evoCond = 198;
+    pkn39.evoCond = 450;
     pkn39.unit = 10289;
     pkn39.weapon = 512;
+    pkn39.expType = 3;
     const pk40 = Pokemon1.cast(pokemonList[40]);
     pk40.name = Db('근육몬');
     pk40.nameEPD = e.eDb('근육몬');
@@ -626,6 +666,7 @@ function pokemonInit(){
     pkn40.evoCond = 4;
     pkn40.unit = 10289;
     pkn40.weapon = 512;
+    pkn40.expType = 3;
     const pk41 = Pokemon1.cast(pokemonList[41]);
     pk41.name = Db('괴력몬');
     pk41.nameEPD = e.eDb('괴력몬');
@@ -640,6 +681,7 @@ function pokemonInit(){
     pkn41.evoCond = 0;
     pkn41.unit = 10289;
     pkn41.weapon = 512;
+    pkn41.expType = 3;
     const pk42 = Pokemon1.cast(pokemonList[42]);
     pk42.name = Db('고라파덕');
     pk42.nameEPD = e.eDb('고라파덕');
@@ -651,9 +693,10 @@ function pokemonInit(){
     pk42.next = Pokemon2.alloc();
     const pkn42 = Pokemon2.cast(pk42.next);
     pkn42.evoTarget = 43;
-    pkn42.evoCond = 233;
+    pkn42.evoCond = 530;
     pkn42.unit = 5384;
     pkn42.weapon = 512;
+    pkn42.expType = 2;
     const pk43 = Pokemon1.cast(pokemonList[43]);
     pk43.name = Db('골덕');
     pk43.nameEPD = e.eDb('골덕');
@@ -668,6 +711,7 @@ function pokemonInit(){
     pkn43.evoCond = 0;
     pkn43.unit = 5384;
     pkn43.weapon = 512;
+    pkn43.expType = 2;
     const pk44 = Pokemon1.cast(pokemonList[44]);
     pk44.name = Db('도롱충이');
     pk44.nameEPD = e.eDb('도롱충이');
@@ -679,9 +723,10 @@ function pokemonInit(){
     pk44.next = Pokemon2.alloc();
     const pkn44 = Pokemon2.cast(pk44.next);
     pkn44.evoTarget = 9245;
-    pkn44.evoCond = 142;
+    pkn44.evoCond = 322;
     pkn44.unit = 4618;
     pkn44.weapon = 512;
+    pkn44.expType = 2;
     const pk45 = Pokemon1.cast(pokemonList[45]);
     pk45.name = Db('도롱마담');
     pk45.nameEPD = e.eDb('도롱마담');
@@ -696,6 +741,7 @@ function pokemonInit(){
     pkn45.evoCond = 0;
     pkn45.unit = 6149;
     pkn45.weapon = 512;
+    pkn45.expType = 2;
     const pk46 = Pokemon1.cast(pokemonList[46]);
     pk46.name = Db('나메일');
     pk46.nameEPD = e.eDb('나메일');
@@ -710,6 +756,7 @@ function pokemonInit(){
     pkn46.evoCond = 0;
     pkn46.unit = 2128;
     pkn46.weapon = 512;
+    pkn46.expType = 2;
     const pk47 = Pokemon1.cast(pokemonList[47]);
     pk47.name = Db('개무소');
     pk47.nameEPD = e.eDb('개무소');
@@ -721,9 +768,10 @@ function pokemonInit(){
     pk47.next = Pokemon2.alloc();
     const pkn47 = Pokemon2.cast(pk47.next);
     pkn47.evoTarget = 10249;
-    pkn47.evoCond = 51;
+    pkn47.evoCond = 114;
     pkn47.unit = 4618;
     pkn47.weapon = 512;
+    pkn47.expType = 2;
     const pk48 = Pokemon1.cast(pokemonList[48]);
     pk48.name = Db('실쿤');
     pk48.nameEPD = e.eDb('실쿤');
@@ -735,9 +783,10 @@ function pokemonInit(){
     pk48.next = Pokemon2.alloc();
     const pkn48 = Pokemon2.cast(pk48.next);
     pkn48.evoTarget = 49;
-    pkn48.evoCond = 72;
+    pkn48.evoCond = 162;
     pkn48.unit = 4618;
     pkn48.weapon = 512;
+    pkn48.expType = 2;
     const pk49 = Pokemon1.cast(pokemonList[49]);
     pk49.name = Db('뷰티플라이');
     pk49.nameEPD = e.eDb('뷰티플라이');
@@ -752,6 +801,7 @@ function pokemonInit(){
     pkn49.evoCond = 0;
     pkn49.unit = 11563;
     pkn49.weapon = 512;
+    pkn49.expType = 2;
     const pk50 = Pokemon1.cast(pokemonList[50]);
     pk50.name = Db('카스쿤');
     pk50.nameEPD = e.eDb('카스쿤');
@@ -763,9 +813,10 @@ function pokemonInit(){
     pk50.next = Pokemon2.alloc();
     const pkn50 = Pokemon2.cast(pk50.next);
     pkn50.evoTarget = 51;
-    pkn50.evoCond = 72;
+    pkn50.evoCond = 162;
     pkn50.unit = 4870;
     pkn50.weapon = 512;
+    pkn50.expType = 2;
     const pk51 = Pokemon1.cast(pokemonList[51]);
     pk51.name = Db('독케일');
     pk51.nameEPD = e.eDb('독케일');
@@ -780,6 +831,7 @@ function pokemonInit(){
     pkn51.evoCond = 0;
     pkn51.unit = 6919;
     pkn51.weapon = 512;
+    pkn51.expType = 2;
     const pk52 = Pokemon1.cast(pokemonList[52]);
     pk52.name = Db('세꿀버리');
     pk52.nameEPD = e.eDb('세꿀버리');
@@ -791,9 +843,10 @@ function pokemonInit(){
     pk52.next = Pokemon2.alloc();
     const pkn52 = Pokemon2.cast(pk52.next);
     pkn52.evoTarget = 53;
-    pkn52.evoCond = 149;
+    pkn52.evoCond = 338;
     pkn52.unit = 7680;
     pkn52.weapon = 512;
+    pkn52.expType = 3;
     const pk53 = Pokemon1.cast(pokemonList[53]);
     pk53.name = Db('비퀸');
     pk53.nameEPD = e.eDb('비퀸');
@@ -808,6 +861,7 @@ function pokemonInit(){
     pkn53.evoCond = 0;
     pkn53.unit = 25017;
     pkn53.weapon = 512;
+    pkn53.expType = 3;
     const pk54 = Pokemon1.cast(pokemonList[54]);
     pk54.name = Db('파치리스');
     pk54.nameEPD = e.eDb('파치리스');
@@ -822,6 +876,7 @@ function pokemonInit(){
     pkn54.evoCond = 0;
     pkn54.unit = 5135;
     pkn54.weapon = 512;
+    pkn54.expType = 2;
     const pk55 = Pokemon1.cast(pokemonList[55]);
     pk55.name = Db('브이젤');
     pk55.nameEPD = e.eDb('브이젤');
@@ -833,9 +888,10 @@ function pokemonInit(){
     pk55.next = Pokemon2.alloc();
     const pkn55 = Pokemon2.cast(pk55.next);
     pkn55.evoTarget = 56;
-    pkn55.evoCond = 184;
+    pkn55.evoCond = 418;
     pkn55.unit = 5135;
     pkn55.weapon = 512;
+    pkn55.expType = 2;
     const pk56 = Pokemon1.cast(pokemonList[56]);
     pk56.name = Db('플로젤');
     pk56.nameEPD = e.eDb('플로젤');
@@ -848,8 +904,9 @@ function pokemonInit(){
     const pkn56 = Pokemon2.cast(pk56.next);
     pkn56.evoTarget = 0;
     pkn56.evoCond = 0;
-    pkn56.unit = 5135;
+    pkn56.unit = 5384;
     pkn56.weapon = 512;
+    pkn56.expType = 2;
     const pk57 = Pokemon1.cast(pokemonList[57]);
     pk57.name = Db('체리버');
     pk57.nameEPD = e.eDb('체리버');
@@ -861,9 +918,10 @@ function pokemonInit(){
     pk57.next = Pokemon2.alloc();
     const pkn57 = Pokemon2.cast(pk57.next);
     pkn57.evoTarget = 58;
-    pkn57.evoCond = 177;
+    pkn57.evoCond = 402;
     pkn57.unit = 4870;
     pkn57.weapon = 512;
+    pkn57.expType = 2;
     const pk58 = Pokemon1.cast(pokemonList[58]);
     pk58.name = Db('체리꼬');
     pk58.nameEPD = e.eDb('체리꼬');
@@ -878,6 +936,7 @@ function pokemonInit(){
     pkn58.evoCond = 0;
     pkn58.unit = 9753;
     pkn58.weapon = 512;
+    pkn58.expType = 2;
     const pk59 = Pokemon1.cast(pokemonList[59]);
     pk59.name = Db('깝질무');
     pk59.nameEPD = e.eDb('깝질무');
@@ -889,9 +948,10 @@ function pokemonInit(){
     pk59.next = Pokemon2.alloc();
     const pkn59 = Pokemon2.cast(pk59.next);
     pkn59.evoTarget = 60;
-    pkn59.evoCond = 212;
+    pkn59.evoCond = 482;
     pkn59.unit = 10289;
     pkn59.weapon = 512;
+    pkn59.expType = 2;
     const pk60 = Pokemon1.cast(pokemonList[60]);
     pk60.name = Db('트리토돈');
     pk60.nameEPD = e.eDb('트리토돈');
@@ -906,6 +966,7 @@ function pokemonInit(){
     pkn60.evoCond = 0;
     pkn60.unit = 11046;
     pkn60.weapon = 512;
+    pkn60.expType = 2;
     const pk61 = Pokemon1.cast(pokemonList[61]);
     pk61.name = Db('헤라크로스');
     pk61.nameEPD = e.eDb('헤라크로스');
@@ -920,6 +981,7 @@ function pokemonInit(){
     pkn61.evoCond = 0;
     pkn61.unit = 5646;
     pkn61.weapon = 512;
+    pkn61.expType = 4;
     const pk62 = Pokemon1.cast(pokemonList[62]);
     pk62.name = Db('에이팜');
     pk62.nameEPD = e.eDb('에이팜');
@@ -931,7 +993,10 @@ function pokemonInit(){
     pk62.next = Pokemon2.alloc();
     const pkn62 = Pokemon2.cast(pk62.next);
     pkn62.evoTarget = 63;
-    pkn62.evoCond = 226;
+    pkn62.evoCond = 514;
+    pkn62.unit = 7680;
+    pkn62.weapon = 512;
+    pkn62.expType = 1;
     const pk63 = Pokemon1.cast(pokemonList[63]);
     pk63.name = Db('겟핸보숭');
     pk63.nameEPD = e.eDb('겟핸보숭');
@@ -944,6 +1009,9 @@ function pokemonInit(){
     const pkn63 = Pokemon2.cast(pk63.next);
     pkn63.evoTarget = 0;
     pkn63.evoCond = 0;
+    pkn63.unit = 7680;
+    pkn63.weapon = 512;
+    pkn63.expType = 1;
     const pk64 = Pokemon1.cast(pokemonList[64]);
     pk64.name = Db('흔들풍손');
     pk64.nameEPD = e.eDb('흔들풍손');
@@ -955,7 +1023,10 @@ function pokemonInit(){
     pk64.next = Pokemon2.alloc();
     const pkn64 = Pokemon2.cast(pk64.next);
     pkn64.evoTarget = 65;
-    pkn64.evoCond = 198;
+    pkn64.evoCond = 450;
+    pkn64.unit = 14130;
+    pkn64.weapon = 512;
+    pkn64.expType = 4;
     const pk65 = Pokemon1.cast(pokemonList[65]);
     pk65.name = Db('둥실라이드');
     pk65.nameEPD = e.eDb('둥실라이드');
@@ -968,6 +1039,9 @@ function pokemonInit(){
     const pkn65 = Pokemon2.cast(pk65.next);
     pkn65.evoTarget = 0;
     pkn65.evoCond = 0;
+    pkn65.unit = 11308;
+    pkn65.weapon = 512;
+    pkn65.expType = 4;
     const pk66 = Pokemon1.cast(pokemonList[66]);
     pk66.name = Db('이어롤');
     pk66.nameEPD = e.eDb('이어롤');
@@ -980,6 +1054,9 @@ function pokemonInit(){
     const pkn66 = Pokemon2.cast(pk66.next);
     pkn66.evoTarget = 67;
     pkn66.evoCond = 1;
+    pkn66.unit = 10026;
+    pkn66.weapon = 512;
+    pkn66.expType = 2;
     const pk67 = Pokemon1.cast(pokemonList[67]);
     pk67.name = Db('이어롭');
     pk67.nameEPD = e.eDb('이어롭');
@@ -992,6 +1069,9 @@ function pokemonInit(){
     const pkn67 = Pokemon2.cast(pk67.next);
     pkn67.evoTarget = 0;
     pkn67.evoCond = 0;
+    pkn67.unit = 10797;
+    pkn67.weapon = 512;
+    pkn67.expType = 2;
     const pk68 = Pokemon1.cast(pokemonList[68]);
     pk68.name = Db('고오스');
     pk68.nameEPD = e.eDb('고오스');
@@ -1003,7 +1083,10 @@ function pokemonInit(){
     pk68.next = Pokemon2.alloc();
     const pkn68 = Pokemon2.cast(pk68.next);
     pkn68.evoTarget = 69;
-    pkn68.evoCond = 177;
+    pkn68.evoCond = 402;
+    pkn68.unit = 2391;
+    pkn68.weapon = 512;
+    pkn68.expType = 3;
     const pk69 = Pokemon1.cast(pokemonList[69]);
     pk69.name = Db('고우스트');
     pk69.nameEPD = e.eDb('고우스트');
@@ -1016,6 +1099,9 @@ function pokemonInit(){
     const pkn69 = Pokemon2.cast(pk69.next);
     pkn69.evoTarget = 70;
     pkn69.evoCond = 4;
+    pkn69.unit = 2391;
+    pkn69.weapon = 512;
+    pkn69.expType = 3;
     const pk70 = Pokemon1.cast(pokemonList[70]);
     pk70.name = Db('팬텀');
     pk70.nameEPD = e.eDb('팬텀');
@@ -1028,6 +1114,9 @@ function pokemonInit(){
     const pkn70 = Pokemon2.cast(pk70.next);
     pkn70.evoTarget = 0;
     pkn70.evoCond = 0;
+    pkn70.unit = 5384;
+    pkn70.weapon = 512;
+    pkn70.expType = 3;
     const pk71 = Pokemon1.cast(pokemonList[71]);
     pk71.name = Db('무우마');
     pk71.nameEPD = e.eDb('무우마');
@@ -1039,7 +1128,10 @@ function pokemonInit(){
     pk71.next = Pokemon2.alloc();
     const pkn71 = Pokemon2.cast(pk71.next);
     pkn71.evoTarget = 72;
-    pkn71.evoCond = 87;
+    pkn71.evoCond = 195;
+    pkn71.unit = 12590;
+    pkn71.weapon = 512;
+    pkn71.expType = 1;
     const pk72 = Pokemon1.cast(pokemonList[72]);
     pk72.name = Db('무우마직');
     pk72.nameEPD = e.eDb('무우마직');
@@ -1052,6 +1144,9 @@ function pokemonInit(){
     const pkn72 = Pokemon2.cast(pk72.next);
     pkn72.evoTarget = 0;
     pkn72.evoCond = 0;
+    pkn72.unit = 10797;
+    pkn72.weapon = 512;
+    pkn72.expType = 1;
     const pk73 = Pokemon1.cast(pokemonList[73]);
     pk73.name = Db('니로우');
     pk73.nameEPD = e.eDb('니로우');
@@ -1063,7 +1158,10 @@ function pokemonInit(){
     pk73.next = Pokemon2.alloc();
     const pkn73 = Pokemon2.cast(pk73.next);
     pkn73.evoTarget = 74;
-    pkn73.evoCond = 87;
+    pkn73.evoCond = 195;
+    pkn73.unit = 12329;
+    pkn73.weapon = 512;
+    pkn73.expType = 3;
     const pk74 = Pokemon1.cast(pokemonList[74]);
     pk74.name = Db('돈크로우');
     pk74.nameEPD = e.eDb('돈크로우');
@@ -1076,6 +1174,9 @@ function pokemonInit(){
     const pkn74 = Pokemon2.cast(pk74.next);
     pkn74.evoTarget = 0;
     pkn74.evoCond = 0;
+    pkn74.unit = 25791;
+    pkn74.weapon = 512;
+    pkn74.expType = 3;
     const pk75 = Pokemon1.cast(pokemonList[75]);
     pk75.name = Db('나옹마');
     pk75.nameEPD = e.eDb('나옹마');
@@ -1087,7 +1188,10 @@ function pokemonInit(){
     pk75.next = Pokemon2.alloc();
     const pkn75 = Pokemon2.cast(pk75.next);
     pkn75.evoTarget = 76;
-    pkn75.evoCond = 268;
+    pkn75.evoCond = 610;
+    pkn75.unit = 5135;
+    pkn75.weapon = 512;
+    pkn75.expType = 1;
     const pk76 = Pokemon1.cast(pokemonList[76]);
     pk76.name = Db('몬냥이');
     pk76.nameEPD = e.eDb('몬냥이');
@@ -1100,6 +1204,9 @@ function pokemonInit(){
     const pkn76 = Pokemon2.cast(pk76.next);
     pkn76.evoTarget = 0;
     pkn76.evoCond = 0;
+    pkn76.unit = 5646;
+    pkn76.weapon = 512;
+    pkn76.expType = 1;
     const pk77 = Pokemon1.cast(pokemonList[77]);
     pk77.name = Db('콘치');
     pk77.nameEPD = e.eDb('콘치');
@@ -1111,7 +1218,10 @@ function pokemonInit(){
     pk77.next = Pokemon2.alloc();
     const pkn77 = Pokemon2.cast(pk77.next);
     pkn77.evoTarget = 78;
-    pkn77.evoCond = 233;
+    pkn77.evoCond = 530;
+    pkn77.unit = 7680;
+    pkn77.weapon = 512;
+    pkn77.expType = 2;
     const pk78 = Pokemon1.cast(pokemonList[78]);
     pk78.name = Db('왕콘치');
     pk78.nameEPD = e.eDb('왕콘치');
@@ -1124,6 +1234,9 @@ function pokemonInit(){
     const pkn78 = Pokemon2.cast(pk78.next);
     pkn78.evoTarget = 0;
     pkn78.evoCond = 0;
+    pkn78.unit = 7680;
+    pkn78.weapon = 512;
+    pkn78.expType = 2;
     const pk79 = Pokemon1.cast(pokemonList[79]);
     pk79.name = Db('미꾸리');
     pk79.nameEPD = e.eDb('미꾸리');
@@ -1135,7 +1248,10 @@ function pokemonInit(){
     pk79.next = Pokemon2.alloc();
     const pkn79 = Pokemon2.cast(pk79.next);
     pkn79.evoTarget = 80;
-    pkn79.evoCond = 212;
+    pkn79.evoCond = 482;
+    pkn79.unit = 7680;
+    pkn79.weapon = 512;
+    pkn79.expType = 2;
     const pk80 = Pokemon1.cast(pokemonList[80]);
     pk80.name = Db('메깅');
     pk80.nameEPD = e.eDb('메깅');
@@ -1148,6 +1264,9 @@ function pokemonInit(){
     const pkn80 = Pokemon2.cast(pk80.next);
     pkn80.evoTarget = 0;
     pkn80.evoCond = 0;
+    pkn80.unit = 6919;
+    pkn80.weapon = 512;
+    pkn80.expType = 2;
     const pk81 = Pokemon1.cast(pokemonList[81]);
     pk81.name = Db('랑딸랑');
     pk81.nameEPD = e.eDb('랑딸랑');
@@ -1160,6 +1279,9 @@ function pokemonInit(){
     const pkn81 = Pokemon2.cast(pk81.next);
     pkn81.evoTarget = 82;
     pkn81.evoCond = 1;
+    pkn81.unit = 7680;
+    pkn81.weapon = 512;
+    pkn81.expType = 1;
     const pk82 = Pokemon1.cast(pokemonList[82]);
     pk82.name = Db('치렁');
     pk82.nameEPD = e.eDb('치렁');
@@ -1172,6 +1294,9 @@ function pokemonInit(){
     const pkn82 = Pokemon2.cast(pk82.next);
     pkn82.evoTarget = 0;
     pkn82.evoCond = 0;
+    pkn82.unit = 7680;
+    pkn82.weapon = 512;
+    pkn82.expType = 1;
     const pk83 = Pokemon1.cast(pokemonList[83]);
     pk83.name = Db('스컹뿡');
     pk83.nameEPD = e.eDb('스컹뿡');
@@ -1183,7 +1308,10 @@ function pokemonInit(){
     pk83.next = Pokemon2.alloc();
     const pkn83 = Pokemon2.cast(pk83.next);
     pkn83.evoTarget = 84;
-    pkn83.evoCond = 240;
+    pkn83.evoCond = 546;
+    pkn83.unit = 7680;
+    pkn83.weapon = 512;
+    pkn83.expType = 2;
     const pk84 = Pokemon1.cast(pokemonList[84]);
     pk84.name = Db('스컹탱크');
     pk84.nameEPD = e.eDb('스컹탱크');
@@ -1196,6 +1324,9 @@ function pokemonInit(){
     const pkn84 = Pokemon2.cast(pk84.next);
     pkn84.evoTarget = 0;
     pkn84.evoCond = 0;
+    pkn84.unit = 7680;
+    pkn84.weapon = 512;
+    pkn84.expType = 2;
     const pk85 = Pokemon1.cast(pokemonList[85]);
     pk85.name = Db('요가랑');
     pk85.nameEPD = e.eDb('요가랑');
@@ -1207,7 +1338,10 @@ function pokemonInit(){
     pk85.next = Pokemon2.alloc();
     const pkn85 = Pokemon2.cast(pk85.next);
     pkn85.evoTarget = 86;
-    pkn85.evoCond = 261;
+    pkn85.evoCond = 594;
+    pkn85.unit = 10289;
+    pkn85.weapon = 512;
+    pkn85.expType = 2;
     const pk86 = Pokemon1.cast(pokemonList[86]);
     pk86.name = Db('요가램');
     pk86.nameEPD = e.eDb('요가램');
@@ -1220,6 +1354,9 @@ function pokemonInit(){
     const pkn86 = Pokemon2.cast(pk86.next);
     pkn86.evoTarget = 0;
     pkn86.evoCond = 0;
+    pkn86.unit = 7680;
+    pkn86.weapon = 512;
+    pkn86.expType = 2;
     const pk87 = Pokemon1.cast(pokemonList[87]);
     pk87.name = Db('동미러');
     pk87.nameEPD = e.eDb('동미러');
@@ -1231,7 +1368,10 @@ function pokemonInit(){
     pk87.next = Pokemon2.alloc();
     const pkn87 = Pokemon2.cast(pk87.next);
     pkn87.evoTarget = 88;
-    pkn87.evoCond = 233;
+    pkn87.evoCond = 530;
+    pkn87.unit = 7680;
+    pkn87.weapon = 512;
+    pkn87.expType = 2;
     const pk88 = Pokemon1.cast(pokemonList[88]);
     pk88.name = Db('동탁군');
     pk88.nameEPD = e.eDb('동탁군');
@@ -1244,6 +1384,9 @@ function pokemonInit(){
     const pkn88 = Pokemon2.cast(pk88.next);
     pkn88.evoTarget = 0;
     pkn88.evoCond = 0;
+    pkn88.unit = 7680;
+    pkn88.weapon = 512;
+    pkn88.expType = 2;
     const pk89 = Pokemon1.cast(pokemonList[89]);
     pk89.name = Db('포니타');
     pk89.nameEPD = e.eDb('포니타');
@@ -1255,7 +1398,10 @@ function pokemonInit(){
     pk89.next = Pokemon2.alloc();
     const pkn89 = Pokemon2.cast(pk89.next);
     pkn89.evoTarget = 90;
-    pkn89.evoCond = 282;
+    pkn89.evoCond = 642;
+    pkn89.unit = 7680;
+    pkn89.weapon = 512;
+    pkn89.expType = 2;
     const pk90 = Pokemon1.cast(pokemonList[90]);
     pk90.name = Db('날쌩마');
     pk90.nameEPD = e.eDb('날쌩마');
@@ -1268,6 +1414,9 @@ function pokemonInit(){
     const pkn90 = Pokemon2.cast(pk90.next);
     pkn90.evoTarget = 0;
     pkn90.evoCond = 0;
+    pkn90.unit = 7680;
+    pkn90.weapon = 512;
+    pkn90.expType = 2;
     const pk91 = Pokemon1.cast(pokemonList[91]);
     pk91.name = Db('꼬지지');
     pk91.nameEPD = e.eDb('꼬지지');
@@ -1279,7 +1428,10 @@ function pokemonInit(){
     pk91.next = Pokemon2.alloc();
     const pkn91 = Pokemon2.cast(pk91.next);
     pkn91.evoTarget = 92;
-    pkn91.evoCond = 114;
+    pkn91.evoCond = 258;
+    pkn91.unit = 7680;
+    pkn91.weapon = 512;
+    pkn91.expType = 2;
     const pk92 = Pokemon1.cast(pokemonList[92]);
     pk92.name = Db('꼬지모');
     pk92.nameEPD = e.eDb('꼬지모');
@@ -1292,6 +1444,9 @@ function pokemonInit(){
     const pkn92 = Pokemon2.cast(pk92.next);
     pkn92.evoTarget = 0;
     pkn92.evoCond = 0;
+    pkn92.unit = 7680;
+    pkn92.weapon = 512;
+    pkn92.expType = 2;
     const pk93 = Pokemon1.cast(pokemonList[93]);
     pk93.name = Db('흉내내');
     pk93.nameEPD = e.eDb('흉내내');
@@ -1303,7 +1458,10 @@ function pokemonInit(){
     pk93.next = Pokemon2.alloc();
     const pkn93 = Pokemon2.cast(pk93.next);
     pkn93.evoTarget = 94;
-    pkn93.evoCond = 226;
+    pkn93.evoCond = 514;
+    pkn93.unit = 7680;
+    pkn93.weapon = 512;
+    pkn93.expType = 2;
     const pk94 = Pokemon1.cast(pokemonList[94]);
     pk94.name = Db('마임맨');
     pk94.nameEPD = e.eDb('마임맨');
@@ -1316,6 +1474,9 @@ function pokemonInit(){
     const pkn94 = Pokemon2.cast(pk94.next);
     pkn94.evoTarget = 0;
     pkn94.evoCond = 0;
+    pkn94.unit = 7680;
+    pkn94.weapon = 512;
+    pkn94.expType = 2;
     const pk95 = Pokemon1.cast(pokemonList[95]);
     pk95.name = Db('핑복');
     pk95.nameEPD = e.eDb('핑복');
@@ -1327,7 +1488,10 @@ function pokemonInit(){
     pk95.next = Pokemon2.alloc();
     const pkn95 = Pokemon2.cast(pk95.next);
     pkn95.evoTarget = 96;
-    pkn95.evoCond = 20;
+    pkn95.evoCond = 54;
+    pkn95.unit = 7680;
+    pkn95.weapon = 512;
+    pkn95.expType = 1;
     const pk96 = Pokemon1.cast(pokemonList[96]);
     pk96.name = Db('럭키');
     pk96.nameEPD = e.eDb('럭키');
@@ -1340,6 +1504,9 @@ function pokemonInit(){
     const pkn96 = Pokemon2.cast(pk96.next);
     pkn96.evoTarget = 97;
     pkn96.evoCond = 1;
+    pkn96.unit = 7680;
+    pkn96.weapon = 512;
+    pkn96.expType = 1;
     const pk97 = Pokemon1.cast(pokemonList[97]);
     pk97.name = Db('해피너스');
     pk97.nameEPD = e.eDb('해피너스');
@@ -1352,6 +1519,9 @@ function pokemonInit(){
     const pkn97 = Pokemon2.cast(pk97.next);
     pkn97.evoTarget = 0;
     pkn97.evoCond = 0;
+    pkn97.unit = 7680;
+    pkn97.weapon = 512;
+    pkn97.expType = 1;
     const pk98 = Pokemon1.cast(pokemonList[98]);
     pk98.name = Db('삐');
     pk98.nameEPD = e.eDb('삐');
@@ -1364,6 +1534,9 @@ function pokemonInit(){
     const pkn98 = Pokemon2.cast(pk98.next);
     pkn98.evoTarget = 99;
     pkn98.evoCond = 1;
+    pkn98.unit = 7680;
+    pkn98.weapon = 512;
+    pkn98.expType = 1;
     const pk99 = Pokemon1.cast(pokemonList[99]);
     pk99.name = Db('삐삐');
     pk99.nameEPD = e.eDb('삐삐');
@@ -1375,7 +1548,10 @@ function pokemonInit(){
     pk99.next = Pokemon2.alloc();
     const pkn99 = Pokemon2.cast(pk99.next);
     pkn99.evoTarget = 100;
-    pkn99.evoCond = 66;
+    pkn99.evoCond = 147;
+    pkn99.unit = 7680;
+    pkn99.weapon = 512;
+    pkn99.expType = 1;
     const pk100 = Pokemon1.cast(pokemonList[100]);
     pk100.name = Db('픽시');
     pk100.nameEPD = e.eDb('픽시');
@@ -1388,6 +1564,9 @@ function pokemonInit(){
     const pkn100 = Pokemon2.cast(pk100.next);
     pkn100.evoTarget = 0;
     pkn100.evoCond = 0;
+    pkn100.unit = 7680;
+    pkn100.weapon = 512;
+    pkn100.expType = 1;
     const pk101 = Pokemon1.cast(pokemonList[101]);
     pk101.name = Db('페라페');
     pk101.nameEPD = e.eDb('페라페');
@@ -1400,6 +1579,9 @@ function pokemonInit(){
     const pkn101 = Pokemon2.cast(pk101.next);
     pkn101.evoTarget = 0;
     pkn101.evoCond = 0;
+    pkn101.unit = 7680;
+    pkn101.weapon = 512;
+    pkn101.expType = 3;
     const pk102 = Pokemon1.cast(pokemonList[102]);
     pk102.name = Db('피츄');
     pk102.nameEPD = e.eDb('피츄');
@@ -1412,6 +1594,9 @@ function pokemonInit(){
     const pkn102 = Pokemon2.cast(pk102.next);
     pkn102.evoTarget = 103;
     pkn102.evoCond = 1;
+    pkn102.unit = 7680;
+    pkn102.weapon = 512;
+    pkn102.expType = 2;
     const pk103 = Pokemon1.cast(pokemonList[103]);
     pk103.name = Db('피카츄');
     pk103.nameEPD = e.eDb('피카츄');
@@ -1423,7 +1608,10 @@ function pokemonInit(){
     pk103.next = Pokemon2.alloc();
     const pkn103 = Pokemon2.cast(pk103.next);
     pkn103.evoTarget = 104;
-    pkn103.evoCond = 52;
+    pkn103.evoCond = 115;
+    pkn103.unit = 7680;
+    pkn103.weapon = 512;
+    pkn103.expType = 2;
     const pk104 = Pokemon1.cast(pokemonList[104]);
     pk104.name = Db('라이츄');
     pk104.nameEPD = e.eDb('라이츄');
@@ -1436,6 +1624,9 @@ function pokemonInit(){
     const pkn104 = Pokemon2.cast(pk104.next);
     pkn104.evoTarget = 0;
     pkn104.evoCond = 0;
+    pkn104.unit = 7680;
+    pkn104.weapon = 512;
+    pkn104.expType = 2;
     const pk105 = Pokemon1.cast(pokemonList[105]);
     pk105.name = Db('부우부');
     pk105.nameEPD = e.eDb('부우부');
@@ -1447,7 +1638,10 @@ function pokemonInit(){
     pk105.next = Pokemon2.alloc();
     const pkn105 = Pokemon2.cast(pk105.next);
     pkn105.evoTarget = 106;
-    pkn105.evoCond = 142;
+    pkn105.evoCond = 322;
+    pkn105.unit = 7680;
+    pkn105.weapon = 512;
+    pkn105.expType = 2;
     const pk106 = Pokemon1.cast(pokemonList[106]);
     pk106.name = Db('야부엉');
     pk106.nameEPD = e.eDb('야부엉');
@@ -1460,6 +1654,9 @@ function pokemonInit(){
     const pkn106 = Pokemon2.cast(pk106.next);
     pkn106.evoTarget = 0;
     pkn106.evoCond = 0;
+    pkn106.unit = 7680;
+    pkn106.weapon = 512;
+    pkn106.expType = 2;
     const pk107 = Pokemon1.cast(pokemonList[107]);
     pk107.name = Db('화강돌');
     pk107.nameEPD = e.eDb('화강돌');
@@ -1472,6 +1669,9 @@ function pokemonInit(){
     const pkn107 = Pokemon2.cast(pk107.next);
     pkn107.evoTarget = 0;
     pkn107.evoCond = 0;
+    pkn107.unit = 7680;
+    pkn107.weapon = 512;
+    pkn107.expType = 2;
     const pk108 = Pokemon1.cast(pokemonList[108]);
     pk108.name = Db('딥상어동');
     pk108.nameEPD = e.eDb('딥상어동');
@@ -1483,7 +1683,10 @@ function pokemonInit(){
     pk108.next = Pokemon2.alloc();
     const pkn108 = Pokemon2.cast(pk108.next);
     pkn108.evoTarget = 109;
-    pkn108.evoCond = 170;
+    pkn108.evoCond = 386;
+    pkn108.unit = 7680;
+    pkn108.weapon = 512;
+    pkn108.expType = 4;
     const pk109 = Pokemon1.cast(pokemonList[109]);
     pk109.name = Db('한바이트');
     pk109.nameEPD = e.eDb('한바이트');
@@ -1495,7 +1698,10 @@ function pokemonInit(){
     pk109.next = Pokemon2.alloc();
     const pkn109 = Pokemon2.cast(pk109.next);
     pkn109.evoTarget = 110;
-    pkn109.evoCond = 338;
+    pkn109.evoCond = 770;
+    pkn109.unit = 7680;
+    pkn109.weapon = 512;
+    pkn109.expType = 4;
     const pk110 = Pokemon1.cast(pokemonList[110]);
     pk110.name = Db('한카리아스');
     pk110.nameEPD = e.eDb('한카리아스');
@@ -1508,6 +1714,9 @@ function pokemonInit(){
     const pkn110 = Pokemon2.cast(pk110.next);
     pkn110.evoTarget = 0;
     pkn110.evoCond = 0;
+    pkn110.unit = 7680;
+    pkn110.weapon = 512;
+    pkn110.expType = 4;
     const pk111 = Pokemon1.cast(pokemonList[111]);
     pk111.name = Db('먹고자');
     pk111.nameEPD = e.eDb('먹고자');
@@ -1520,6 +1729,9 @@ function pokemonInit(){
     const pkn111 = Pokemon2.cast(pk111.next);
     pkn111.evoTarget = 112;
     pkn111.evoCond = 1;
+    pkn111.unit = 7680;
+    pkn111.weapon = 512;
+    pkn111.expType = 4;
     const pk112 = Pokemon1.cast(pokemonList[112]);
     pk112.name = Db('잠만보');
     pk112.nameEPD = e.eDb('잠만보');
@@ -1532,6 +1744,9 @@ function pokemonInit(){
     const pkn112 = Pokemon2.cast(pk112.next);
     pkn112.evoTarget = 0;
     pkn112.evoCond = 0;
+    pkn112.unit = 7680;
+    pkn112.weapon = 512;
+    pkn112.expType = 4;
     const pk113 = Pokemon1.cast(pokemonList[113]);
     pk113.name = Db('안농');
     pk113.nameEPD = e.eDb('안농');
@@ -1544,6 +1759,9 @@ function pokemonInit(){
     const pkn113 = Pokemon2.cast(pk113.next);
     pkn113.evoTarget = 0;
     pkn113.evoCond = 0;
+    pkn113.unit = 7680;
+    pkn113.weapon = 512;
+    pkn113.expType = 2;
     const pk114 = Pokemon1.cast(pokemonList[114]);
     pk114.name = Db('리오르');
     pk114.nameEPD = e.eDb('리오르');
@@ -1556,6 +1774,9 @@ function pokemonInit(){
     const pkn114 = Pokemon2.cast(pk114.next);
     pkn114.evoTarget = 115;
     pkn114.evoCond = 1;
+    pkn114.unit = 7680;
+    pkn114.weapon = 512;
+    pkn114.expType = 3;
     const pk115 = Pokemon1.cast(pokemonList[115]);
     pk115.name = Db('루카리오');
     pk115.nameEPD = e.eDb('루카리오');
@@ -1568,6 +1789,9 @@ function pokemonInit(){
     const pkn115 = Pokemon2.cast(pk115.next);
     pkn115.evoTarget = 0;
     pkn115.evoCond = 0;
+    pkn115.unit = 7680;
+    pkn115.weapon = 512;
+    pkn115.expType = 3;
     const pk116 = Pokemon1.cast(pokemonList[116]);
     pk116.name = Db('우파');
     pk116.nameEPD = e.eDb('우파');
@@ -1579,7 +1803,10 @@ function pokemonInit(){
     pk116.next = Pokemon2.alloc();
     const pkn116 = Pokemon2.cast(pk116.next);
     pkn116.evoTarget = 117;
-    pkn116.evoCond = 142;
+    pkn116.evoCond = 322;
+    pkn116.unit = 7680;
+    pkn116.weapon = 512;
+    pkn116.expType = 2;
     const pk117 = Pokemon1.cast(pokemonList[117]);
     pk117.name = Db('누오');
     pk117.nameEPD = e.eDb('누오');
@@ -1592,6 +1819,9 @@ function pokemonInit(){
     const pkn117 = Pokemon2.cast(pk117.next);
     pkn117.evoTarget = 0;
     pkn117.evoCond = 0;
+    pkn117.unit = 7680;
+    pkn117.weapon = 512;
+    pkn117.expType = 2;
     const pk118 = Pokemon1.cast(pokemonList[118]);
     pk118.name = Db('갈모매');
     pk118.nameEPD = e.eDb('갈모매');
@@ -1603,7 +1833,10 @@ function pokemonInit(){
     pk118.next = Pokemon2.alloc();
     const pkn118 = Pokemon2.cast(pk118.next);
     pkn118.evoTarget = 119;
-    pkn118.evoCond = 177;
+    pkn118.evoCond = 402;
+    pkn118.unit = 7680;
+    pkn118.weapon = 512;
+    pkn118.expType = 2;
     const pk119 = Pokemon1.cast(pokemonList[119]);
     pk119.name = Db('패리퍼');
     pk119.nameEPD = e.eDb('패리퍼');
@@ -1616,6 +1849,9 @@ function pokemonInit(){
     const pkn119 = Pokemon2.cast(pk119.next);
     pkn119.evoTarget = 0;
     pkn119.evoCond = 0;
+    pkn119.unit = 7680;
+    pkn119.weapon = 512;
+    pkn119.expType = 2;
     const pk120 = Pokemon1.cast(pokemonList[120]);
     pk120.name = Db('키링키');
     pk120.nameEPD = e.eDb('키링키');
@@ -1628,6 +1864,9 @@ function pokemonInit(){
     const pkn120 = Pokemon2.cast(pk120.next);
     pkn120.evoTarget = 0;
     pkn120.evoCond = 0;
+    pkn120.unit = 7680;
+    pkn120.weapon = 512;
+    pkn120.expType = 2;
     const pk121 = Pokemon1.cast(pokemonList[121]);
     pk121.name = Db('히포포타스');
     pk121.nameEPD = e.eDb('히포포타스');
@@ -1639,7 +1878,10 @@ function pokemonInit(){
     pk121.next = Pokemon2.alloc();
     const pkn121 = Pokemon2.cast(pk121.next);
     pkn121.evoTarget = 122;
-    pkn121.evoCond = 240;
+    pkn121.evoCond = 546;
+    pkn121.unit = 7680;
+    pkn121.weapon = 512;
+    pkn121.expType = 4;
     const pk122 = Pokemon1.cast(pokemonList[122]);
     pk122.name = Db('하마돈');
     pk122.nameEPD = e.eDb('하마돈');
@@ -1652,6 +1894,9 @@ function pokemonInit(){
     const pkn122 = Pokemon2.cast(pk122.next);
     pkn122.evoTarget = 0;
     pkn122.evoCond = 0;
+    pkn122.unit = 7680;
+    pkn122.weapon = 512;
+    pkn122.expType = 4;
     const pk123 = Pokemon1.cast(pokemonList[123]);
     pk123.name = Db('루리리');
     pk123.nameEPD = e.eDb('루리리');
@@ -1664,6 +1909,9 @@ function pokemonInit(){
     const pkn123 = Pokemon2.cast(pk123.next);
     pkn123.evoTarget = 124;
     pkn123.evoCond = 1;
+    pkn123.unit = 7680;
+    pkn123.weapon = 512;
+    pkn123.expType = 1;
     const pk124 = Pokemon1.cast(pokemonList[124]);
     pk124.name = Db('마릴');
     pk124.nameEPD = e.eDb('마릴');
@@ -1675,7 +1923,10 @@ function pokemonInit(){
     pk124.next = Pokemon2.alloc();
     const pkn124 = Pokemon2.cast(pk124.next);
     pkn124.evoTarget = 125;
-    pkn124.evoCond = 128;
+    pkn124.evoCond = 290;
+    pkn124.unit = 7680;
+    pkn124.weapon = 512;
+    pkn124.expType = 1;
     const pk125 = Pokemon1.cast(pokemonList[125]);
     pk125.name = Db('마릴리');
     pk125.nameEPD = e.eDb('마릴리');
@@ -1688,6 +1939,9 @@ function pokemonInit(){
     const pkn125 = Pokemon2.cast(pk125.next);
     pkn125.evoTarget = 0;
     pkn125.evoCond = 0;
+    pkn125.unit = 7680;
+    pkn125.weapon = 512;
+    pkn125.expType = 1;
     const pk126 = Pokemon1.cast(pokemonList[126]);
     pk126.name = Db('스콜피');
     pk126.nameEPD = e.eDb('스콜피');
@@ -1699,7 +1953,10 @@ function pokemonInit(){
     pk126.next = Pokemon2.alloc();
     const pkn126 = Pokemon2.cast(pk126.next);
     pkn126.evoTarget = 127;
-    pkn126.evoCond = 282;
+    pkn126.evoCond = 642;
+    pkn126.unit = 7680;
+    pkn126.weapon = 512;
+    pkn126.expType = 4;
     const pk127 = Pokemon1.cast(pokemonList[127]);
     pk127.name = Db('드래피온');
     pk127.nameEPD = e.eDb('드래피온');
@@ -1712,6 +1969,9 @@ function pokemonInit(){
     const pkn127 = Pokemon2.cast(pk127.next);
     pkn127.evoTarget = 0;
     pkn127.evoCond = 0;
+    pkn127.unit = 7680;
+    pkn127.weapon = 512;
+    pkn127.expType = 4;
     const pk128 = Pokemon1.cast(pokemonList[128]);
     pk128.name = Db('삐딱구리');
     pk128.nameEPD = e.eDb('삐딱구리');
@@ -1723,7 +1983,10 @@ function pokemonInit(){
     pk128.next = Pokemon2.alloc();
     const pkn128 = Pokemon2.cast(pk128.next);
     pkn128.evoTarget = 129;
-    pkn128.evoCond = 261;
+    pkn128.evoCond = 594;
+    pkn128.unit = 7680;
+    pkn128.weapon = 512;
+    pkn128.expType = 2;
     const pk129 = Pokemon1.cast(pokemonList[129]);
     pk129.name = Db('독개굴');
     pk129.nameEPD = e.eDb('독개굴');
@@ -1736,6 +1999,9 @@ function pokemonInit(){
     const pkn129 = Pokemon2.cast(pk129.next);
     pkn129.evoTarget = 0;
     pkn129.evoCond = 0;
+    pkn129.unit = 7680;
+    pkn129.weapon = 512;
+    pkn129.expType = 2;
     const pk130 = Pokemon1.cast(pokemonList[130]);
     pk130.name = Db('무스틈니');
     pk130.nameEPD = e.eDb('무스틈니');
@@ -1748,6 +2014,9 @@ function pokemonInit(){
     const pkn130 = Pokemon2.cast(pk130.next);
     pkn130.evoTarget = 0;
     pkn130.evoCond = 0;
+    pkn130.unit = 7680;
+    pkn130.weapon = 512;
+    pkn130.expType = 4;
     const pk131 = Pokemon1.cast(pokemonList[131]);
     pk131.name = Db('총어');
     pk131.nameEPD = e.eDb('총어');
@@ -1759,7 +2028,10 @@ function pokemonInit(){
     pk131.next = Pokemon2.alloc();
     const pkn131 = Pokemon2.cast(pk131.next);
     pkn131.evoTarget = 132;
-    pkn131.evoCond = 177;
+    pkn131.evoCond = 402;
+    pkn131.unit = 7680;
+    pkn131.weapon = 512;
+    pkn131.expType = 2;
     const pk132 = Pokemon1.cast(pokemonList[132]);
     pk132.name = Db('대포무노');
     pk132.nameEPD = e.eDb('대포무노');
@@ -1772,6 +2044,9 @@ function pokemonInit(){
     const pkn132 = Pokemon2.cast(pk132.next);
     pkn132.evoTarget = 0;
     pkn132.evoCond = 0;
+    pkn132.unit = 7680;
+    pkn132.weapon = 512;
+    pkn132.expType = 2;
     const pk133 = Pokemon1.cast(pokemonList[133]);
     pk133.name = Db('형광어');
     pk133.nameEPD = e.eDb('형광어');
@@ -1783,7 +2058,10 @@ function pokemonInit(){
     pk133.next = Pokemon2.alloc();
     const pkn133 = Pokemon2.cast(pk133.next);
     pkn133.evoTarget = 134;
-    pkn133.evoCond = 219;
+    pkn133.evoCond = 498;
+    pkn133.unit = 7680;
+    pkn133.weapon = 512;
+    pkn133.expType = 0;
     const pk134 = Pokemon1.cast(pokemonList[134]);
     pk134.name = Db('네오라이트');
     pk134.nameEPD = e.eDb('네오라이트');
@@ -1796,6 +2074,9 @@ function pokemonInit(){
     const pkn134 = Pokemon2.cast(pk134.next);
     pkn134.evoTarget = 0;
     pkn134.evoCond = 0;
+    pkn134.unit = 7680;
+    pkn134.weapon = 512;
+    pkn134.expType = 0;
     const pk135 = Pokemon1.cast(pokemonList[135]);
     pk135.name = Db('왕눈해');
     pk135.nameEPD = e.eDb('왕눈해');
@@ -1807,7 +2088,10 @@ function pokemonInit(){
     pk135.next = Pokemon2.alloc();
     const pkn135 = Pokemon2.cast(pk135.next);
     pkn135.evoTarget = 136;
-    pkn135.evoCond = 212;
+    pkn135.evoCond = 482;
+    pkn135.unit = 7680;
+    pkn135.weapon = 512;
+    pkn135.expType = 4;
     const pk136 = Pokemon1.cast(pokemonList[136]);
     pk136.name = Db('독파리');
     pk136.nameEPD = e.eDb('독파리');
@@ -1820,6 +2104,9 @@ function pokemonInit(){
     const pkn136 = Pokemon2.cast(pk136.next);
     pkn136.evoTarget = 0;
     pkn136.evoCond = 0;
+    pkn136.unit = 7680;
+    pkn136.weapon = 512;
+    pkn136.expType = 4;
     const pk137 = Pokemon1.cast(pokemonList[137]);
     pk137.name = Db('빈티나');
     pk137.nameEPD = e.eDb('빈티나');
@@ -1831,7 +2118,10 @@ function pokemonInit(){
     pk137.next = Pokemon2.alloc();
     const pkn137 = Pokemon2.cast(pk137.next);
     pkn137.evoTarget = 138;
-    pkn137.evoCond = 11;
+    pkn137.evoCond = 36;
+    pkn137.unit = 7680;
+    pkn137.weapon = 512;
+    pkn137.expType = 0;
     const pk138 = Pokemon1.cast(pokemonList[138]);
     pk138.name = Db('밀로틱');
     pk138.nameEPD = e.eDb('밀로틱');
@@ -1844,6 +2134,9 @@ function pokemonInit(){
     const pkn138 = Pokemon2.cast(pk138.next);
     pkn138.evoTarget = 0;
     pkn138.evoCond = 0;
+    pkn138.unit = 7680;
+    pkn138.weapon = 512;
+    pkn138.expType = 0;
     const pk139 = Pokemon1.cast(pokemonList[139]);
     pk139.name = Db('타만타');
     pk139.nameEPD = e.eDb('타만타');
@@ -1855,7 +2148,10 @@ function pokemonInit(){
     pk139.next = Pokemon2.alloc();
     const pkn139 = Pokemon2.cast(pk139.next);
     pkn139.evoTarget = 140;
-    pkn139.evoCond = 922;
+    pkn139.evoCond = 2101;
+    pkn139.unit = 7680;
+    pkn139.weapon = 512;
+    pkn139.expType = 4;
     const pk140 = Pokemon1.cast(pokemonList[140]);
     pk140.name = Db('만타인');
     pk140.nameEPD = e.eDb('만타인');
@@ -1868,6 +2164,9 @@ function pokemonInit(){
     const pkn140 = Pokemon2.cast(pk140.next);
     pkn140.evoTarget = 0;
     pkn140.evoCond = 0;
+    pkn140.unit = 7680;
+    pkn140.weapon = 512;
+    pkn140.expType = 4;
     const pk141 = Pokemon1.cast(pokemonList[141]);
     pk141.name = Db('눈쓰개');
     pk141.nameEPD = e.eDb('눈쓰개');
@@ -1879,7 +2178,10 @@ function pokemonInit(){
     pk141.next = Pokemon2.alloc();
     const pkn141 = Pokemon2.cast(pk141.next);
     pkn141.evoTarget = 142;
-    pkn141.evoCond = 282;
+    pkn141.evoCond = 642;
+    pkn141.unit = 7680;
+    pkn141.weapon = 512;
+    pkn141.expType = 4;
     const pk142 = Pokemon1.cast(pokemonList[142]);
     pk142.name = Db('눈설왕');
     pk142.nameEPD = e.eDb('눈설왕');
@@ -1892,6 +2194,9 @@ function pokemonInit(){
     const pkn142 = Pokemon2.cast(pk142.next);
     pkn142.evoTarget = 0;
     pkn142.evoCond = 0;
+    pkn142.unit = 7680;
+    pkn142.weapon = 512;
+    pkn142.expType = 4;
     const pk143 = Pokemon1.cast(pokemonList[143]);
     pk143.name = Db('포푸니');
     pk143.nameEPD = e.eDb('포푸니');
@@ -1903,7 +2208,10 @@ function pokemonInit(){
     pk143.next = Pokemon2.alloc();
     const pkn143 = Pokemon2.cast(pk143.next);
     pkn143.evoTarget = 144;
-    pkn143.evoCond = 27;
+    pkn143.evoCond = 22;
+    pkn143.unit = 7680;
+    pkn143.weapon = 512;
+    pkn143.expType = 3;
     const pk144 = Pokemon1.cast(pokemonList[144]);
     pk144.name = Db('포푸니라');
     pk144.nameEPD = e.eDb('포푸니라');
@@ -1916,6 +2224,9 @@ function pokemonInit(){
     const pkn144 = Pokemon2.cast(pk144.next);
     pkn144.evoTarget = 0;
     pkn144.evoCond = 0;
+    pkn144.unit = 7680;
+    pkn144.weapon = 512;
+    pkn144.expType = 3;
     const pk145 = Pokemon1.cast(pokemonList[145]);
     pk145.name = Db('유크시');
     pk145.nameEPD = e.eDb('유크시');
@@ -1928,6 +2239,9 @@ function pokemonInit(){
     const pkn145 = Pokemon2.cast(pk145.next);
     pkn145.evoTarget = 0;
     pkn145.evoCond = 0;
+    pkn145.unit = 7680;
+    pkn145.weapon = 512;
+    pkn145.expType = 4;
     const pk146 = Pokemon1.cast(pokemonList[146]);
     pk146.name = Db('엠라이트');
     pk146.nameEPD = e.eDb('엠라이트');
@@ -1940,6 +2254,9 @@ function pokemonInit(){
     const pkn146 = Pokemon2.cast(pk146.next);
     pkn146.evoTarget = 0;
     pkn146.evoCond = 0;
+    pkn146.unit = 7680;
+    pkn146.weapon = 512;
+    pkn146.expType = 4;
     const pk147 = Pokemon1.cast(pokemonList[147]);
     pk147.name = Db('아그놈');
     pk147.nameEPD = e.eDb('아그놈');
@@ -1952,6 +2269,9 @@ function pokemonInit(){
     const pkn147 = Pokemon2.cast(pk147.next);
     pkn147.evoTarget = 0;
     pkn147.evoCond = 0;
+    pkn147.unit = 7680;
+    pkn147.weapon = 512;
+    pkn147.expType = 4;
     const pk148 = Pokemon1.cast(pokemonList[148]);
     pk148.name = Db('디아루가');
     pk148.nameEPD = e.eDb('디아루가');
@@ -1964,6 +2284,9 @@ function pokemonInit(){
     const pkn148 = Pokemon2.cast(pk148.next);
     pkn148.evoTarget = 0;
     pkn148.evoCond = 0;
+    pkn148.unit = 7680;
+    pkn148.weapon = 512;
+    pkn148.expType = 4;
     const pk149 = Pokemon1.cast(pokemonList[149]);
     pk149.name = Db('펄기아');
     pk149.nameEPD = e.eDb('펄기아');
@@ -1976,6 +2299,9 @@ function pokemonInit(){
     const pkn149 = Pokemon2.cast(pk149.next);
     pkn149.evoTarget = 0;
     pkn149.evoCond = 0;
+    pkn149.unit = 7680;
+    pkn149.weapon = 512;
+    pkn149.expType = 4;
     const pk150 = Pokemon1.cast(pokemonList[150]);
     pk150.name = Db('마나피');
     pk150.nameEPD = e.eDb('마나피');
@@ -1988,4 +2314,7 @@ function pokemonInit(){
     const pkn150 = Pokemon2.cast(pk150.next);
     pkn150.evoTarget = 0;
     pkn150.evoCond = 0;
+    pkn150.unit = 7680;
+    pkn150.weapon = 512;
+    pkn150.expType = 4;
 }

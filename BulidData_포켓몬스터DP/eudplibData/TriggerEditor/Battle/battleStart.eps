@@ -4,6 +4,7 @@ import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
 import Variables.mainSentence as vms;
+import Variables.etcData as ved;
 import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
@@ -26,6 +27,10 @@ const pokemonName   = PVariable(); //포켓몬 이름 (cp:유저 cp+4:적)
 const pokemonLevel  = PVariable(); //포켓몬 레벨 (cp:유저 cp+4:적)
 const pokemonHP     = PVariable(); //포켓몬 체력 (cp:유저 cp+4:적)
 const battleMap     = [0,0,0,1,1,1,1]; //battleType별로 맵지정 0:battleLoc, 1:gymLoc
+
+const battleIndex   = PVariable(); //전투리스트의 인덱스번호
+const battlePokemon = EUDArray(4*6); //전투리스트 (포켓몬인덱스 + 256*level)
+const battleIVs     = EUDArray(4*6); //리스트의 개체값 (IVs 계산)
 
 
 /*
@@ -52,11 +57,13 @@ function battleSetting(cp, type, pokemon, level){
         //function setComputerData(cp, pokemon, index, lv, IV)
         pmp.setComputerData(cp, pokemon, 0, level, 0);
         battleUnit[cp] = 999;
+        battlePokemon[cp6+0] = pokemon;
     }
     else{
         
     }
     battleStep[cp] = 1; //Battle Start
+    battleIndex[cp] = 1;
 }
 
 const startPokemon = [0,3,6];
@@ -76,7 +83,7 @@ function selectPokemon(cp, index){
     if(Deaths(cp, Exactly, 8, "A Stick")){
         pps.selectMenu[cp] = 0;
         vms.removeText();
-        pmp.catchPokemon(cp, startPokemon[index], 5, 0, 1048575);
+        pmp.catchPokemon(cp, startPokemon[index], 5, 0, ved.maxIVs);
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         battleStep[cp] += 1;
     }
@@ -168,9 +175,11 @@ function battleSystem(cp){
             s.insert(0, "\n\n\n");
             s.appendf("\x13{:s}\n",vms.sph1);
             s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n\n",pokemonName[cp+4]);
-            s.appendf("\x13{:s}",vms.sph2);
+            s.appendf("\x13{:s}",vms.sph1);
             s.DisplayAt(0);
-            if(Deaths(cp, Exactly, 16, "A Key")){
+            battleDelay[cp] += 1;
+            if(battleDelay[cp] > 24*2){
+                battleDelay[cp] = 0;
                 PlayWAV("staredit\\wav\\GUI sel cursor.wav");
                 const pUnit = ppst.settingPokemon(cp, true, 0);
                 MoveLocation(vli.tempMoveLoc, 50, P5, battleLocation[cp]); //내 포켓몬
@@ -185,13 +194,19 @@ function battleSystem(cp){
             s.appendf("\x13{:s}\n",vms.sph1);
             s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n",pokemonName[cp+4]);
             s.appendf("\x13\x04가랏! \x17{:s}\x04!\n",pokemonName[cp]);
-            s.appendf("\x13{:s}",vms.sph2);
+            s.appendf("\x13{:s}",vms.sph1);
             s.DisplayAt(0);
-            if(Deaths(cp, Exactly, 16, "A Key")){
+            battleDelay[cp] += 1;
+            if(battleDelay[cp] > 24*2){
+                battleDelay[cp] = 0;
                 PlayWAV("staredit\\wav\\GUI sel cursor.wav");
                 pps.guiUpdate[cp] = 1;
                 battleStep[cp] += 1;
             }
+        }
+        //전투 중
+        else if(step == 7){
+            
         }
     }
 }

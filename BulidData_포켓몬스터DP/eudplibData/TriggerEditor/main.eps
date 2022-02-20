@@ -3,6 +3,7 @@ import readTile as rt;
 import functions as fc;
 import opening as op;
 import Battle.battleStart as bbs;
+import Interface.userGUI as iug;
 import Item.itemInfo as iif;
 import Player.playerUnit as ppu;
 import Player.movementUnit as pmu;
@@ -67,6 +68,7 @@ function afterTriggerExec(){
 			pts.teleportPlayer(cp); //위치이동
 			vft.printFlagText(cp); //표지판 텍스트
 			bbs.battleSystem(cp); //배틀시스템
+			iug.printGUI(cp); //유저메뉴
 		}
 	}
 	KillUnit(33, 7); //스캔이펙트 제거

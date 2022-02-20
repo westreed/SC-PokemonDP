@@ -1,9 +1,141 @@
 import functions as fc;
+// import Battle.battleStart as bbs;
 import Player.playerSetting as pps;
+import Player.movementUnit as pmu;
+
 import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.pokemonBook as ppb;
 
-function printGUI(cp){
+import Interface.menu_Book as imk;
+import Interface.menu_Bag as imb;
+import Interface.menu_Pokemon as imp;
+import Interface.menu_Help as imh;
+import Interface.menu_Option as imo;
 
+import Variables.mainSentence as vms;
+
+/*
+GUI 방식
+
+메인메뉴는 따로 호출조건을 만듬.
+ex. 배틀GUI는 배틀중일 때 소환
+    메뉴GUI는 유저가 메뉴키를 눌렀을 때 소환
+
+서브메뉴(포켓몬,도감,가방 등)는 서브메뉴 변수의 값에 따라 항상 소환.
+ex. 서브메뉴 인덱스가 1이면 가방 열기
+
+이때, 서브메뉴값이 있으면, 메인메뉴 호출을 잠시 정지하기.
+
+이렇게 하면 배틀GUI용 서브메뉴, 메뉴GUI용 서브메뉴 이렇게 따로 만들 필요가 없어짐.
+서브메뉴의 높이조절 변수도 있어야 함.
+*/
+
+
+const t = StringBuffer(1024);
+const subMenu   = PVariable(); //서브메뉴 호출인덱스
+const mainMenu  = PVariable(); //메인메뉴 호출
+const saveIndex = PVariable(); //서브메뉴 호출시 메인메뉴의 인덱스 위치 저장하기
+
+function blankMenu(cp){
+    t.printf("임시");
+    pps.selectMenu[cp] = saveIndex[cp];
+    subMenu[cp] = 0;
+    pps.guiUpdate[cp] = 1;
 }
+
+function mainMenu_UI(cp);
+function mainMenu_Action(cp);
+function printGUI(cp){
+    if(Deaths(cp, Exactly, 2, "A Key")){
+        if(mainMenu[cp] == 0){
+            if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
+                mainMenu[cp] = 1;
+                pps.selectMenu[cp] = 0;
+                pps.guiUpdate[cp] = 1;
+                pmu.changeMoveState(cp, false);
+                PlayWAV("staredit\\wav\\GUI menu open.wav");
+            }
+        }
+        else{
+            mainMenu[cp] = 0;
+            vms.removeText();
+            pmu.changeMoveState(cp, true);
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        }
+    }
+    if(mainMenu[cp]){
+        const sub = subMenu[cp];
+        eprintf("{:s}",vms.stickText);
+        if(sub == 0){mainMenu_UI(cp);}
+        else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
+        else if(sub == 2){blankMenu(cp);} //가방
+        else if(sub == 3){blankMenu(cp);} //포켓몬
+        else if(sub == 4){blankMenu(cp);} //도움말
+        else if(sub == 5){blankMenu(cp);} //옵션
+    }
+}
+
+function mainMenu_UI(cp){
+    const index = pps.selectMenu[cp];
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        t.insert(0);
+        t.appendf("\t\t\x1D메뉴\n\n");
+        t.appendf("\t\t{:s}\x04도감\n",pps.selectIcon1[index]);
+        t.appendf("\t\t{:s}\x04가방\n",pps.selectIcon2[index]);
+        t.appendf("\t\t{:s}\x04포켓몬\n",pps.selectIcon3[index]);
+        t.appendf("\t\t{:s}\x04도움말\n",pps.selectIcon4[index]);
+        t.appendf("\t\t{:s}\x04옵션\n",pps.selectIcon5[index]);
+        t.appendf("\t\t{:s}\x04닫기\n",pps.selectIcon6[index]);
+    }
+    t.DisplayAt(0);
+    mainMenu_Action(cp, index);
+}
+
+function mainMenu_Action(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 5;}
+        else{pps.selectMenu[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){pps.selectMenu[cp] = 0;}
+        else{pps.selectMenu[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        mainMenu[cp] = 0;
+        vms.removeText();
+        pmu.changeMoveState(cp, true);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        if(index == 5){ //닫기
+            mainMenu[cp] = 0;
+            vms.removeText();
+            pmu.changeMoveState(cp, true);
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        }
+        else{
+            subMenu[cp] = index+1;
+            saveIndex[cp] = pps.selectMenu[cp];
+            pps.selectMenu[cp] = 0;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}
+
+/*
+유저메뉴
+
+도감
+가방
+포켓몬
+도움말
+옵션
+닫기
+*/

@@ -5,6 +5,8 @@ const s = StringBuffer(1024);
 const playerPokemonList     = EUDArray(4*18);   //플레이어가 들고다니는 포켓몬리스트 index:6부터는 PC저장된 포켓몬리스트임
 const computerPokemonList   = EUDArray(4*6);    //플레이어와 상대하는 컴퓨터의 포켓몬데이터
 
+const evoTypeText       = [Db("없음"),Db("친밀도"),Db("레벨"),Db("진화의돌"),Db("통신교환"),Db("특정포켓몬"),Db("아이템")];
+
 //포켓몬마다 다른 값을 가지는 개체정보 오브젝트
 object myPokemon {
     var index;      //0포켓몬사전Index (빈자리는 999)

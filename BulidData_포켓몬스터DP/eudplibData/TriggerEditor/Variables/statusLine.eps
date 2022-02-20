@@ -1,3 +1,4 @@
+import Interface.userGUI as iug;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
 
@@ -5,8 +6,8 @@ import Variables.locationInfo as vli;
 
 
 function printStatusLine(cp){
-    if(pps.battleState[cp] == 0){
-        eprintf("{:s}", vli.mapName[pps.currentLocation[cp]]);
+    if(pps.battleState[cp] == 0 && iug.mainMenu[cp] == 0){
+        eprintf("\x1C┃ \x17메뉴 ESC \x1C┃ \x04{:s} \x1C┃", vli.mapName[pps.currentLocation[cp]]);
     }
 }
 

@@ -1,0 +1,147 @@
+import Interface.userGUI as iug;
+import Player.playerSetting as pps;
+import Pokemon.calculateMethod as pcm;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.myPokemon as pmp;
+import Pokemon.weakRelation as pwr;
+
+
+const t = StringBuffer(1024);
+const pageNumber    = 156; //6의 배수
+const bookbookLastPage  = pageNumber/6 - 1;
+
+const sinoBook      = EUDArray(4*pageNumber);
+const bookSubMenu   = PVariable();
+const bookIndex     = PVariable();
+const bookPage      = PVariable();
+
+function subMenu_BookAction(cp, index);
+function subMenu_BookInfo(cp, height);
+function subMenu_BookInfoAction(cp);
+function subMenu_Book(cp, height){
+    if(bookSubMenu[cp] == 0){
+        const index = bookIndex[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            const cp200 = cp*pageNumber;
+            const page = 6*bookPage[cp];
+            t.insert(0);
+            t.appendf("\t\t\x1D신오도감 \x1E({}/{})\n\n",bookPage[cp]+1,bookLastPage+1);
+            //index 0
+            if(sinoBook[cp200+page+0] && page+0 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+0]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+1,pps.selectIcon1[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+1,pps.selectIcon1[index]);}
+            //index 1
+            if(sinoBook[cp200+page+1] && page+1 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+1]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+2,pps.selectIcon2[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+2,pps.selectIcon2[index]);}
+            //index 2
+            if(sinoBook[cp200+page+2] && page+2 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+2]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+3,pps.selectIcon3[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+3,pps.selectIcon3[index]);}
+            //index 3
+            if(sinoBook[cp200+page+3] && page+3 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+3]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+4,pps.selectIcon4[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+4,pps.selectIcon4[index]);}
+            //index 4
+            if(sinoBook[cp200+page+4] && page+4 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+4]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+5,pps.selectIcon5[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+5,pps.selectIcon5[index]);}
+            //index 5
+            if(sinoBook[cp200+page+5] && page+5 < ppi.pokemonNum){
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+5]);
+                t.appendf("\t\t{:s}\x04No.{} {:s}",page+6,pps.selectIcon6[index],pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???",page+6,pps.selectIcon6[index]);}
+        }
+        t.DisplayAt(height);
+        subMenu_BookAction(cp, index);
+    }
+    else{
+        subMenu_BookInfo(cp, height);
+        subMenu_BookInfoAction(cp);
+    }
+}
+
+function nextPage(cp, value){
+    if(value){
+        if(bookPage[cp] < bookLastPage){bookPage[cp] += 1;}
+        else{bookPage[cp] = 0;}
+    }
+    else{
+        if(bookPage[cp] > 0){bookPage[cp] -= 1;}
+        else{bookPage[cp] = bookLastPage;}
+    }
+}
+
+function subMenu_BookAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){bookIndex[cp] = 5; nextPage(cp, 0);}
+        else{bookIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){bookIndex[cp] = 0; nextPage(cp, 1);}
+        else{bookIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMenu[cp] = 0;
+        pps.selectMenu[cp] = iug.saveIndex[cp];
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+    //결정
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        bookSubMenu[cp] = 6*bookPage[cp]+bookIndex[cp]+1;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+}
+
+function subMenu_BookInfo(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const pokemonIndex = bookSubMenu[cp]-1;
+        const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemonIndex]);
+        const pkn = ppi.Pokemon2.cast(pk.next);
+
+        const type1, type2 = pcm.divideType(pk.type);
+        const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
+
+        t.insert(0);
+        t.appendf("\t\t\x1DNo.{} {:s}\n\n",pk.book, pk.name);
+        t.appendf("\t\t{:s}{:s} \x04타입\n",pwr.typeText[type1],pwr.typeText[type2]);
+        t.appendf("\t\t\x04체력 \x1E{} \x04공격 \x1E{}\n",hp,atk);
+        t.appendf("\t\t\x04방어 \x1E{} \x04스피드 \x1E{}\n",amr,spd);
+        if(pkn.evoTarget != 0){
+            const ek = ppi.Pokemon1.cast(ppi.pokemonList[pkn.evoTarget]);
+            const evoType, evoValue = pcm.divideType(pkn.evoCond);
+            t.appendf("\t\t\x04다음진화 \x17{:s}\n",ek.name);
+            if(evoType == 2){t.appendf("\t\t\x04진화조건 \x17{:s} \x1ELv.{}\n",pmp.evoTypeText[evoType],evoValue);}
+            else{t.appendf("\t\t\x04진화조건 \x17{:s}\n",pmp.evoTypeText[evoType]);}
+        }
+        else{
+            t.appendf("\t\t\x04다음진화 \x17없음\n");
+            t.appendf("\t\t\x04진화조건 \x17없음\n");
+        }
+        t.appendf("\t\t\x04뒤로가기");
+    }
+    t.DisplayAt(height);
+}
+
+function subMenu_BookInfoAction(cp){
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick") || Deaths(cp, Exactly, 8, "A Stick")){
+        bookSubMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+}

@@ -19,6 +19,7 @@ __lenAddr__ : 0x58D90C
 [MSQC]
 QCDebug : False
 MouseDown(R) : A Key, 1
+ESC; NotTyping : A Key, 2
 F; NotTyping : A Key, 16
 W; NotTyping : A Stick, 1
 S; NotTyping : A Stick, 2
