@@ -1,5 +1,7 @@
 import Pokemon.calculateMethod as pcm;
 import Pokemon.pokemonStatus as pps;
+import Variables.language as vl;
+import convertDb as e;
 
 /*상성관계
 효과없음 1 (0)
@@ -38,7 +40,12 @@ const calculateTable = [
     3, 3, 4, 4
 ];
 
-const typeText = [Db(''),Db('노말'),Db('불꽃'),Db('물'),Db('전기'),Db('풀'),Db('얼음'),Db('격투'),Db('독'),Db('땅'),Db('비행'),Db('에스퍼'),Db('벌레'),Db('바위'),Db('고스트'),Db('드래곤'),Db('악'),Db('강철')];
+const typeText      = [
+    Db(''),Db('\x04노말'),Db('\x11불꽃'),Db('\x0E물'),Db('\x17전기'),Db('\x07풀'),Db('\x1F얼음'),Db('\x08격투'),Db('\x10독'),Db('\x15땅'),Db('\x1B비행'),Db('\x1D에스퍼'),Db('\x18벌레'),Db('\x02바위'),Db('\x10고스트'),Db('\x1C드래곤'),Db('\x1E악'),Db('\x16강철')
+];
+const typeEPDText   = [
+    e.eDb(''),e.eDb('\x04노말'),e.eDb('\x11불꽃'),e.eDb('\x0E물'),e.eDb('\x17전기'),e.eDb('\x07풀'),e.eDb('\x1F얼음'),e.eDb('\x08격투'),e.eDb('\x10독'),e.eDb('\x15땅'),e.eDb('\x1B비행'),e.eDb('\x1D에스퍼'),e.eDb('\x18벌레'),e.eDb('\x02바위'),e.eDb('\x10고스트'),e.eDb('\x1C드래곤'),e.eDb('\x1E악'),e.eDb('\x16강철')
+];
 const weakText = [Db('효과없음'),Db('효과별로'),Db('상성없음'),Db('효과굉장')];
 
 function weakInit(){
@@ -49,13 +56,13 @@ function weakInit(){
 }
 
 function loadWeak(me, you){
-    if(me == 0 || you == 0){return 0;}
+    if(me == 0 || you == 0){return 3;}
     const index = 17*(me-1) + (you-1);
     return weakTable[index];
 }
 
 function calculateWeak(me1, me2){
-    if(me1 == 0 || me2 == 0){return 0;}
+    if(me1 == 0 || me2 == 0){return 3;}
     const index = 4*(me1-1) + (me2-1);
     return calculateTable[index];
 }
@@ -88,9 +95,9 @@ function calculateWeak_PVE(cp, cp_type, tp_type){
     const tp_weak = EUDArray(2);
     for(var i=0; i<2; i++){
         const temp_tp = EUDArray(2);
-        if(typeList[i]){ //타입이 있는 경우
-            temp_tp[0] = loadWeak(typeList[2], typeList[i]);
-            temp_tp[1] = loadWeak(typeList[3], typeList[i]);
+        if(typeList[i+2]){ //타입이 있는 경우
+            temp_tp[0] = loadWeak(typeList[i+2], typeList[0]);
+            temp_tp[1] = loadWeak(typeList[i+2], typeList[1]);
             tp_weak[i] = calculateWeak(temp_tp[0], temp_tp[1]);
         }
         else{ //타입이 없는 경우
@@ -99,6 +106,14 @@ function calculateWeak_PVE(cp, cp_type, tp_type){
     }
     const tp_weak_last = calculateWeak(tp_weak[0], tp_weak[1])-1;
     bwrite(0x662180 + pUnit, tp_weak_last); //유닛타입(독립,소형,중형,대형)
+
+    const s = StringBuffer(1024);
+    s.printf("내상성 {}+{}={} 상대상성 {}+{}={}",cp_weak[0],cp_weak[1],cp_weak_last,tp_weak[0],tp_weak[1],tp_weak_last);
+    s.printf("\x04내 포켓몬은 상대에게 \x1E{:s} \x04입니다.\n\x04상대 포켓몬은 나에게 \x1E{:s} \x04입니다.\n",weakText[cp_weak_last],weakText[tp_weak_last]);
+
+    const tbl = 1303;
+    vl.setPokemonTypeTbl(cp, tbl+cp, typeList[0], typeList[1]);
+    vl.setPokemonTypeTbl(cp+4, tbl+cp+4, typeList[2], typeList[3]);
 }
 
 

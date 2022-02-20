@@ -4,6 +4,7 @@ import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
 import Pokemon.weaponData as pwd;
 import Pokemon.calculateMethod as pcm;
+import Variables.language as vl;
 
 const playerPokemonUnit     = [1, 2, 8, 19];
 const computerPokemonUnit   = [20, 21, 43, 44];
@@ -53,9 +54,7 @@ function settingPokemon(cp, type, pokemon){
     const z = StringBuffer(1024);
     const unitType = returnPokemonUnit(cp, type);
     const weaponType = returnPokemonWeapon(cp, type);
-    // var mk = 0;
-    // if(cp <= 3){mk = pmp.myPokemon.cast(pmp.playerPokemonList[cp*18+pokemon]);}
-    // else{mk = pmp.myPokemon.cast(pmp.computerPokemonList[cp*6+pokemon]);}
+
     const mk = pmp.myPokemon.cast(retrunPokemonList(cp, type, pokemon));
     const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index]);
     const pkn = ppi.Pokemon2.cast(pk.next);
@@ -75,10 +74,11 @@ function settingPokemon(cp, type, pokemon){
     wwrite(0x662F88 + 2*unitType, portrait); //유닛포트레잇
     dwwrite(0x662350 + 4*unitType, unitHP*256); //유닛체력
     bwrite(0x65FEC8 + unitType, unitArmor); //유닛아머
+    bwrite(0x662DB8 + unitType, range); //유닛부가사거리
 
     dwwrite(0x656CA8 + 4*weaponType, wp.grp); //무기외형
     wwrite(0x656EB0 + 2*weaponType, unitAtk); //무기공격력
-    dwwrite(0x657470 + 4*weaponType, range); //무기사거리
+    dwwrite(0x657470 + 4*weaponType, range*32); //무기사거리
     bwrite(0x656FB8 + weaponType, unitSpeed); //무기공격속도 (임시설정, 이거 이대로 넣으면 안됨!!!!!!!!!!!!)
     bwrite(0x656670 + weaponType, wp.action); //무기투사방식
     wwrite(0x656780 + 2*weaponType, wp.icon); //무기아이콘
@@ -99,5 +99,6 @@ function settingPokemon(cp, type, pokemon){
     bbs.pokemonName[cp4] = pk.name;
     bbs.pokemonLevel[cp4] = mk.level;
     bbs.pokemonHP[cp4] = unitHP;
+    vl.setPokemonNameTbl(cp, unitType+1, pk.nameEPD);
     return unitType;
 }

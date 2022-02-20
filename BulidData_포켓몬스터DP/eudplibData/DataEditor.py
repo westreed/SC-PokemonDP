@@ -19,12 +19,20 @@ def onPluginStart():
         SetMemory(0x66317C, Add, -14),# units:Elevation Level  index:44    from 18 To 4
         SetMemory(0x66317C, Add, -3584),# units:Elevation Level  index:45    from 18 To 4
         SetMemory(0x663DD0, Add, -2),# units:Rank/Sublabel  index:0    from 2 To 0
+        SetMemory(0x663DD0, Add, -1024),# units:Rank/Sublabel  index:1    from 5 To 1
+        SetMemory(0x663DD0, Add, -262144),# units:Rank/Sublabel  index:2    from 6 To 2
         SetMemory(0x663DD4, Add, -16777216),# units:Rank/Sublabel  index:7    from 1 To 0
+        SetMemory(0x663DD8, Add, -7),# units:Rank/Sublabel  index:8    from 10 To 3
         SetMemory(0x663DD8, Add, -2816),# units:Rank/Sublabel  index:9    from 11 To 0
         SetMemory(0x663DD8, Add, -786432),# units:Rank/Sublabel  index:10    from 12 To 0
         SetMemory(0x663DE0, Add, -18),# units:Rank/Sublabel  index:16    from 18 To 0
+        SetMemory(0x663DE0, Add, -218103808),# units:Rank/Sublabel  index:19    from 17 To 4
+        SetMemory(0x663DE4, Add, -12),# units:Rank/Sublabel  index:20    from 17 To 5
+        SetMemory(0x663DE4, Add, -2048),# units:Rank/Sublabel  index:21    from 14 To 6
         SetMemory(0x663DF0, Add, -4),# units:Rank/Sublabel  index:32    from 4 To 0
         SetMemory(0x663DF0, Add, -196608),# units:Rank/Sublabel  index:34    from 3 To 0
+        SetMemory(0x663DF8, Add, -50331648),# units:Rank/Sublabel  index:43    from 10 To 7
+        SetMemory(0x663DFC, Add, -3),# units:Rank/Sublabel  index:44    from 11 To 8
         SetMemory(0x663E10, Add, -768),# units:Rank/Sublabel  index:65    from 3 To 0
         SetMemory(0x663E34, Add, -22),# units:Rank/Sublabel  index:100    from 22 To 0
         SetMemory(0x662EC0, Add, -11337728),# units:Comp AI Idle  index:34    from 175 To 2
@@ -133,13 +141,21 @@ def onPluginStart():
         SetMemory(0x663264, Add, 167772160),# units:Sight Range  index:47    from 5 To 15
         SetMemory(0x663268, Add, 655360),# units:Sight Range  index:50    from 5 To 15
         SetMemory(0x6635D0, Add, 60),# units:Armor Upgrade  index:0    from 0 To 60
+        SetMemory(0x6635D0, Add, 768),# units:Armor Upgrade  index:1    from 0 To 3
+        SetMemory(0x6635D0, Add, 131072),# units:Armor Upgrade  index:2    from 1 To 3
         SetMemory(0x6635D4, Add, 1006632960),# units:Armor Upgrade  index:7    from 0 To 60
+        SetMemory(0x6635D8, Add, 1),# units:Armor Upgrade  index:8    from 2 To 3
         SetMemory(0x6635D8, Add, 14848),# units:Armor Upgrade  index:9    from 2 To 60
         SetMemory(0x6635D8, Add, 3932160),# units:Armor Upgrade  index:10    from 0 To 60
         SetMemory(0x6635DC, Add, 1006632960),# units:Armor Upgrade  index:15    from 0 To 60
         SetMemory(0x6635E0, Add, 60),# units:Armor Upgrade  index:16    from 0 To 60
+        SetMemory(0x6635E0, Add, 33554432),# units:Armor Upgrade  index:19    from 1 To 3
+        SetMemory(0x6635E4, Add, 3),# units:Armor Upgrade  index:20    from 0 To 3
+        SetMemory(0x6635E4, Add, 256),# units:Armor Upgrade  index:21    from 2 To 3
         SetMemory(0x6635F0, Add, 60),# units:Armor Upgrade  index:32    from 0 To 60
         SetMemory(0x6635F0, Add, 3932160),# units:Armor Upgrade  index:34    from 0 To 60
+        SetMemory(0x6635F8, Add, -16777216),# units:Armor Upgrade  index:43    from 4 To 3
+        SetMemory(0x6635FC, Add, -1),# units:Armor Upgrade  index:44    from 4 To 3
         SetMemory(0x6635FC, Add, 14336),# units:Armor Upgrade  index:45    from 4 To 60
         SetMemory(0x6635FC, Add, 939524096),# units:Armor Upgrade  index:47    from 4 To 60
         SetMemory(0x663610, Add, 14080),# units:Armor Upgrade  index:65    from 5 To 60
@@ -362,6 +378,7 @@ def onPluginStart():
         SetMemory(0x65FD5C, Add, -4915200),# units:Vespene Cost  index:47    from 75 To 0
         SetMemory(0x6637C4, Add, 8192),# units:Staredit Group Flags  index:37    from 9 To 41
         SetMemory(0x6637C4, Add, 2097152),# units:Staredit Group Flags  index:38    from 9 To 41
+        SetMemory(0x6637CC, Add, 1),# units:Staredit Group Flags  index:44    from 9 To 10
         SetMemory(0x6637CC, Add, 2097152),# units:Staredit Group Flags  index:46    from 9 To 41
         SetMemory(0x6637D0, Add, 2097152),# units:Staredit Group Flags  index:50    from 9 To 41
         SetMemory(0x6637D4, Add, 32),# units:Staredit Group Flags  index:52    from 9 To 41

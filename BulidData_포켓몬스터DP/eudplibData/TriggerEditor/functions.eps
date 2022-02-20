@@ -101,7 +101,7 @@ function GetDeath(player, unit:TrgUnit){
 
 function ButtonRefresh(){
     const epd = SetNextUnitEPD();
-    CreateUnit(1, 45, "[Button]Refresh", 7);
+    CreateUnit(1, 45, "Temp", 7);
     SetMemoryXEPD(epd+68, SetTo, 1, 0xFFFF);
 }
 
