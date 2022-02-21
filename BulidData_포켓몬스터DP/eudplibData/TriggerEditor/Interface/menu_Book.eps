@@ -8,10 +8,8 @@ import Pokemon.weakRelation as pwr;
 
 const t = StringBuffer(1024);
 const pageNumber    = 156; //6의 배수
-const bookbookLastPage  = pageNumber/6 - 1;
-
+const bookLastPage  = pageNumber/6 - 1;
 const sinoBook      = EUDArray(4*pageNumber);
-const bookSubMenu   = PVariable();
 const bookIndex     = PVariable();
 const bookPage      = PVariable();
 
@@ -19,7 +17,7 @@ function subMenu_BookAction(cp, index);
 function subMenu_BookInfo(cp, height);
 function subMenu_BookInfoAction(cp);
 function subMenu_Book(cp, height){
-    if(bookSubMenu[cp] == 0){
+    if(iug.subMiniMenu[cp] == 0){
         const index = bookIndex[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
@@ -28,35 +26,35 @@ function subMenu_Book(cp, height){
             t.insert(0);
             t.appendf("\t\t\x1D신오도감 \x1E({}/{})\n\n",bookPage[cp]+1,bookLastPage+1);
             //index 0
-            if(sinoBook[cp200+page+0] && page+0 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+0] && page+0 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+0]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+1,pps.selectIcon1[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+1,pps.selectIcon1[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon1[index],page+1,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon1[index],page+1);}
             //index 1
-            if(sinoBook[cp200+page+1] && page+1 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+1] && page+1 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+1]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+2,pps.selectIcon2[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+2,pps.selectIcon2[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon2[index],page+2,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon2[index],page+2);}
             //index 2
-            if(sinoBook[cp200+page+2] && page+2 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+2] && page+2 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+2]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+3,pps.selectIcon3[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+3,pps.selectIcon3[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon3[index],page+3,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon3[index],page+3);}
             //index 3
-            if(sinoBook[cp200+page+3] && page+3 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+3] && page+3 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+3]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+4,pps.selectIcon4[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+4,pps.selectIcon4[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon4[index],page+4,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon4[index],page+4);}
             //index 4
-            if(sinoBook[cp200+page+4] && page+4 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+4] && page+4 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+4]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",page+5,pps.selectIcon5[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",page+5,pps.selectIcon5[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon5[index],page+5,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon5[index],page+5);}
             //index 5
-            if(sinoBook[cp200+page+5] && page+5 < ppi.pokemonNum){
+            if(!sinoBook[cp200+page+5] && page+5 < ppi.pokemonNum){
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+5]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}",page+6,pps.selectIcon6[index],pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???",page+6,pps.selectIcon6[index]);}
+                t.appendf("\t\t{:s}\x04No.{} {:s}",pps.selectIcon6[index],page+6,pk.name);
+            }else{t.appendf("\t\t{:s}\x04No.{} ???",pps.selectIcon6[index],page+6);}
         }
         t.DisplayAt(height);
         subMenu_BookAction(cp, index);
@@ -94,22 +92,25 @@ function subMenu_BookAction(cp, index){
     //뒤로가기
     if(Deaths(cp, Exactly, 4, "A Stick")){
         iug.subMenu[cp] = 0;
-        pps.selectMenu[cp] = iug.saveIndex[cp];
         pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
     //결정
     if(Deaths(cp, Exactly, 8, "A Stick")){
-        bookSubMenu[cp] = 6*bookPage[cp]+bookIndex[cp]+1;
-        pps.guiUpdate[cp] = 1;
-        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        const cp200 = cp*pageNumber;
+        const page = 6*bookPage[cp];
+        if(!sinoBook[cp200+page+bookIndex[cp]] && page+bookIndex[cp] < ppi.pokemonNum){
+            iug.subMiniMenu[cp] = page+bookIndex[cp]+1;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
     }
 }
 
 function subMenu_BookInfo(cp, height){
     if(pps.guiUpdate[cp]){
         pps.guiUpdate[cp] = 0;
-        const pokemonIndex = bookSubMenu[cp]-1;
+        const pokemonIndex = iug.subMiniMenu[cp]-1;
         const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemonIndex]);
         const pkn = ppi.Pokemon2.cast(pk.next);
 
@@ -122,9 +123,15 @@ function subMenu_BookInfo(cp, height){
         t.appendf("\t\t\x04체력 \x1E{} \x04공격 \x1E{}\n",hp,atk);
         t.appendf("\t\t\x04방어 \x1E{} \x04스피드 \x1E{}\n",amr,spd);
         if(pkn.evoTarget != 0){
-            const ek = ppi.Pokemon1.cast(ppi.pokemonList[pkn.evoTarget]);
+            const target1, target2 = pcm.divideData256(pkn.evoTarget);
+            const ek = ppi.Pokemon1.cast(ppi.pokemonList[target1]);
             const evoType, evoValue = pcm.divideType(pkn.evoCond);
-            t.appendf("\t\t\x04다음진화 \x17{:s}\n",ek.name);
+            t.appendf("\t\t\x04다음진화 \x17{:s}",ek.name);
+            if(target2){
+                const ek2 = ppi.Pokemon1.cast(ppi.pokemonList[target2]);
+                t.appendf(",{:s} \x1E(랜덤)\n",ek2.name);
+            }
+            else{t.appendf("\n");}
             if(evoType == 2){t.appendf("\t\t\x04진화조건 \x17{:s} \x1ELv.{}\n",pmp.evoTypeText[evoType],evoValue);}
             else{t.appendf("\t\t\x04진화조건 \x17{:s}\n",pmp.evoTypeText[evoType]);}
         }
@@ -132,15 +139,15 @@ function subMenu_BookInfo(cp, height){
             t.appendf("\t\t\x04다음진화 \x17없음\n");
             t.appendf("\t\t\x04진화조건 \x17없음\n");
         }
-        t.appendf("\t\t\x04뒤로가기");
+        t.appendf("\t\t\x1E뒤로가기 (A)");
     }
     t.DisplayAt(height);
 }
 
 function subMenu_BookInfoAction(cp){
     //뒤로가기
-    if(Deaths(cp, Exactly, 4, "A Stick") || Deaths(cp, Exactly, 8, "A Stick")){
-        bookSubMenu[cp] = 0;
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMiniMenu[cp] = 0;
         pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }

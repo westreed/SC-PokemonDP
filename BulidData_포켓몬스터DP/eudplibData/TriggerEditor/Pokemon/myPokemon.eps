@@ -9,24 +9,30 @@ const evoTypeText       = [Db("없음"),Db("친밀도"),Db("레벨"),Db("진화�
 
 //포켓몬마다 다른 값을 가지는 개체정보 오브젝트
 object myPokemon {
-    var index;      //0포켓몬사전Index (빈자리는 999)
+    var index;      //0포켓몬사전Index (빈자리는 0)(포켓몬인덱스는 +1해서 저장됨)
     var level;      //1포켓몬레벨
     var hitpoint;   //2포켓몬체력
     var IVs;        //3포켓몬개체값 (random 0~31)
     var ownEXP;     //4보유경험치
     var item;       //5지니고 있는 아이템 (통신교환)
+    var state;      //6포켓몬상태 (0:활발, 1:기절)
+    var battle;     //7배틀참여여부 (경험치계산)
 };
 
 function pokemonListInit(){
     for(var i=0; i<playerPokemonList._arrlen; i++){
         playerPokemonList[i] = myPokemon.alloc();
-        const mpk = myPokemon.cast(playerPokemonList[i]);
-        mpk.index = 999;
     }
     for(var i=0; i<computerPokemonList._arrlen; i++){
         computerPokemonList[i] = myPokemon.alloc();
-        const cpk = myPokemon.cast(computerPokemonList[i]);
-        cpk.index = 999;
+    }
+}
+
+function resetComputerList(cp){
+    const cp6 = cp*6;
+    for (var i=0; i<6; i++){
+        const cpk = myPokemon.cast(computerPokemonList[cp6+i]);
+        cpk.index = 0;
     }
 }
 
@@ -39,7 +45,7 @@ function setPokemonData(cp, pokemon, index, lv, hitpoints, IV){
     const mpk = myPokemon.cast(playerPokemonList[index]);
 
     //객체 캐스팅 종료 - 개체데이터 생성하기
-    mpk.index = pokemon;
+    mpk.index = pokemon+1;
     mpk.level = lv;
     if(IV == 0){mpk.IVs = pcm.createIVs();} //개체값 생성하기
     else{mpk.IVs = IV;} //야생포켓몬의 개체값 가져오기
@@ -62,7 +68,7 @@ function setComputerData(cp, pokemon, index, lv, IV){
     const mpk = myPokemon.cast(computerPokemonList[6*cp+index]);
 
     //객체 캐스팅 종료 - 개체데이터 생성하기
-    mpk.index = pokemon;
+    mpk.index = pokemon+1;
     mpk.level = lv;
     if(IV == 0){mpk.IVs = pcm.createIVs();} //개체값 생성하기
     else{mpk.IVs = IV;} //정해진 개체값 대입하기
@@ -76,16 +82,16 @@ function catchPokemon(cp, pokemon, level, hitpoints, IV){
     const cp18 = 18*cp;
     for(var i=0; i<6; i++){
         //포켓몬 리스트에 자리가 있는 경우
-        const mpk = myPokemon.cast(computerPokemonList[cp18+i]);
-        if(mpk != 999){
+        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        if(mpk.index == 0){
             setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
             return;
         }
     }
     //6개의 자리에 공간이 이미 다 찬 경우 (PC저장)
     for(var i=6; i<18; i++){
-        const mpk = myPokemon.cast(computerPokemonList[cp18+i]);
-        if(mpk != 999){
+        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        if(mpk.index == 0){
             setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
             const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
             s.printf("\x17！\x1E{:s}\x04은(는) 이수진의 PC 박스로 전송되었다!",pk.name);
@@ -95,6 +101,44 @@ function catchPokemon(cp, pokemon, level, hitpoints, IV){
     //그래도 없는 경우
     //(이 경우는 아마 없을거임, 더이상 공간이 없으면 포켓볼 자체를 못쓰게 막는게 효율적임)
     DisplayText("\x08！\x04포켓몬을 저장할 공간이 없습니다.");
+}
+
+//기절하지 않은 포켓몬 중 가장 인덱스가 낮은 인덱스 호출
+function returnPlayerIndex(cp){
+    const cp18 = 18*cp;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        if(mpk.index > 0 && mpk.state == 0){return i;}
+    }
+    return 10; //없음
+}
+
+//컴퓨터의 포켓몬 중 기절하지 않은 포켓몬 가져오기
+function returnComputerIndex(cp){
+    const cp6 = 6*cp;
+    for(var i=0; i<6; i++){
+        const cpk = myPokemon.cast(computerPokemonList[cp6+i]);
+        if(cpk.index > 0 && cpk.state == 0){return i;}
+    }
+    return 10; //없음
+}
+
+function returnJoinBattle(cp){
+    const cp18 = 18*cp;
+    var num = 0;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        if(mpk.index > 0 && mpk.battle == 1){num += 1;}
+    }
+    return num;
+}
+
+function resetPokemonBattleData(cp){
+    const cp18 = 18*cp;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        mpk.battle = 0;
+    }
 }
 
 /*

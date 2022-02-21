@@ -7,31 +7,158 @@ import Player.playerSetting as pps;
 const t = StringBuffer(1024);
 const bagMax        = 18;
 const bagLastPage   = bagMax/6 - 1;
-const BagItemList   = EUDArray(4*bagMax);
+const bagItemList   = EUDArray(4*bagMax);
 const bagNumList    = EUDArray(4*bagMax);
 const bagIndex      = PVariable();
-const bagSubMenu    = PVariable();
 const bagPage       = PVariable();
 
 
+function subMenu_BagAction(cp, index);
+function subMenu_BagInfo(cp, height);
+function subMenu_BagInfoAction(cp);
 function subMenu_Book(cp, height){
-    if(bagSubMenu[cp] == 0){
+    if(iug.subMiniMenu[cp] == 0){
         const index = bagIndex[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
-            const cp200 = cp*bagMax;
+            const cpBag = cp*bagMax;
             const page = 6*bagPage[cp];
+            const cpPage = cpBag+page;
             t.insert(0);
             t.appendf("\t\t\x1D가방 \x1E({}/{})\n\n",bagPage[cp]+1,bagLastPage+1);
 
-            t.appendf("\t\t\x04");
+            //index 0
+            if(bagItemList[cpPage+0]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+0]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon1[index],item.name, bagNumList[cpPage+0]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon1[index]);}
+            //index 1
+            if(bagItemList[cpPage+1]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+1]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon2[index],item.name, bagNumList[cpPage+1]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon2[index]);}
+            //index 2
+            if(bagItemList[cpPage+2]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+2]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon3[index],item.name, bagNumList[cpPage+2]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon3[index]);}
+            //index 3
+            if(bagItemList[cpPage+3]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+3]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon4[index],item.name, bagNumList[cpPage+3]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon4[index]);}
+            //index 4
+            if(bagItemList[cpPage+4]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+4]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon5[index],item.name, bagNumList[cpPage+4]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon5[index]);}
+            //index 5
+            if(bagItemList[cpPage+5]){
+                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+5]-1]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon6[index],item.name, bagNumList[cpPage+5]);
+            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon6[index]);}
 
         }
         t.DisplayAt(height);
-        subMenu_BookAction(cp, index);
+        subMenu_BagAction(cp, index);
     }
     else{
-        subMenu_BookInfo(cp, height);
-        subMenu_BookInfoAction(cp);
+        subMenu_BagInfo(cp, height);
+        subMenu_BagInfoAction(cp);
+    }
+}
+
+function nextPage(cp, value){
+    if(value){
+        if(bagPage[cp] < bagLastPage){bagPage[cp] += 1;}
+        else{bagPage[cp] = 0;}
+    }
+    else{
+        if(bagPage[cp] > 0){bagPage[cp] -= 1;}
+        else{bagPage[cp] = bagLastPage;}
+    }
+}
+
+function subMenu_BagAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){bagIndex[cp] = 5; nextPage(cp, 0);}
+        else{bagIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){bagIndex[cp] = 0; nextPage(cp, 1);}
+        else{bagIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+    //결정
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const cpBag = cp*bagMax;
+        const page = 6*bagPage[cp];
+        const cpPage = cpBag+page;
+        if(bagItemList[cpPage+bagIndex[cp]]){
+            iug.subMiniMenu[cp] = bagItemList[cpPage+bagIndex[cp]];
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}
+
+function addItem(cp, item, num){
+    const cpBag = cp*bagMax;
+    var blankIndex = bagMax+1;
+    for(var i=0; i<bagMax; i++){
+        //같은 아이템이 가방에 있는 경우
+        if(bagItemList[cpBag+i] == item+1){
+            bagNumList[cpBag+i] += num;
+            return;
+        }
+        //같은 아이템이 없는 경우를 대비해서 빈공간도 수색하기
+        if(blankIndex == bagMax+1 && bagItemList[cpBag+i] == 0){
+            blankIndex = i;
+        }
+    }
+    //같은 아이템이 없는 경우
+    if(blankIndex == bagMax+1){
+        //빈 공간이 없음
+        DisplayText("\x08！\x04가방에 공간이 없습니다.");
+    }
+    else{
+        bagItemList[cpBag+blankIndex] = item+1; //아이템값이 0부터 시작함.
+        bagNumList[cpBag+blankIndex] = num;
+    }
+}
+
+function subMenu_BagInfo(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const cpBag = cp*bagMax;
+        const itemIndex = iug.subMiniMenu[cp]-1;
+        const itemNum   = bagNumList[cpBag+6*bagPage[cp]+bagIndex[cp]];
+        const it = iif.Item.cast(iif.itemList[itemIndex]);
+
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}개 보유)\n\n",it.name, itemNum);
+        t.appendf("\t\t\x04{:s}\n\n",it.text);
+        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemType[it.type]);
+        t.appendf("\t\t\x17사용하기 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)");
+    }
+    t.DisplayAt(height);
+}
+
+function subMenu_BagInfoAction(cp){
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMiniMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
 }

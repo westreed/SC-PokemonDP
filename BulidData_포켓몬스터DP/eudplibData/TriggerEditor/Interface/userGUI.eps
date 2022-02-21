@@ -3,9 +3,7 @@ import functions as fc;
 import Player.playerSetting as pps;
 import Player.movementUnit as pmu;
 
-import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
-import Pokemon.pokemonBook as ppb;
 
 import Interface.menu_Book as imk;
 import Interface.menu_Bag as imb;
@@ -33,13 +31,11 @@ ex. 서브메뉴 인덱스가 1이면 가방 열기
 
 
 const t = StringBuffer(1024);
-const subMenu   = PVariable(); //서브메뉴 호출인덱스
-const mainMenu  = PVariable(); //메인메뉴 호출
-const saveIndex = PVariable(); //서브메뉴 호출시 메인메뉴의 인덱스 위치 저장하기
+const subMenu       = PVariable(); //서브메뉴 호출인덱스
+const mainMenu      = PVariable(); //메인메뉴 호출
+const subMiniMenu   = PVariable(); //서브메뉴의 미니메뉴
 
 function blankMenu(cp){
-    t.printf("임시");
-    pps.selectMenu[cp] = saveIndex[cp];
     subMenu[cp] = 0;
     pps.guiUpdate[cp] = 1;
 }
@@ -59,6 +55,8 @@ function printGUI(cp){
         }
         else{
             mainMenu[cp] = 0;
+            subMenu[cp] = 0;
+            subMiniMenu[cp] = 0;
             vms.removeText();
             pmu.changeMoveState(cp, true);
             PlayWAV("staredit\\wav\\GUI sel cursor.wav");
@@ -69,7 +67,7 @@ function printGUI(cp){
         eprintf("{:s}",vms.stickText);
         if(sub == 0){mainMenu_UI(cp);}
         else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
-        else if(sub == 2){blankMenu(cp);} //가방
+        else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
         else if(sub == 3){blankMenu(cp);} //포켓몬
         else if(sub == 4){blankMenu(cp);} //도움말
         else if(sub == 5){blankMenu(cp);} //옵션
@@ -93,6 +91,14 @@ function mainMenu_UI(cp){
     mainMenu_Action(cp, index);
 }
 
+function closeMainMenu(cp){
+    mainMenu[cp] = 0;
+    pps.selectMenu[cp] = 0;
+    vms.removeText();
+    pmu.changeMoveState(cp, true);
+    PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+}
+
 function mainMenu_Action(cp, index){
     if(Deaths(cp, Exactly, 1, "A Stick")){
         if(index == 0){pps.selectMenu[cp] = 5;}
@@ -107,22 +113,13 @@ function mainMenu_Action(cp, index){
         pps.guiUpdate[cp] = 1;
     }
     if(Deaths(cp, Exactly, 4, "A Stick")){
-        mainMenu[cp] = 0;
-        vms.removeText();
-        pmu.changeMoveState(cp, true);
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        closeMainMenu(cp);
     }
     if(Deaths(cp, Exactly, 8, "A Stick")){
-        if(index == 5){ //닫기
-            mainMenu[cp] = 0;
-            vms.removeText();
-            pmu.changeMoveState(cp, true);
-            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        }
+        //닫기
+        if(index == 5){closeMainMenu(cp);}
         else{
             subMenu[cp] = index+1;
-            saveIndex[cp] = pps.selectMenu[cp];
-            pps.selectMenu[cp] = 0;
             pps.guiUpdate[cp] = 1;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }

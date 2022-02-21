@@ -26,7 +26,7 @@ const mapMusic      = [
     //0~4
     4, 4, 5, 8, 6,
 ];
-//mapType 0:건물안 1:마을(포켓몬센터없음) 2:마을(포켓몬센터있음) 3:도시 4:도로 5:동굴(모든길에서적) 6:동굴(길에서안나옴)
+//mapType 0:건물안 1:마을(치료없음) 2:마을(치료있음) 3:도시 4:도로 5:동굴(모든길에서적) 6:동굴(길에서안나옴)
 const mapType       = [
     //0~4
     0, 1, 4, 4, 2,
@@ -62,9 +62,13 @@ function updateLocation(cp){
                     //현재 위치 바꾸기
                     pps.currentLocation[cp] = i;
                     const mapSet = mapType[i];
-                    if(mapSet == 1 || mapSet == 2 || mapSet == 3 || mapSet == 4){
+                    if(mapSet == 1 || mapSet == 2 || mapSet == 3){
                         //마지막으로 방문한 마을 갱신
                         pps.lastVisitVillage[cp] = i;
+                    }
+                    if(mapSet == 2 || mapSet == 3){
+                        //마지막으로 방문한 치료가능 위치 갱신
+                        pps.lastVisitHeal[cp] = i;
                     }
                     if(mapMusic[i] != pps.settingMusic[cp]){
                         //방문한 장소의 음악으로 변경하기

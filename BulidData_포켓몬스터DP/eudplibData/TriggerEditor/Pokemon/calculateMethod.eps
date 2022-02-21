@@ -94,6 +94,11 @@ function settingSpeed(spd){
     return (spd-5)/8;
 }
 
+//type:야생?트레이너? exp:개체경험치 lucky:cp의포켓몬이 행운의알을 들고 있는가? level:상대레벨
+function returnEXP(type, exp, lucky, level){
+    return (type*exp*lucky*level)/7;
+}
+
 // const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);
 // const po2 = ppi.Pokemon2.cast(po.next);
 // const hp, atk, amr, spd = pcm.divideStats(po.BTs);

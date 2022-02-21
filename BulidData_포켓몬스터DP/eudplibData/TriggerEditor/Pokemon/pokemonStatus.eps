@@ -51,14 +51,16 @@ object myPokemon {
     var item;       //5지니고 있는 아이템 (통신교환)
 };*/
 
+//type이 1인경우 유저, 0인 경우 컴퓨터
 function settingPokemon(cp, type, pokemon){
     const z = StringBuffer(1024);
     const unitType = returnPokemonUnit(cp, type);
     const weaponType = returnPokemonWeapon(cp, type);
 
     const mk = pmp.myPokemon.cast(retrunPokemonList(cp, type, pokemon));
-    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index]);
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index-1]);
     const pkn = ppi.Pokemon2.cast(pk.next);
+    if(type){mk.battle = 1;}
 
     const unitGrp, portrait = pcm.divideData256(pkn.unit);
     const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
@@ -98,6 +100,7 @@ function settingPokemon(cp, type, pokemon){
     var cp4 = 0;
     if(type) cp4 = cp;
     else cp4 = cp+4;
+    bbs.pokemonIndex[cp4] = mk.index;
     bbs.pokemonName[cp4] = pk.name;
     bbs.pokemonLevel[cp4] = mk.level;
     bbs.pokemonHP[cp4] = unitHP;

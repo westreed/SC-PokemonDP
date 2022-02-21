@@ -53,7 +53,11 @@ function printFlagText(cp){
             f.DisplayAt(3);
             printCheck[cp] = 1;
         }
-        else if(Bring(P5, Exactly, 1, 215, mLoc)){
+        else{printFlagEnd(cp);}
+    }
+    //진실호수근처
+    else if(currentLoc == 3){
+        if(Bring(P5, Exactly, 1, 215, mLoc)){
             f.insert(0);
             f.appendf("\n\x13{:s}\n",vms.sph1);
             f.appendf("\x13\x02↑진실호수 입구\n\x13\x02마음을 표현하는 호수\n");
