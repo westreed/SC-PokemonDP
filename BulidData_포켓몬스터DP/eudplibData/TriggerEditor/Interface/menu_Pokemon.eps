@@ -1,0 +1,75 @@
+import Interface.userGUI as iug;
+import Item.itemInfo as iif;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.myPokemon as pmp;
+import Player.playerSetting as pps;
+
+const t = StringBuffer(1024);
+const pokeIndex     = PVariable();
+
+/*
+고려해야할 것들
+
+배틀 상황에서 포켓몬 교체를 하려는 경우
+가방에서 포켓몬대상 아이템을 사용하려는 경우 (치료약, 지니게할 아이템 등등)
+*/
+
+
+function subMenu_PokemonAction(cp, index);
+function subMenu_Pokemon(cp, height){
+    if(iug.subMiniMenu[cp] == 0){
+        const index = pokeIndex[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            const cpPk = cp*pmp.userPokemonNum;
+            t.insert(0);
+            t.appendf("\t\t\x1D포켓몬\n\n");
+
+            for(var i=0; i<6; i++){
+                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
+                const icon = EUDArray.cast(pps.selectIconList[i]);
+                if(mpk.index){
+                    const mk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+                    t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}\n",icon[index], mpk.level, mk.name);
+                }else{t.appendf("\t\t{:s}\x04없음\n",icon[index]);}
+            }
+
+
+        }
+        t.DisplayAt(height);
+        subMenu_PokemonAction(cp, index);
+    }
+    else{
+    }
+}
+
+function subMenu_PokemonAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pokeIndex[cp] = 5;}
+        else{pokeIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){pokeIndex[cp] = 0;}
+        else{pokeIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+    //결정
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const cpPk = cp*pmp.userPokemonNum;
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+index]);
+        if(mpk.index > 0){
+            iug.subMiniMenu[cp] = index+1;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}

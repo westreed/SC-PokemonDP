@@ -2,7 +2,8 @@ import Pokemon.pokemonInfo as ppi;
 import Pokemon.calculateMethod as pcm;
 
 const s = StringBuffer(1024);
-const playerPokemonList     = EUDArray(4*18);   //플레이어가 들고다니는 포켓몬리스트 index:6부터는 PC저장된 포켓몬리스트임
+const userPokemonNum        = 18;
+const playerPokemonList     = EUDArray(4*userPokemonNum);   //플레이어가 들고다니는 포켓몬리스트 index:6부터는 PC저장된 포켓몬리스트임
 const computerPokemonList   = EUDArray(4*6);    //플레이어와 상대하는 컴퓨터의 포켓몬데이터
 
 const evoTypeText       = [Db("없음"),Db("친밀도"),Db("레벨"),Db("진화의돌"),Db("통신교환"),Db("특정포켓몬"),Db("아이템")];
@@ -79,20 +80,20 @@ function setComputerData(cp, pokemon, index, lv, IV){
 }
 
 function catchPokemon(cp, pokemon, level, hitpoints, IV){
-    const cp18 = 18*cp;
+    const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){
         //포켓몬 리스트에 자리가 있는 경우
-        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         if(mpk.index == 0){
-            setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
+            setPokemonData(cp, pokemon, cpPk+i, level, hitpoints, IV);
             return;
         }
     }
     //6개의 자리에 공간이 이미 다 찬 경우 (PC저장)
-    for(var i=6; i<18; i++){
-        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+    for(var i=6; i<userPokemonNum; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         if(mpk.index == 0){
-            setPokemonData(cp, pokemon, cp18+i, level, hitpoints, IV);
+            setPokemonData(cp, pokemon, cpPk+i, level, hitpoints, IV);
             const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
             s.printf("\x17！\x1E{:s}\x04은(는) 이수진의 PC 박스로 전송되었다!",pk.name);
             return;
@@ -105,9 +106,9 @@ function catchPokemon(cp, pokemon, level, hitpoints, IV){
 
 //기절하지 않은 포켓몬 중 가장 인덱스가 낮은 인덱스 호출
 function returnPlayerIndex(cp){
-    const cp18 = 18*cp;
+    const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){
-        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         if(mpk.index > 0 && mpk.state == 0){return i;}
     }
     return 10; //없음
@@ -124,19 +125,19 @@ function returnComputerIndex(cp){
 }
 
 function returnJoinBattle(cp){
-    const cp18 = 18*cp;
+    const cpPk = userPokemonNum*cp;
     var num = 0;
     for(var i=0; i<6; i++){
-        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         if(mpk.index > 0 && mpk.battle == 1){num += 1;}
     }
     return num;
 }
 
 function resetPokemonBattleData(cp){
-    const cp18 = 18*cp;
+    const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){
-        const mpk = myPokemon.cast(playerPokemonList[cp18+i]);
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         mpk.battle = 0;
     }
 }

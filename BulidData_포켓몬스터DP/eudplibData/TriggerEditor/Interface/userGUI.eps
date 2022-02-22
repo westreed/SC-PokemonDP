@@ -47,7 +47,6 @@ function printGUI(cp){
         if(mainMenu[cp] == 0){
             if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
                 mainMenu[cp] = 1;
-                pps.selectMenu[cp] = 0;
                 pps.guiUpdate[cp] = 1;
                 pmu.changeMoveState(cp, false);
                 PlayWAV("staredit\\wav\\GUI menu open.wav");
@@ -57,6 +56,7 @@ function printGUI(cp){
             mainMenu[cp] = 0;
             subMenu[cp] = 0;
             subMiniMenu[cp] = 0;
+            pps.selectMenu[cp] = 0;
             vms.removeText();
             pmu.changeMoveState(cp, true);
             PlayWAV("staredit\\wav\\GUI sel cursor.wav");
@@ -68,7 +68,7 @@ function printGUI(cp){
         if(sub == 0){mainMenu_UI(cp);}
         else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
         else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
-        else if(sub == 3){blankMenu(cp);} //포켓몬
+        else if(sub == 3){imp.subMenu_Pokemon(cp, 0);} //포켓몬
         else if(sub == 4){blankMenu(cp);} //도움말
         else if(sub == 5){blankMenu(cp);} //옵션
     }

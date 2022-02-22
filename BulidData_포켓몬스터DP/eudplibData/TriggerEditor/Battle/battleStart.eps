@@ -1,5 +1,6 @@
 import functions as fc;
 import Battle.battleGUI as bbg;
+import Battle.battleAttack as bba;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
@@ -113,7 +114,7 @@ function battleSystem(cp){
     //battleStep값이 1이상일 때 작동하기
     if(step){
         if(step >= 4){CenterView(battleLocation[cp]);}
-        if(step >= 6 && step < 50){bbg.battleTextGUI(cp);}
+        if(step >= 6 && step < 50){bbg.battleTextGUI(cp); bba.attackAI(cp);}
         //전투 시작전 필요데이터 저장하기
         if(step == 1){
             pmu.changeMoveState(cp, false);
@@ -122,6 +123,7 @@ function battleSystem(cp){
             MoveLocation(vli.lastLoc+cp, pps.playerUnit[cp], cp, 64); //마지막 위치 저장
             pps.settingMusic[cp] = battleMusic[battleType[cp]];
             BGM.instantPlay();
+            battleEXP[cp] = 0;
             battleStep[cp] += 1;
         }
         //전투 시작전 화면 깜박이기
@@ -140,7 +142,7 @@ function battleSystem(cp){
         }
         //첫포켓몬 선택을 안한 경우, 포켓몬 선택하기
         else if(step == 3){
-            if(pps.mainStory[cp] <= 9){firstPokemon(cp);}
+            if(pps.mainStory[cp] == 9){firstPokemon(cp);}
             else{battleStep[cp] += 1;}
         }
         //컴퓨터 포켓몬 세팅하기
@@ -200,6 +202,7 @@ function battleSystem(cp){
             if(bbg.pokemonCurHP[cp] == 0){
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
                 mpk.state = 1; //기절상태
+                mpk.hitpoint = 0;
                 const nextPokemon = pmp.returnPlayerIndex(cp);
                 if(nextPokemon != 10){battleStep[cp] = 8;}
                 else{
@@ -220,6 +223,8 @@ function battleSystem(cp){
                 const nextPokemon = pmp.returnComputerIndex(cp);
                 if(nextPokemon != 10){battleStep[cp] = 8;}
                 else{
+                    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
+                    mpk.hitpoint = bbg.pokemonCurHP[cp];
                     if(isWild(battleType[cp])){battleStep[cp] = 51;} //배틀종료
                     else{battleStep[cp] = 52;} //배틀종료
                     RemoveUnit(ppst.playerPokemonUnit[cp], cp);
@@ -301,12 +306,13 @@ function battleSystem(cp){
         else if(step == 91){
             battleDelay[cp] += 1;
             if(battleDelay[cp] == 1){
-                const cp18 = cp*18;
+                const cpPk = cp*pmp.userPokemonNum;
                 for(var i=0; i<6; i++){
-                    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cp18+i]);
+                    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
                     if(mpk.index > 0 && mpk.battle == 1){
                         const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
                         mpk.battle = 0;
+                        mpk.ownEXP += battleEXP[cp];
                         pokemonName[cp] = pk.name;
                         return;
                     }
@@ -326,25 +332,25 @@ function battleSystem(cp){
         }
         //배틀종료 후 원래자리로 복귀 (패배)
         else if(step == 99){
-            pps.userSetLight[cp] = 31;
-            pps.settingMusic[cp] = vms.restoreMusic[cp];
             const lastHeal = pps.lastVisitHeal[cp];
             MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.mapLoc[lastHeal]);
             CenterView(vli.mapLoc[lastHeal]);
-            pmu.changeMoveState(cp, true);
-            pps.battleState[cp] = false;
-            battleStep[cp] = 0;
+            battleStep[cp] = 101;
         }
         //배틀종료 후 원래자리로 복귀
         else if(step == 100){
-            pps.userSetLight[cp] = 31;
-            pps.settingMusic[cp] = vms.restoreMusic[cp];
             const lastL = vli.lastLoc+cp;
             MoveUnit(1, pps.playerUnit[cp], cp, 64, lastL);
             CenterView(lastL);
+            battleStep[cp] = 101;
+        }
+        else if(step == 101){
+            pps.userSetLight[cp] = 31;
+            pps.settingMusic[cp] = vms.restoreMusic[cp];
             pmu.changeMoveState(cp, true);
             pps.battleState[cp] = false;
             battleStep[cp] = 0;
+            if(pps.mainStory[cp] == 9){pps.mainStory[cp] += 1;}
         }
     }
 }

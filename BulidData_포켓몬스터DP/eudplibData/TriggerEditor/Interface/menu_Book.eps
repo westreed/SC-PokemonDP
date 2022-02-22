@@ -7,6 +7,7 @@ import Pokemon.weakRelation as pwr;
 
 
 const t = StringBuffer(1024);
+const bookSCANum    = 5;
 const pageNumber    = 156; //6의 배수
 const bookLastPage  = pageNumber/6 - 1;
 const sinoBook      = EUDArray(4*pageNumber);
@@ -25,36 +26,14 @@ function subMenu_Book(cp, height){
             const page = 6*bookPage[cp];
             t.insert(0);
             t.appendf("\t\t\x1D신오도감 \x1E({}/{})\n\n",bookPage[cp]+1,bookLastPage+1);
-            //index 0
-            if(!sinoBook[cp200+page+0] && page+0 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+0]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon1[index],page+1,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon1[index],page+1);}
-            //index 1
-            if(!sinoBook[cp200+page+1] && page+1 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+1]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon2[index],page+2,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon2[index],page+2);}
-            //index 2
-            if(!sinoBook[cp200+page+2] && page+2 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+2]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon3[index],page+3,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon3[index],page+3);}
-            //index 3
-            if(!sinoBook[cp200+page+3] && page+3 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+3]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon4[index],page+4,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon4[index],page+4);}
-            //index 4
-            if(!sinoBook[cp200+page+4] && page+4 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+4]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}\n",pps.selectIcon5[index],page+5,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???\n",pps.selectIcon5[index],page+5);}
-            //index 5
-            if(!sinoBook[cp200+page+5] && page+5 < ppi.pokemonNum){
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+5]);
-                t.appendf("\t\t{:s}\x04No.{} {:s}",pps.selectIcon6[index],page+6,pk.name);
-            }else{t.appendf("\t\t{:s}\x04No.{} ???",pps.selectIcon6[index],page+6);}
+            
+            for(var i=0; i<6; i++){
+                const icon = EUDArray.cast(pps.selectIconList[i]);
+                if(!sinoBook[cp200+page+i] && page+i < ppi.pokemonNum){
+                    const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+i]);
+                    t.appendf("\t\t{:s}\x04No.{} {:s}\n",icon[index],page+i+1,pk.name);
+                }else{t.appendf("\t\t{:s}\x04No.{} ???\n",icon[index],page+i+1);}
+            }
         }
         t.DisplayAt(height);
         subMenu_BookAction(cp, index);

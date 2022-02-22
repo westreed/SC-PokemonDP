@@ -4,6 +4,7 @@ import functions as fc;
 import opening as op;
 import Battle.battleStart as bbs;
 import Interface.userGUI as iug;
+import Interface.menu_Bag as imb;
 import Item.itemInfo as iif;
 import Player.playerUnit as ppu;
 import Player.movementUnit as pmu;
@@ -18,7 +19,8 @@ import Pokemon.weaponData as pwd;
 import Variables.mainSentence as vms;
 import Variables.locationInfo as vli;
 import Variables.flagText as vft;
-import Interface.menu_Bag as imb;
+import SCA.scaSystem as scs;
+import TriggerEditor.SCArchive as sca;
 import BGMPlayer as BGM;
 
 
@@ -27,6 +29,7 @@ function onPluginStart(){
 
 	randomize();
 	BGM.loadSound();
+	sca.Init();
 	rt.TilesetInit();
 	ppi.pokemonInit();
 	pwr.weakInit();
@@ -53,10 +56,14 @@ function onPluginStart(){
 function beforeTriggerExec(){
 
 	SetMemory(0x6509A0, SetTo, 0); //EUD터보
+	sca.Exec();
+	scs.globalLoading();
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		setcurpl(cp);
 		psp.backgroundMusic(cp);
 		fc.updateLight(cp);
+		scs.userLoading(cp);
+		scs.userSaving(cp);
 	}
 }
 
@@ -64,7 +71,7 @@ function afterTriggerExec(){
 
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		setcurpl(cp);
-		if(pps.mainStory[cp] == 0){op.openingStep(cp);}
+		if(op.opStep[cp] < 25){op.openingStep(cp);}
 		else{
 			pmu.movePlayer(cp);
 			vms.speechSystem(cp); //메인스토리
@@ -73,6 +80,9 @@ function afterTriggerExec(){
 			vft.printFlagText(cp); //표지판 텍스트
 			bbs.battleSystem(cp); //배틀시스템
 			iug.printGUI(cp); //유저메뉴
+			if(Deaths(cp, Exactly, 4, "A Key")){
+				scs.saveCode[cp] = 1;
+			}
 		}
 	}
 	KillUnit(33, 7); //스캔이펙트 제거

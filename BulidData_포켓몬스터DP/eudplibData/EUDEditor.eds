@@ -8,21 +8,21 @@ output: F:\StarCraft\Maps\포켓몬스터 DP\[EUD]포켓몬스터DP_Output.scx
 
 [TriggerEditor\main.eps]
 
-
-[chatEvent]
-__addr__ : 0x58D900
-__ptrAddr__ : 0x58D904
-__patternAddr__ : 0x58D908
-__lenAddr__ : 0x58D90C
-
-
 [MSQC]
+MSQCSpecial.Exactly(1) : MSQCSpecialBuffer, 100
+MSQCSpecial.Exactly(2) : MSQCSpecialBuffer, 200
+MSQCSpecial.Exactly(3) : MSQCSpecialBuffer, 300
+MSQCSpecial.Exactly(4) : MSQCSpecialBuffer, 400
+MSQCCondiction.Exactly(1) ; xy , MSQCValue : MSQCBuffer
+
 QCDebug : False
 MouseDown(R) : A Key, 1
 ESC; NotTyping : A Key, 2
+`; NotTyping : A Key, 4
 F; NotTyping : A Key, 16
 W; NotTyping : A Stick, 1
 S; NotTyping : A Stick, 2
 A; NotTyping : A Stick, 4
 D; NotTyping : A Stick, 8
+
 

@@ -1,5 +1,8 @@
 import Player.playerSetting as pps;
+import Player.playerUnit as ppu;
 import Variables.mainSentence as vms;
+import Variables.locationInfo as vli;
+import SCA.scaSystem as scs;
 
 
 const s = StringBuffer(1024);
@@ -62,12 +65,10 @@ function openingStep(cp){
         const index = pps.selectMenu[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
-            if(IsUserCP()){
-                t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
-                t.appendf("\x13{:s}\x04새로하기\n", pps.selectIcon1[index]);
-                t.appendf("\x13{:s}\x04이어하기\n", pps.selectIcon2[index]);
-                t.appendf("\x13\x1C└─────────────────────┘");
-            }
+            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
+            t.appendf("\x13{:s}\x04새로하기\n", pps.selectIcon1[index]);
+            t.appendf("\x13{:s}\x04이어하기\n", pps.selectIcon2[index]);
+            t.appendf("\x13\x1C└─────────────────────┘");
         }
         t.DisplayAt(0);
         if(Deaths(cp, Exactly, 1, "A Stick")){
@@ -85,18 +86,40 @@ function openingStep(cp){
         if(Deaths(cp, Exactly, 8, "A Stick")){
             if(index == 0){
                 pps.selectMenu[cp] = 0;
-                opStep[cp] = 20; opDelay[cp] = 0; vms.sphIndex[cp] = 0;
-                s.printfAt(0, "\n\n\n\n\n\n\n");
+                opStep[cp] = 20;
+                vms.removeText();
                 PlayWAV("staredit\\wav\\se_gui_misc6.wav");
                 pps.settingMusic[cp] = 2;
             }
             else if(index == 1){
-                s.printf("\x08！\x04현재는 지원되지 않는 기능입니다.");
+                pps.selectMenu[cp] = 0;
+                scs.loadCode[cp] = 1;
+                opStep[cp] = 6;
+                vms.removeText();
                 PlayWAV("staredit\\wav\\se_gui_misc5.wav");
             }
         }
         eprintf("{:s}",vms.stickText);
-    } //오프닝
+    }
+    //데이터로드
+    else if(opStep[cp] == 6){
+        t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
+        t.appendf("\x13\x04데이터를 불러오고 있습니다.\n");
+        t.appendf("\x13\x04잠시만 기다려주세요.\n");
+        t.appendf("\x13\x1C└─────────────────────┘");
+        if(scs.playerLoad[cp] > 1){
+            if(scs.playerLoad[cp] == 3){opStep[cp] = 7;}
+            else{opStep[cp] = 5;}
+        }
+    }
+    //로드된 캐릭터 생성하기
+    else if(opStep[cp] == 7){
+        pps.userSetLight[cp] = 31;
+        ppu.createPlayer(cp);
+        if(IsUserCP()){SetVariables(vli.locationText,1);}
+        opStep[cp] = 25;
+    }
+    //오프닝
     else if(opStep[cp] == 20){
         s.insert(0, "\n");
         s.appendf("\x13{:s}\n", vms.sph1);
@@ -111,6 +134,7 @@ function openingStep(cp){
                 TextFX_SetTimer("op", SetTo, 0); vms.sphIndex[cp]++;
                 PlayWAV("staredit\\wav\\GUI sel cursor.wav");
             } else{
+                opStep[cp] = 25;
                 vms.sphIndex[cp] = 0;
                 pps.settingMusic[cp] = 3;
                 pps.mainStory[cp] = 1;

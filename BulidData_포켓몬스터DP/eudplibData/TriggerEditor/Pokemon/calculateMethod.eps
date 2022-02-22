@@ -99,6 +99,14 @@ function returnEXP(type, exp, lucky, level){
     return (type*exp*lucky*level)/7;
 }
 
+function returnVersion(ver){
+    var ver1 = 0; var ver2 = 0; var ver3 = 0;
+    while(ver >= 100){ver -= 100; ver1 += 1;}
+    while(ver >= 10){ver -= 10; ver2 +=1;}
+    ver3 = ver;
+    return ver1, ver2, ver3;
+}
+
 // const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);
 // const po2 = ppi.Pokemon2.cast(po.next);
 // const hp, atk, amr, spd = pcm.divideStats(po.BTs);

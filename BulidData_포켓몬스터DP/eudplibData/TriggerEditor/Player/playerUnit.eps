@@ -1,6 +1,7 @@
 import functions as fc;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
+import SCA.scaSystem as scs;
 
 const playerEPD     = PVariable();
 const playerPosX    = PVariable();
@@ -10,7 +11,8 @@ const playerGridY   = PVariable();
 
 
 function createPlayer(cp){
-    setloc(vli.tempMoveLoc, 672, 7872);
+    if(scs.playerLoad[cp] <= 2){setloc(vli.tempMoveLoc, 672, 7872);}
+    else{MoveLocation(vli.tempMoveLoc, 215, 11, vli.mapLoc[pps.lastVisitVillage[cp]]);}
     playerEPD[cp] = fc.SetNextUnitEPD();
     CreateUnit(1, pps.playerUnit[cp], vli.tempMoveLoc, cp);
     CenterView(vli.tempMoveLoc);

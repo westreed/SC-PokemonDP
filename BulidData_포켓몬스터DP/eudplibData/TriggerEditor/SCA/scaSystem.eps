@@ -1,3 +1,11 @@
+import Interface.menu_Book as imk;
+import Interface.menu_Bag as imb;
+import Pokemon.calculateMethod as pcm;
+import Pokemon.myPokemon as pmp;
+import Player.playerSetting as pps;
+import dataTable as dT;
+import scaVariable as sv;
+import TriggerEditor.SCArchive as sca;
 
 
 /*
@@ -11,8 +19,19 @@
 트레이너 배열   --> 배열 x칸 (32*x)
 (1비트단위로 32개씩)
 ------------------
-포켓몬 데이터   --> 배열 18*6칸
+포켓몬 데이터   --> 배열 18*5칸
 (18종 * 6필드)
+
+object myPokemon {
+    var index;      //0포켓몬번호 -- 저장 (index + 256*level)
+    var level;      //1포켓몬레벨 -- 저장
+    var hitpoint;   //2포켓몬체력 -- 저장 (변수1칸)
+    var IVs;        //3포켓몬개체 -- 저장 (변수1칸)
+    var ownEXP;     //4보유경험치 -- 저장 (변수1칸)
+    var item;       //5지닌아이템 -- 저장 (item + 256*state)
+    var state;      //6포켓몬상태 -- 저장
+    var battle;     //7배틀참여값 -- 저장필요없음
+};
 ------------------
 가방 데이터     --> 배열 크기만큼
 (크기 * 2필드)
@@ -26,3 +45,428 @@ lastVisitHeal
 ------------------
 예상 140변수
 */
+
+
+const s = StringBuffer(1024);
+var globalStat  = 0;
+var globalStep  = 0;
+var globalPlay  = 0;
+const versionCheck  = 100; //버젼
+const loadCode      = PVariable(); //로드명령
+const playerLoad    = PVariable();
+const saveCode      = PVariable(); //세이브명령
+const backupCode    = PVariable(); //백업명령
+const returnLoad    = PVariable();
+const backupCheck   = PVariable();
+
+const StatusText    = [Db("대기"), Db("로드"), Db("시간로드"), Db("버젼로드"), Db("세이브")];
+const weekText      = [Db("월요일"),Db("화요일"),Db("수요일"),Db("목요일"),Db("금요일"),Db("토요일"),Db("일요일")];
+
+/*
+const scaMain		= PVariable();
+const scaSub		= EUDArray(8*5);
+const scaTrainer	= EUDArray(8*5);
+const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); //(index + 256*level)
+const scaPokemonHP	= EUDArray(8*pmp.userPokemonNum);
+const scaPokemonIVs	= EUDArray(8*pmp.userPokemonNum);
+const scaPokemonEXP	= EUDArray(8*pmp.userPokemonNum);
+const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
+const scaBag		= EUDArray(8*imb.bagMax);
+const scaBook		= EUDArray(8*5);
+const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal*/
+
+//유즈맵데이터를 SCA데이터로 변환하기
+function map2sca(cp){
+    sv.scaMain[cp] = pps.mainStory[cp];
+    //sv.scaSub[cp]
+    //sv.scaTrainer[cp]
+    const cpPk = cp*pmp.userPokemonNum;
+    for (var i=0; i<pmp.userPokemonNum; i++){
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
+        sv.scaPokemonIL[cpPk+i] = mpk.index + mpk.level*256;
+        sv.scaPokemonHP[cpPk+i] = mpk.hitpoint;
+        sv.scaPokemonIVs[cpPk+i] = mpk.IVs;
+        sv.scaPokemonEXP[cpPk+i] = mpk.ownEXP;
+        sv.scaPokemonIS[cpPk+i] = mpk.item + mpk.state*256;
+    }
+    const cpBg = cp*imb.bagMax;
+    for (var i=0; i<imb.bagMax; i++){
+        sv.scaBag[cpBg+i] = imb.bagItemList[cpBg+i] + imb.bagNumList[cpBg+i]*256;
+    }
+    const cpBk = cp*imk.bookSCANum;
+    const cpBn = cp*imk.pageNumber;
+    for (var i=0; i<imk.bookSCANum; i++){
+        const i32 = i*32;
+        for (var j=0; j<32; j++){sv.scaBook[cpBk + i] += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
+    }
+    sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256;
+}
+
+//SCA데이터를 유즈맵데이터로 변환하기
+function sca2map(cp){
+    pps.mainStory[cp] = sv.scaMain[cp];
+
+    const cpPk = cp*pmp.userPokemonNum;
+    for (var i=0; i<pmp.userPokemonNum; i++){
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
+        const scaPokemonIndex, scaPokemonLevel = pcm.divideData256(sv.scaPokemonIL[cpPk+i]);
+        mpk.index = scaPokemonIndex;
+        mpk.level = scaPokemonLevel;
+        mpk.hitpoint = sv.scaPokemonHP[cpPk+i];
+        mpk.IVs = sv.scaPokemonIVs[cpPk+i];
+        mpk.ownEXP = sv.scaPokemonEXP[cpPk+i];
+        const scaPokemonItem, scaPokemonState = pcm.divideData256(sv.scaPokemonIS[cpPk+i]);
+        mpk.item = scaPokemonItem;
+        mpk.state = scaPokemonState;
+    }
+
+    const cpBg = cp*imb.bagMax;
+    for (var i=0; i<imb.bagMax; i++){
+        const scaBagItem, scaBagNum = pcm.divideData256(sv.scaBag[cpBg+i]);
+        imb.bagItemList[cpBg+i] = scaBagItem;
+        imb.bagNumList[cpBg+i] = scaBagNum;
+    }
+
+    const cpBk = cp*imk.bookSCANum;
+    const cpBn = cp*imk.pageNumber;
+    for (var i=0; i<imk.bookSCANum; i++){
+        const i32 = i*32;
+        for (var j=31; j<=0; j--){
+            if(sv.scaBook[cpBk + i] >= dT.bit32[j]){sv.scaBook[cpBk + i] -= dT.bit32[j]; imk.sinoBook[cpBn+i32+j] = 1;}
+        }
+    }
+    const scaVillage, scaHeal = pcm.divideData256(sv.scaLocation[cp]);
+    pps.lastVisitVillage[cp] = scaVillage;
+    pps.lastVisitHeal[cp] = scaHeal;
+}
+
+function globalLoading(){
+    if(globalStat == 0){
+        if(globalStep == 0){
+            //맵정보 로드하기
+            foreach(p : EUDLoopPlayer('Human', None, None)){
+                setcurpl(p);
+                if(sca.ConnectStatus() == 1 && globalStep == 0){
+                    globalStep = 1;
+                    globalPlay = p;
+                    sca.ResetLastMessage();
+                    sca.LoadGlobalData();
+                    foreach(cp : EUDLoopPlayer('Human', None, None)){
+                        setcurpl(cp);
+                        const lust = sca.CommandStatus();
+                        s.print("\x1F■\x04최신 맵정보를 확인합니다.. ", globalPlay, " \x1E(",ptr2s(StatusText[lust]),")");
+                    }
+                }
+            }
+        }
+        else{
+            setcurpl(globalPlay);
+            if(sca.GetLastMessage() == 4){
+                //globalData[0] = 런처사용 제한
+                if(sca.GlobalData[0] > 0){
+                    globalStat = 9999;
+                    setcurpl(getuserplayerid());
+                    s.print("\x08■\x04죄송합니다. 잠시 런처사용을 제한하고 있습니다.");
+                    setcurpl(globalPlay);
+                }
+                //globalData[1] = 최신버젼표기
+                else if(sca.GlobalData[1] > 0){
+                    globalStat = 1;
+                    const v1,v2,v3 = pcm.returnVersion(sca.GlobalData[1]); //버젼 가져오기
+                    if(sca.GlobalData[1] <= versionCheck){
+                        globalStep = 0;
+                        setcurpl(getuserplayerid());
+                        s.print("\x1F■\x04최신버젼 입니다. \x1E",v1, ".", v2, ".", v3, "");
+                        setcurpl(globalPlay);
+                    }
+                    else{
+                        setcurpl(getuserplayerid());
+                        s.print("\x08■\x04해당 유즈맵은 구버젼입니다. 카페에서 최신버젼\x1E(",v1, ".", v2, ".", v3, ")\x04을 다운받으세요.\n    \x1E갈대의 유즈맵 카페 https://cafe.naver.com/westreed");
+                        Defeat();
+                        setcurpl(globalPlay);
+                    }
+                }
+                else{
+                    globalStep = 0;
+                    setcurpl(getuserplayerid());
+                    s.print("\x08■\x04최신 맵정보를 확인하는데 실패했습니다. \x1E(로드실패)");
+                    setcurpl(globalPlay);
+                }
+            }
+            else if(sca.GetLastMessage() > 4){
+                globalStep = 0;
+                setcurpl(getuserplayerid());
+                s.print("\x08■\x04최신 맵정보를 확인하는데 실패했습니다. \x1E(작업실패)");
+                setcurpl(globalPlay);
+            }
+            if(sca.ConnectStatus() == 0){
+                globalStep = 0;
+                setcurpl(getuserplayerid());
+                s.print("\x08■\x04최신 맵정보를 확인하는데 실패했습니다. \x1E(연결끊김)");
+                setcurpl(globalPlay);
+            }
+        }
+    }
+    else if(globalStat < 36){
+        globalStat++;
+    }
+    else if(globalStat == 36){
+        if(globalStep == 0){
+            foreach(p : EUDLoopPlayer('Human', None, None)){
+                setcurpl(p);
+                if(sca.ConnectStatus() == 1 && globalStep == 0){
+                    globalStep = 1;
+                    globalPlay = p;
+                    sca.ResetLastMessage();
+                    sca.LoadTime();
+                    foreach(cp : EUDLoopPlayer('Human', None, None)){
+                        setcurpl(cp);
+                        const lust = sca.CommandStatus();
+                        s.print("\x1F■\x04현재 시간정보를 확인합니다.. ", globalPlay, " \x1E(",ptr2s(StatusText[lust]),")");
+                    }
+                }
+            }
+        }
+        else{
+            setcurpl(globalPlay);
+            if(sca.GetLastMessage() == 4){
+                if(sca.Year > 0 && sca.Month > 0 && sca.Day > 0){ //년 월 일 데이터가 전부 존재할때
+                    globalStat = 37;
+                    globalStep = 0;
+                    setcurpl(getuserplayerid());
+                    s.printf("  \x1F■\x04{:d}년 {:d}월 {:d}일에 게임을 시작하셨습니다.",sca.Year,sca.Month,sca.Day);
+                    setcurpl(globalPlay);
+                }
+                else{
+                    globalStep = 0;
+                    setcurpl(getuserplayerid());
+                    s.print("\x08■\x04시간정보를 확인하는데 실패했습니다. \x1E(로드실패)");
+                    setcurpl(globalPlay);
+                }
+            }
+            else if(sca.GetLastMessage() > 4){
+                globalStep = 0;
+                setcurpl(getuserplayerid());
+                s.print("\x08■\x04시간정보를 확인하는데 실패했습니다. \x1E(작업실패)");
+                setcurpl(globalPlay);
+            }
+            if(sca.ConnectStatus() == 0){
+                globalStep = 0;
+                setcurpl(getuserplayerid());
+                s.print("\x08■\x04시간정보를 확인하는데 실패했습니다 \x1E(연결끊김)");
+                setcurpl(globalPlay);
+            }
+        }
+    }
+    else if(globalStat < 72){
+        globalStat++;
+    }
+}
+
+function userLoading(cp){
+    if(globalStat == 72){
+        if(loadCode[cp] == 1){
+            if(sca.ConnectStatus() == 1){
+                if(playerLoad[cp] == 0){
+                    if(sca.CommandStatus() == 0){
+                        playerLoad[cp] = 1;
+                        sca.ResetLastMessage();
+                        sca.LoadData(0);
+                        const lust = sca.CommandStatus();
+                        s.print("\x1F■\x04유저 데이터를 로드합니다. \x1E(",ptr2s(StatusText[lust]),")");
+                    }
+                }
+                else if(playerLoad[cp] == 1){
+                    if(returnLoad[cp] == 0 && sca.CommandStatus() == 3){ //데이터로드 명령이 아닌 글로벌데이터로드 명령인 경우
+                        returnLoad[cp] = 1;
+                    }
+                    if(sca.GetLastMessage() == 4){
+                        if(returnLoad[cp] == 0){
+                            if(sv.scaMain[cp] > 0){
+                                playerLoad[cp] = 3;
+                                loadCode[cp] = 0;
+                                sca2map(cp);
+                                s.printf("\x1F■\x04유저 데이터를 로드했습니다!");
+                            }
+                            else{
+                                playerLoad[cp] = 2;
+                                loadCode[cp] = 0;
+                                s.print("\x1F■\x1E저장된 데이터\x04가 없습니다.");
+                            }
+                        }
+                        else{
+                            playerLoad[cp] = 0;
+                            loadCode[cp] = 0;
+                            s.print("\x08■\x04데이터로드 과정에서 오류가 발생했습니다. 로드를 재시도합니다.");
+                        }
+                    }
+                    else if(sca.GetLastMessage() > 4){
+                        playerLoad[cp] = 0;
+                        loadCode[cp] = 0;
+                        s.print("\x08■\x04유저 데이터를 로드하는데 실패했습니다!");
+                    }
+                }
+            }
+            else{
+                if(playerLoad[cp] == 1){
+                    playerLoad[cp] = 0;
+                    loadCode[cp] = 0;
+                    s.print("\x08■\x04유저 데이터를 로드하는데 실패했습니다!");
+                }
+            }
+        }
+    }
+}
+
+function userSaving(cp){
+    if(saveCode[cp] == 1){
+        if(sca.ConnectStatus() == 1){
+            saveCode[cp] = 2;
+            map2sca(cp);
+            sca.ResetLastMessage();
+            sca.SaveData(0);
+            const lust = sca.CommandStatus();
+            s.print("\x1F■\x04데이터를 저장합니다. \x1E(",ptr2s(StatusText[lust]),")\n  \x1C！ \x04저장이 완료될 때까지 게임을 나가시면 안됩니다.");
+        }
+        else{
+            saveCode[cp] = 0;
+            if(1){
+                s.print("\x08！ \x04혼자 플레이하실 땐, SCA런처를 이용하실 수 없습니다.");
+            }
+            else{
+                s.print("\x08■\x04SCA런처를 실행하셔야 합니다.\n\x08  ！\x04다운로드 https://scarchive.kr/main.php");
+            }
+        }
+    }
+    else if(saveCode[cp] == 2){
+        if(sca.ConnectStatus() == 1){
+            if(sca.GetLastMessage() == 6){
+                saveCode[cp] = 0;
+                s.print("\x1F■\x04데이터를 성공적으로 저장했습니다.");
+            }
+            else if(sca.GetLastMessage() > 6){
+                saveCode[cp] = 0;
+                s.print("\x08■\x04데이터를 저장하는데 실패했습니다!");
+            }
+        }
+        else{
+            saveCode[cp] = 0;
+            s.print("\x08■\x04데이터를 저장하는데 실패했습니다!");
+        }
+    }
+}
+
+/*
+function backupSaving(cp){
+    if(playerLoad[cp] > 1){
+        if(backupCode[cp] == 1){
+            if(sca.ConnectStatus() == 1){
+                backupCode[cp] = 2;
+                scTscaVariable(cp);
+                sca.ResetLastMessage();
+                sca.SaveData(1);
+                const lust = sca.CommandStatus();
+                s.print("\x08！ \x04백업데이터를 저장합니다. \x1E(",ptr2s(StatusText[lust]),")");
+            }
+        }
+        else if(backupCode[cp] == 2){
+            if(sca.ConnectStatus() == 1){
+                if(sca.GetLastMessage() == 6){
+                    backupCode[cp] = 0;
+                    s.print("\x1F■\x04백업데이터를 성공적으로 저장했습니다.");
+                }
+                else if(sca.GetLastMessage() > 6){
+                    backupCode[cp] = 0;
+                    s.print("\x08■\x04백업데이터를 저장하는데 실패했습니다!");
+                }
+            }
+            else{
+                backupCode[cp] = 0;
+                s.print("\x08■\x04백업데이터를 저장하는데 실패했습니다!");
+            }
+        }
+    }
+    else{
+        if(backupCode[cp] == 1){
+            backupCode[cp] = 0;
+            s.print("\x08■\x04SCA런처를 실행하셔야 합니다.\n\x08  ！\x04다운로드 https://scarchive.kr/main.php");
+        }
+    }
+}
+*/
+
+/*
+function backupChecking(cp){
+    if(playerLoad[cp] > 1){
+        if(sca.ConnectStatus() == 1){
+            if(backupCheck[cp] == 1){
+                if(sca.CommandStatus() == 0){
+                    backupCheck[cp] = 2;
+                    sca.ResetLastMessage();
+                    sca.LoadData(1); //백업데이터 로드
+                    //sca.LoadGlobalData();
+                    const lust = sca.CommandStatus();
+                    s.print("\x1F■\x04백업데이터를 로드합니다. \x1E(",ptr2s(StatusText[lust]),")");
+                }
+            }
+            else if(backupCheck[cp] == 2){
+                if(returnLoad[cp] == 0 && sca.CommandStatus() == 3){ //데이터로드 명령이 아닌 글로벌데이터로드 명령인 경우
+                    returnLoad[cp] = 1;
+                }
+                if(sca.GetLastMessage() == 4){
+                    if(returnLoad[cp] == 0){
+                        if(sv.scaMain[cp] > 0){
+                            backupCheck[cp] = 0;
+                            if(ui5.backupClick[cp] == 2){
+                                ui5.backupClick[cp] = 0;
+                                scaTscVariable(cp);
+                                s.print("\x1F■\x04백업 데이터를 로드했습니다!");
+                            }
+                            else{
+                                s.printf("  \x1F■\x04백업데이터 정보");
+                            }
+                        }
+                        else{
+                            backupCheck[cp] = 0;
+                            s.print("\x1F■\x1E저장된 백업데이터\x04가 없습니다.");
+                        }
+                    }
+                    else{
+                        backupCheck[cp] = 1;
+                        s.print("\x08■\x04데이터로드 과정에서 오류가 발생했습니다. 로드를 재시도합니다.");
+                    }
+                }
+                else if(sca.GetLastMessage() > 4){
+                    backupCheck[cp] = 0;
+                    s.print("\x08■\x04백업데이터를 로드하는데 실패했습니다!");
+                }
+            }
+        }
+        else{
+            if(backupCheck[cp] == 2){
+                backupCheck[cp] = 0;
+                s.print("\x08■\x04백업데이터를 로드하는데 실패했습니다!");
+            }
+        }
+    }
+    else{
+        if(backupCheck[cp] == 1){
+            backupCheck[cp] = 0;
+            ui5.backupClick[cp] = 0;
+            s.print("\x08■\x04SCA런처를 실행하셔야 합니다.\n\x08  ！\x04다운로드 https://scarchive.kr/main.php");
+        }
+    }
+}
+*/
+
+/***
+ * 1 = 연결됨
+ * 2 = 연결 끊김
+ * 3 = 로드중
+ * 4 = 로드 완료
+ * 5 = 세이브중
+ * 6 = 세이브 완료
+ * 7 = 런처와 먼저 연결하세요
+ * 8 = 다른 작업 중입니다.
+ * 9 = 작업 실패
+***/

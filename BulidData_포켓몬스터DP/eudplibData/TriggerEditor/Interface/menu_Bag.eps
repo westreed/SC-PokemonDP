@@ -27,36 +27,13 @@ function subMenu_Book(cp, height){
             t.insert(0);
             t.appendf("\t\t\x1D가방 \x1E({}/{})\n\n",bagPage[cp]+1,bagLastPage+1);
 
-            //index 0
-            if(bagItemList[cpPage+0]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+0]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon1[index],item.name, bagNumList[cpPage+0]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon1[index]);}
-            //index 1
-            if(bagItemList[cpPage+1]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+1]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon2[index],item.name, bagNumList[cpPage+1]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon2[index]);}
-            //index 2
-            if(bagItemList[cpPage+2]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+2]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon3[index],item.name, bagNumList[cpPage+2]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon3[index]);}
-            //index 3
-            if(bagItemList[cpPage+3]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+3]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon4[index],item.name, bagNumList[cpPage+3]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon4[index]);}
-            //index 4
-            if(bagItemList[cpPage+4]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+4]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon5[index],item.name, bagNumList[cpPage+4]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon5[index]);}
-            //index 5
-            if(bagItemList[cpPage+5]){
-                const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+5]-1]);
-                t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",pps.selectIcon6[index],item.name, bagNumList[cpPage+5]);
-            }else{t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon6[index]);}
+            for(var i=0; i<6; i++){
+                const icon = EUDArray.cast(pps.selectIconList[i]);
+                if(bagItemList[cpPage+i]){
+                    const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+i]-1]);
+                    t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",icon[index],item.name, bagNumList[cpPage+i]);
+                }else{t.appendf("\t\t{:s}\x04없음\n",icon[index]);}
+            }
 
         }
         t.DisplayAt(height);

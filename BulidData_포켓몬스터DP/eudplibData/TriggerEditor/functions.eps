@@ -1,4 +1,5 @@
 import Player.playerSetting as pps;
+import Variables.etcData as ved;
 
 /* ------------------------------------------------------------------------------
   전역 함수
@@ -228,12 +229,12 @@ function PolarLocation(loc: TrgLocation, length, angle){
     addloc(loc, x, y);
 }
 
-function BringEPD(unitEPD, location: TrgLocation, dummyUnit: TrgUnit) {
-    MoveLocation(location, dummyUnit, AllPlayers, location);
+function BringEPD(unitEPD, location: TrgLocation) {
+    MoveLocation(location, ved.junkUnit, AllPlayers, location);
     const unitType = unitEPD + 0x64/4;
     const originalUnitType = maskread_epd(unitType, 0xFFFF);
-    SetMemoryXEPD(unitType, SetTo, dummyUnit, 0xFFFF);
-    const ret = l2v(Bring(AllPlayers, AtLeast, 1, dummyUnit, location));
+    SetMemoryXEPD(unitType, SetTo, ved.junkUnit, 0xFFFF);
+    const ret = l2v(Bring(AllPlayers, AtLeast, 1, ved.junkUnit, location));
     SetMemoryXEPD(unitType, SetTo, originalUnitType, 0xFFFF);
     return ret;
 }
