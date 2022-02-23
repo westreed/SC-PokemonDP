@@ -2,10 +2,19 @@ import Interface.userGUI as iug;
 import Item.itemInfo as iif;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.myPokemon as pmp;
+import Pokemon.calculateMethod as pcm;
+import Pokemon.weakRelation as pwr;
 import Player.playerSetting as pps;
+import dataTable as dT;
 
 const t = StringBuffer(1024);
 const pokeIndex     = PVariable();
+const pokeAction    = PVariable(); //포켓몬 GUI에서 다른 액션을 취해야할 경우
+/*
+pokeAction
+0:가방
+1:배틀 (교체)
+*/
 
 /*
 고려해야할 것들
@@ -16,31 +25,37 @@ const pokeIndex     = PVariable();
 
 
 function subMenu_PokemonAction(cp, index);
+function subMenu_PokemonInfo(cp, height);
 function subMenu_Pokemon(cp, height){
-    if(iug.subMiniMenu[cp] == 0){
+    const action = pokeAction[cp];
+    if(action || iug.subMiniMenu[cp] == 0){
         const index = pokeIndex[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
             const cpPk = cp*pmp.userPokemonNum;
             t.insert(0);
-            t.appendf("\t\t\x1D포켓몬\n\n");
+            if(action == 0){t.appendf("\t\t\x1D포켓몬\n\n");}
+            else if(action == 1){t.appendf("\t\t\x1D누구에게 사용하시겠습니까?\n\n");}
 
             for(var i=0; i<6; i++){
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
                 const icon = EUDArray.cast(pps.selectIconList[i]);
                 if(mpk.index){
-                    const mk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
-                    t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}\n",icon[index], mpk.level, mk.name);
+                    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+                    if(pps.battleState[cp]){t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}\n",icon[index], mpk.level, pk.name);}
+                    else{
+                        const BTs_HP = pcm.returnStatsHP(pk.BTs);
+                        const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+                        const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+                        t.appendf("\t\t{:s}\x17Lv.{} \x04{:s} \x1E{}/{}\n",icon[index], mpk.level, pk.name, mpk.hitpoint, maxHP);
+                    }
                 }else{t.appendf("\t\t{:s}\x04없음\n",icon[index]);}
             }
-
-
         }
         t.DisplayAt(height);
-        subMenu_PokemonAction(cp, index);
+        if(action == 0){subMenu_PokemonAction(cp, index);}
     }
-    else{
-    }
+    else{subMenu_PokemonInfo(cp, height);}
 }
 
 function subMenu_PokemonAction(cp, index){
@@ -60,7 +75,7 @@ function subMenu_PokemonAction(cp, index){
     if(Deaths(cp, Exactly, 4, "A Stick")){
         iug.subMenu[cp] = 0;
         pps.guiUpdate[cp] = 1;
-        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
     }
     //결정
     if(Deaths(cp, Exactly, 8, "A Stick")){
@@ -71,5 +86,50 @@ function subMenu_PokemonAction(cp, index){
             pps.guiUpdate[cp] = 1;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
+    }
+}
+
+function subMenu_PokemonInfo(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const pokeIndex = iug.subMiniMenu[cp]-1;
+        const cpPk = cp*pmp.userPokemonNum;
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokeIndex]);
+
+        const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+        const pkn = ppi.Pokemon2.cast(pk.next);
+
+        const type1, type2 = pcm.divideType(pk.type);
+        const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
+        const vhp,vatk,vamr,vspd= pcm.divideIVs(mpk.IVs);
+
+        const unitHP = pcm.returnHitPoints(cp, mpk.level, hp, vhp);
+        const unitAtk = pcm.returnAttacks(cp, mpk.level, atk, vatk);
+        const unitArmor = pcm.returnArmor(cp, mpk.level, amr, vamr);
+        const unitSpeed = pcm.returnSpeed(cp, mpk.level, spd, vspd);
+
+        const requireExp = EUDArray.cast(dT.expList[pkn.expType]);
+
+        t.insert(0);
+        t.appendf("\t\t\x17Lv.{} \x04{:s} \x04({:s}{:s}\x04)\n\n",mpk.level,pk.name,pwr.typeText[type1],pwr.typeText[type2]);
+        t.appendf("\t\t\x08HP \x04{}/{}\n",mpk.hitpoint, unitHP);
+        t.appendf("\t\t\x1FEXP \x04{}/{}\n",mpk.ownEXP,requireExp[mpk.level]);
+        t.appendf("\t\t\x04체력 \x1E{} \x04공격 \x1E{}\n",unitHP,unitAtk);
+        t.appendf("\t\t\x04방어 \x1E{} \x04스피드 \x1E{}\n",unitArmor,unitSpeed);
+        t.appendf("\t\t\x11지닌물건 \x04: ");
+        if(mpk.item > 0){
+            const pkItem = iif.Item.cast(iif.itemList[mpk.item-1]);
+            t.appendf("{:s}\n", pkItem.name);
+        }
+        else{t.appendf("없음\n");}
+        t.appendf("\t\t\x1E뒤로가기 (A)");
+    }
+    t.DisplayAt(height);
+
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMiniMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
     }
 }

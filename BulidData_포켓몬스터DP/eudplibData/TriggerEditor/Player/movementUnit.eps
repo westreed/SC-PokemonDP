@@ -9,19 +9,21 @@ function unitPosition(cp){
     MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
     const x,y = posread_epd(ppu.playerEPD[cp]+0x28/4);
     const x1,y1 = x/32, y/32;
-    ppu.playerGridX[cp] = x1;
-    ppu.playerGridY[cp] = y1;
+    ppu.playerPosX[cp],ppu.playerPosY[cp] = x,y;
+    ppu.playerGridX[cp],ppu.playerGridY[cp] = x1,y1;
 }
 
 function movePlayer(cp){
-    unitPosition(cp);
-    if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
-        const epd = ppu.playerEPD[cp];
-        //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
-        if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
-            setloc_epd(vli.tempMoveLoc, epd+0x10/4);
-            const angle = fc.LocationAngle(vli.moveLoc+cp, vli.tempMoveLoc);
-            //s.printf("각도:{}",angle);
+    if(ppu.playerEPD[cp]){
+        unitPosition(cp);
+        if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
+            const epd = ppu.playerEPD[cp];
+            //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
+            if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
+                setloc_epd(vli.tempMoveLoc, epd+0x10/4);
+                const angle = fc.LocationAngle(vli.moveLoc+cp, vli.tempMoveLoc);
+                //s.printf("각도:{}",angle);
+            }
         }
     }
 }

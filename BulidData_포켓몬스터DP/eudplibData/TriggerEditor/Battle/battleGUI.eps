@@ -31,32 +31,29 @@ function battleTextGUI(cp){
     else{pokemonCurHP[cp] = 0;}
     if(MemoryXEPD(bbs.battleEPD[cp+4]+0x4C/4, AtLeast, 0x100, 0xFF00)){pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);}
     else{pokemonCurHP[cp+4] = 0;}
-    b.insert(0);
-    b.appendf("{:s}\x1E{:s}  \x04Lv.\x17{}\n",pps.blankText[wlen],bbs.pokemonName[cp+4],bbs.pokemonLevel[cp+4]);
-    b.appendf("{:s}\x08HP \x04{}/{}\n\n\n\n\n\n\n\n",pps.blankText[wlen],pokemonCurHP[cp+4],bbs.pokemonHP[cp+4]);
-    b.appendf("\x12\x1E{:s}  \x04Lv.\x17{}{:s}\n",bbs.pokemonName[cp],bbs.pokemonLevel[cp],pps.blankText[wlen]);
-    b.appendf("\x12\x08HP \x04{}/{}{:s}",pokemonCurHP[cp],bbs.pokemonHP[cp],pps.blankText[wlen]);
-    b.DisplayAt(0);
     //배틀메뉴 표시
-    if(bbs.battleStep[cp] >= 7){
-        const sub = iug.subMenu[cp];
-        eprintf("{:s}",vms.stickText);
-        if(sub == 0){battleMenuGUI(cp);}
-        else if(sub == 2){imb.subMenu_Book(cp, 2);} //가방
+    const sub = iug.subMenu[cp];
+    eprintf("{:s}",vms.stickText);
+    if(sub == 0){
+        b.insert(0);
+        b.appendf("{:s}\x1E{:s}  \x04Lv.\x17{}\n",pps.blankText[wlen],bbs.pokemonName[cp+4],bbs.pokemonLevel[cp+4]);
+        b.appendf("{:s}\x08HP \x04{}/{}\n\n\n\n\n\n",pps.blankText[wlen],pokemonCurHP[cp+4],bbs.pokemonHP[cp+4]);
+        b.appendf("\x12\x1E{:s}  \x04Lv.\x17{}{:s}\n",bbs.pokemonName[cp],bbs.pokemonLevel[cp],pps.blankText[wlen]);
+        b.appendf("\x12\x08HP \x04{}/{}{:s}",pokemonCurHP[cp],bbs.pokemonHP[cp],pps.blankText[wlen]);
+        b.DisplayAt(0);
+        battleMenuGUI(cp);
     }
+    else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
 }
 
 
 function battleMenuGUI(cp){
     const index = pps.selectMenu[cp];
-    if(pps.guiUpdate[cp]){
-        pps.guiUpdate[cp] = 0;
-        t.insert(0, "\n");
-        t.appendf("\t\t\x17{:s}\x04은(는) 무엇을 할까?\n", bbs.pokemonName[cp]);
-        t.appendf("\t\t\t{:s}\x04가방\n", pps.selectIcon1[index]);
-        t.appendf("\t\t\t{:s}\x04포켓몬\n", pps.selectIcon2[index]);
-        t.appendf("\t\t\t{:s}\x04도망간다", pps.selectIcon3[index]);
-    }
+    t.insert(0, "\n");
+    t.appendf("\t\t\x17{:s}\x04은(는) 무엇을 할까?\n", bbs.pokemonName[cp]);
+    t.appendf("\t\t\t{:s}\x04가방\n", pps.selectIcon1[index]);
+    t.appendf("\t\t\t{:s}\x04포켓몬\n", pps.selectIcon2[index]);
+    t.appendf("\t\t\t{:s}\x04도망간다", pps.selectIcon3[index]);
     t.DisplayAt(2);
     selectBattleGUI(cp, index);
 }
@@ -78,6 +75,7 @@ function selectBattleGUI(cp, index){
         if(index == 0){
             iug.subMenu[cp] = 2;
             pps.guiUpdate[cp] = 1;
+            vms.removeTextAll();
         }
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }

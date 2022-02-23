@@ -19,6 +19,7 @@ import Pokemon.weaponData as pwd;
 import Variables.mainSentence as vms;
 import Variables.locationInfo as vli;
 import Variables.flagText as vft;
+import Variables.etcData as ved;
 import SCA.scaSystem as scs;
 import TriggerEditor.SCArchive as sca;
 import BGMPlayer as BGM;
@@ -45,12 +46,20 @@ function onPluginStart(){
 	SetMemoryEPD(EPD(0x657A9C), SetTo, 0); //화면밝기
 	SetMemory(0x5124F0, SetTo, 29); //2배속
 	foreach(cp : EUDLoopPlayer(None, Force1)){
+		setcurpl(cp);
 		pps.settingMusic[cp] = 1;
 		RunAIScript("Turn ON Shared Vision for Player 8");
 		imb.addItem(cp, 16, 5);
 		imb.addItem(cp, 0, 1);
 		imb.addItem(cp, 44, 1);
+		imb.addItem(cp, 30, 2);
+		imb.addItem(cp, 23, 2);
 	}
+	setcurpl(4);
+	RunAIScript("Turn ON Shared Vision for Player 1");
+	RunAIScript("Turn ON Shared Vision for Player 2");
+	RunAIScript("Turn ON Shared Vision for Player 3");
+	RunAIScript("Turn ON Shared Vision for Player 4");
 }
 
 function beforeTriggerExec(){
@@ -64,6 +73,7 @@ function beforeTriggerExec(){
 		fc.updateLight(cp);
 		scs.userLoading(cp);
 		scs.userSaving(cp);
+		ved.delaySystem(cp);
 	}
 }
 

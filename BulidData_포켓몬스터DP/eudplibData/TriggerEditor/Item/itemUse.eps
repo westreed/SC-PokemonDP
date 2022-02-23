@@ -1,0 +1,120 @@
+import Battle.battleStart as bbs;
+import Battle.battleGUI as bbg;
+import Interface.menu_Bag as imb;
+import Interface.menu_Pokemon as imp;
+import Interface.userGUI as iug;
+import Item.itemInfo as iif;
+import Pokemon.calculateMethod as pcm;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.myPokemon as pmp;
+import Player.playerSetting as pps;
+import Variables.etcData as ved;
+
+const s = StringBuffer(1024);
+
+function isPokemonItem(type){
+    if(type == 0 || type == 1 || type == 5 || type == 6 || type == 7 || type == 9 || type == 10){return true;}
+    return false;
+}
+
+//전투중일 때 안되는 타입들
+function isNotBattleType(type){
+    if(type == 0 || type == 1 || type == 3 || type == 4 || type == 8 || type == 9 || type == 10 || type == 11){return true;}
+    return false;
+}
+
+function isNotBagType(type){
+    if(type == 2 || type == 4 || type == 8 || type == 11){return true;}
+    return false;
+}
+
+//state 0:가방 1:배틀
+function item_useFunction(cp, bagSelect, pokemonSelect){
+    const cpPk = cp*pmp.userPokemonNum;
+    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonSelect]);
+    if(mpk.index == 0){return false;}
+    const state = pps.battleState[cp]; //0:false 1:true
+    const itemIndex = imb.bagItemList[bagSelect]-1;
+    const itemNum   = imb.bagNumList[bagSelect];
+    const it = iif.Item.cast(iif.itemList[itemIndex]);
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+
+    //포켓몬에게 아이템 주는건 전투중엔 불가능하게!
+    //진화의돌
+    const itType = it.type;
+    if(itType == 0){
+
+    }//진화도구
+    else if(itType == 1){
+
+    }
+    //몬스터볼
+    else if(itType == 2){
+
+    }
+    //필드도구
+    else if(itType == 3){
+
+    }
+    //도망도구
+    else if(itType == 4){
+
+    }
+    //체력회복도구 & 음료수
+    else if(itType == 5 || itType == 7){
+        if(ved.item_HealDelay[cp] == 0){
+            const BTs_HP = pcm.returnStatsHP(pk.BTs);
+            const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+            const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+            if(state){
+                const curHP = bbg.pokemonCurHP[cp];
+                if(curHP != maxHP){
+                    if(curHP + it.value < mpk.hitpoint){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, it.value*256);}
+                    else{SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, maxHP*256);}
+                }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+            }
+            else{
+                if(mpk.hitpoint != maxHP){
+                    if(mpk.hitpoint + it.value < mpk.hitpoint){mpk.hitpoint += it.value;}
+                    else{mpk.hitpoint = maxHP;}
+                }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+            }
+            s.printf("\x07！\x04{:s}의 체력이 {}만큼 회복되었습니다.",pk.name, it.value);
+            PlayWAV("staredit\\wav\\HP Restore.wav");
+            imb.bagNumList[bagSelect] -= 1;
+            if(itemNum == 1){imb.bagItemList[bagSelect] = 0; iug.subMiniMenu[cp] = 0;}
+            ved.item_HealDelay[cp] = 72;
+        }
+        else{
+            s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);
+        }
+    }
+    //기력회복도구
+    else if(itType == 6){
+    }
+    //영양제
+    else if(itType == 9){
+
+    }
+    //경험치조절도구
+    else if(itType == 10){
+
+    }
+    if(state){iug.subMenu[cp] = 0;}
+    imp.pokeAction[cp] = 0;
+    pps.guiUpdate[cp] = 1;
+}
+/*const itemType = [
+    Db('진화의돌'),1,      //0 사용
+    Db('진화도구'),1,      //1 지니기
+    Db('몬스터볼'),2,      //2 배틀
+    Db('필드도구'),1,      //3 사용
+    Db('도망도구'),0,      //4 행동불가
+    Db('체력회복도구'),3,   //5 사용&배틀
+    Db('기력회복도구'),3,   //6 사용&배틀
+    Db('음료수'),3,        //7 사용&배틀
+    Db('중요한도구'),0,     //8 보관용
+    Db('영양제'),1,        //9 사용
+    Db('경험치조절도구'),1, //10 지니기
+    Db('판매용도구'),0,    //11 판매용
+];*/

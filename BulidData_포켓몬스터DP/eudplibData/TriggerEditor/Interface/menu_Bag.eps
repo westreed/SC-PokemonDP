@@ -1,5 +1,7 @@
 import Interface.userGUI as iug;
+import Interface.menu_Pokemon as imp;
 import Item.itemInfo as iif;
+import Item.itemUse as iiu;
 import Player.playerSetting as pps;
 
 
@@ -11,11 +13,14 @@ const bagItemList   = EUDArray(4*bagMax);
 const bagNumList    = EUDArray(4*bagMax);
 const bagIndex      = PVariable();
 const bagPage       = PVariable();
+const bagItemType   = PVariable(); //아이템타입의 itemType
+const bagType       = PVariable(); //아이템의 타입
 
 
 function subMenu_BagAction(cp, index);
 function subMenu_BagInfo(cp, height);
 function subMenu_BagInfoAction(cp);
+function subMenu_ItemUseAction(cp);
 function subMenu_Book(cp, height){
     if(iug.subMiniMenu[cp] == 0){
         const index = bagIndex[cp];
@@ -40,8 +45,16 @@ function subMenu_Book(cp, height){
         subMenu_BagAction(cp, index);
     }
     else{
-        subMenu_BagInfo(cp, height);
-        subMenu_BagInfoAction(cp);
+        //아이템 정보 보기
+        if(imp.pokeAction[cp] == 0){
+            subMenu_BagInfo(cp, height);
+            subMenu_BagInfoAction(cp);
+        }
+        else{
+            //아이템 사용
+            imp.subMenu_Pokemon(cp, height);
+            subMenu_ItemUseAction(cp);
+        }
     }
 }
 
@@ -79,9 +92,9 @@ function subMenu_BagAction(cp, index){
     if(Deaths(cp, Exactly, 8, "A Stick")){
         const cpBag = cp*bagMax;
         const page = 6*bagPage[cp];
-        const cpPage = cpBag+page;
-        if(bagItemList[cpPage+bagIndex[cp]]){
-            iug.subMiniMenu[cp] = bagItemList[cpPage+bagIndex[cp]];
+        const cpPage = cpBag+page+bagIndex[cp];
+        if(bagItemList[cpPage]){
+            iug.subMiniMenu[cp] = cpPage+1;
             pps.guiUpdate[cp] = 1;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
@@ -116,16 +129,24 @@ function addItem(cp, item, num){
 function subMenu_BagInfo(cp, height){
     if(pps.guiUpdate[cp]){
         pps.guiUpdate[cp] = 0;
-        const cpBag = cp*bagMax;
-        const itemIndex = iug.subMiniMenu[cp]-1;
-        const itemNum   = bagNumList[cpBag+6*bagPage[cp]+bagIndex[cp]];
+        const select = iug.subMiniMenu[cp]-1;
+        const itemIndex = bagItemList[select]-1;
+        const itemNum   = bagNumList[select];
         const it = iif.Item.cast(iif.itemList[itemIndex]);
+        bagItemType[cp] = iif.itemType[2*it.type+1];
+        bagType[cp] = it.type;
 
         t.insert(0);
         t.appendf("\t\t\x1D{:s} \x1E({}개 보유)\n\n",it.name, itemNum);
         t.appendf("\t\t\x04{:s}\n\n",it.text);
-        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemType[it.type]);
-        t.appendf("\t\t\x17사용하기 (D)\n");
+        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemType[2*it.type]);
+        if(pps.battleState[cp]){
+            if(iiu.isNotBattleType(bagType[cp])){t.appendf("\t\t\x1E사용하기 (D)\n");}
+            else{t.appendf("\t\t\x17사용하기 (D)\n");}
+        }else{
+            if(iiu.isNotBagType(bagType[cp])){t.appendf("\t\t\x1E사용하기 (D)\n");}
+            else{t.appendf("\t\t\x17사용하기 (D)\n");}
+        }
         t.appendf("\t\t\x1E뒤로가기 (A)");
     }
     t.DisplayAt(height);
@@ -136,6 +157,67 @@ function subMenu_BagInfoAction(cp){
     if(Deaths(cp, Exactly, 4, "A Stick")){
         iug.subMiniMenu[cp] = 0;
         pps.guiUpdate[cp] = 1;
-        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //사용하기
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        if(pps.battleState[cp]){
+            if(iiu.isNotBattleType(bagType[cp])){
+                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+            }
+            else{
+                if(iiu.isPokemonItem(bagType[cp])){imp.pokeAction[cp] = 1;}
+                //포켓몬 메뉴를 안거치는 타입
+                else{
+
+                }
+                pps.guiUpdate[cp] = 1;
+                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            }
+        }
+        else{
+            if(iiu.isNotBagType(bagType[cp])){
+                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+            }
+            //포켓몬 메뉴를 안거치는 타입
+            else{
+                if(iiu.isPokemonItem(bagType[cp])){imp.pokeAction[cp] = 1;}
+                //포켓몬 메뉴를 안거치는 타입
+                else{
+
+                }
+                pps.guiUpdate[cp] = 1;
+                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            }
+        }
+    }
+}
+
+function subMenu_ItemUseAction(cp){
+    const index = imp.pokeIndex[cp];
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){imp.pokeIndex[cp] = 5;}
+        else{imp.pokeIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){imp.pokeIndex[cp] = 0;}
+        else{imp.pokeIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        imp.pokeAction[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //아이템 사용 & 지니기
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const select = iug.subMiniMenu[cp]-1;
+        iiu.item_useFunction(cp, select, index);
     }
 }

@@ -1,3 +1,4 @@
+import functions as fc;
 import Battle.battleStart as bbs;
 import Pokemon.pokemonStatus as ppst;
 import Variables.locationInfo as vli;
@@ -8,8 +9,9 @@ const battleAttackDelay     = PVariable();
 function attackAI(cp){
     if(battleAttackDelay[cp] == 0){
         battleAttackDelay[cp] = 24;
-        MoveLocation(vli.tempMoveLoc, cp, ppst.playerPokemonUnit[cp], bbs.battleLocation[cp]);
-        Order(ppst.computerPokemonUnit[cp], P5, bbs.battleLocation[cp], Patrol, vli.tempMoveLoc);
+        const battleLoc = bbs.battleLocation[cp];
+        MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, battleLoc);
+        Order(ppst.computerPokemonUnit[cp], P5, battleLoc, Patrol, vli.tempMoveLoc);
     }
     else{battleAttackDelay[cp] -= 1;}
 }

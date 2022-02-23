@@ -11,8 +11,11 @@ const playerGridY   = PVariable();
 
 
 function createPlayer(cp){
-    if(scs.playerLoad[cp] <= 2){setloc(vli.tempMoveLoc, 672, 7872);}
-    else{MoveLocation(vli.tempMoveLoc, 215, 11, vli.mapLoc[pps.lastVisitVillage[cp]]);}
+    if(scs.playerLoad[cp] != 2){setloc(vli.tempMoveLoc, 672, 7872);}
+    else{
+        setloc(vli.tempMoveLoc, playerPosX[cp], playerPosY[cp]);
+        pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
+    }
     playerEPD[cp] = fc.SetNextUnitEPD();
     CreateUnit(1, pps.playerUnit[cp], vli.tempMoveLoc, cp);
     CenterView(vli.tempMoveLoc);

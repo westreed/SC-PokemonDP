@@ -399,12 +399,18 @@ def onPluginStart():
         SetMemory(0x663408, Add, -50),# units:Build Score  index:0    from 50 To 0
         SetMemory(0x663414, Add, -3276800),# units:Build Score  index:7    from 50 To 0
         SetMemory(0x663418, Add, -40960000),# units:Build Score  index:9    from 625 To 0
+        SetMemory(0x66345C, Add, -19660800),# units:Build Score  index:43    from 300 To 0
+        SetMemory(0x663460, Add, -550),# units:Build Score  index:44    from 550 To 0
         SetMemory(0x663460, Add, -26214400),# units:Build Score  index:45    from 400 To 0
         SetMemory(0x663464, Add, -6553600),# units:Build Score  index:47    from 100 To 0
         SetMemory(0x663EB8, Add, -100),# units:Destroy Score  index:0    from 100 To 0
         SetMemory(0x663EC4, Add, -6553600),# units:Destroy Score  index:7    from 100 To 0
         SetMemory(0x663EC8, Add, -81920000),# units:Destroy Score  index:9    from 1250 To 0
         SetMemory(0x663ECC, Add, -400),# units:Destroy Score  index:10    from 400 To 0
+        SetMemory(0x663EE0, Add, -199),# units:Destroy Score  index:20    from 200 To 1
+        SetMemory(0x663EE0, Add, -104792064),# units:Destroy Score  index:21    from 1600 To 1
+        SetMemory(0x663F0C, Add, -39256064),# units:Destroy Score  index:43    from 600 To 1
+        SetMemory(0x663F10, Add, -1099),# units:Destroy Score  index:44    from 1100 To 1
         SetMemory(0x663F10, Add, -52428800),# units:Destroy Score  index:45    from 800 To 0
         SetMemory(0x663F14, Add, -13107200),# units:Destroy Score  index:47    from 200 To 0
         SetMemory(0x661558, Add, 131072),# units:Staredit Availability Flags  index:33    from 0 To 2

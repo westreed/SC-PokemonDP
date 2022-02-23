@@ -3,6 +3,7 @@ import Interface.menu_Bag as imb;
 import Pokemon.calculateMethod as pcm;
 import Pokemon.myPokemon as pmp;
 import Player.playerSetting as pps;
+import Player.playerUnit as ppu;
 import dataTable as dT;
 import scaVariable as sv;
 import TriggerEditor.SCArchive as sca;
@@ -43,6 +44,8 @@ object myPokemon {
 lastVisitVillage
 lastVisitHeal
 ------------------
+lastPosition (X+256*Y)
+------------------
 예상 140변수
 */
 
@@ -52,6 +55,7 @@ var globalStat  = 0;
 var globalStep  = 0;
 var globalPlay  = 0;
 const versionCheck  = 100; //버젼
+const userSlot      = PVariable(); //어떤 슬롯을 불러왔는가?
 const loadCode      = PVariable(); //로드명령
 const playerLoad    = PVariable();
 const saveCode      = PVariable(); //세이브명령
@@ -100,6 +104,7 @@ function map2sca(cp){
         for (var j=0; j<32; j++){sv.scaBook[cpBk + i] += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
     }
     sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256;
+    sv.scaPosition[cp] = ppu.playerPosX[cp] + ppu.playerPosY[cp]*8192;
 }
 
 //SCA데이터를 유즈맵데이터로 변환하기
@@ -138,6 +143,9 @@ function sca2map(cp){
     const scaVillage, scaHeal = pcm.divideData256(sv.scaLocation[cp]);
     pps.lastVisitVillage[cp] = scaVillage;
     pps.lastVisitHeal[cp] = scaHeal;
+    const scaPosX, scaPosY = pcm.dividePos(sv.scaPosition[cp]);
+    ppu.playerPosX[cp] = scaPosX;
+    ppu.playerPosY[cp] = scaPosY;
 }
 
 function globalLoading(){
@@ -234,7 +242,7 @@ function globalLoading(){
                     globalStat = 37;
                     globalStep = 0;
                     setcurpl(getuserplayerid());
-                    s.printf("  \x1F■\x04{:d}년 {:d}월 {:d}일에 게임을 시작하셨습니다.",sca.Year,sca.Month,sca.Day);
+                    s.printf("\x1F■\x04{:d}년 {:d}월 {:d}일에 게임을 시작하셨습니다.",sca.Year,sca.Month,sca.Day);
                     setcurpl(globalPlay);
                 }
                 else{
@@ -271,7 +279,7 @@ function userLoading(cp){
                     if(sca.CommandStatus() == 0){
                         playerLoad[cp] = 1;
                         sca.ResetLastMessage();
-                        sca.LoadData(0);
+                        sca.LoadData(userSlot[cp]);
                         const lust = sca.CommandStatus();
                         s.print("\x1F■\x04유저 데이터를 로드합니다. \x1E(",ptr2s(StatusText[lust]),")");
                     }
@@ -283,13 +291,13 @@ function userLoading(cp){
                     if(sca.GetLastMessage() == 4){
                         if(returnLoad[cp] == 0){
                             if(sv.scaMain[cp] > 0){
-                                playerLoad[cp] = 3;
+                                playerLoad[cp] = 2;
                                 loadCode[cp] = 0;
                                 sca2map(cp);
                                 s.printf("\x1F■\x04유저 데이터를 로드했습니다!");
                             }
                             else{
-                                playerLoad[cp] = 2;
+                                playerLoad[cp] = 3;
                                 loadCode[cp] = 0;
                                 s.print("\x1F■\x1E저장된 데이터\x04가 없습니다.");
                             }
@@ -297,7 +305,7 @@ function userLoading(cp){
                         else{
                             playerLoad[cp] = 0;
                             loadCode[cp] = 0;
-                            s.print("\x08■\x04데이터로드 과정에서 오류가 발생했습니다. 로드를 재시도합니다.");
+                            s.print("\x08■\x04데이터로드 과정에서 오류가 발생했습니다.");
                         }
                     }
                     else if(sca.GetLastMessage() > 4){
@@ -324,7 +332,7 @@ function userSaving(cp){
             saveCode[cp] = 2;
             map2sca(cp);
             sca.ResetLastMessage();
-            sca.SaveData(0);
+            sca.SaveData(userSlot[cp]);
             const lust = sca.CommandStatus();
             s.print("\x1F■\x04데이터를 저장합니다. \x1E(",ptr2s(StatusText[lust]),")\n  \x1C！ \x04저장이 완료될 때까지 게임을 나가시면 안됩니다.");
         }

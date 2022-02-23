@@ -19,6 +19,14 @@ function divideStats(st){
     return hp, atk, amr, spd;
 }
 
+function returnStatsHP(st){
+    return st & 0xFF;
+}
+
+function returnIVsHP(st){
+    return st & 0x1F;
+}
+
 //4개의 스탯을 1개의 합쳐진 능력치로 바꾸는 함수
 function combineStats(hp, atk, amr, spd){
     return hp + atk*256 + amr*65536 + spd*16777216;
@@ -107,6 +115,12 @@ function returnVersion(ver){
     return ver1, ver2, ver3;
 }
 
+function dividePos(pos){
+    var pos_x = 0; var pos_y = 0;
+    while(pos >= 8192){pos -= 8192; pos_y += 1;}
+    pos_x = pos;
+    return pos_x, pos_y;
+}
 // const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);
 // const po2 = ppi.Pokemon2.cast(po.next);
 // const hp, atk, amr, spd = pcm.divideStats(po.BTs);

@@ -17,8 +17,9 @@ const s = StringBuffer(1024);
 const battleStep    = PVariable(); //0:배틀종료 1이상:배틀시작
 const battleLoop    = PVariable();
 const battleDelay   = PVariable(); //딜레이계산용
-const battleType    = PVariable(); //0:야생, 1:트레이너, 2:라이벌, 3:체육관장, 4:갤럭시단, 5:갤럭시단간부, 6:갤럭시단보스, 7:디아루가펄기아, 8:PVP
-const battleMusic   = [9, 10, 11, 12, 13, 14, 15, 16, 10];
+const battleType    = PVariable(); //0:야생 1:트레이너 2:라이벌 3:체육관장 4:갤럭시 5:갤럭시간부 6:갤럭시보스 7:디아루가펄기아 8:챔피언 9:전설 10:PVP
+const battleMusic   = [ 9, 10, 11, 12, 13, 14, 15, 16, 23, 24, 10];
+const battleEndMusic= [18, 19, 19, 21, 20, 20, 20, 18, 22, 18, 19];
 const battleLocation= PVariable();
 const battleUser    = PVariable(); //PVP인 경우
 const battleUnit    = PVariable(); //배틀상대유닛
@@ -209,7 +210,7 @@ function battleSystem(cp){
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
                     RemoveUnit(ppst.computerPokemonUnit[cp], P5);
-                    vms.removeText();
+                    vms.removeTextAll();
                     pps.userSetLight[cp] = 0;
                 }
             }
@@ -227,8 +228,10 @@ function battleSystem(cp){
                     mpk.hitpoint = bbg.pokemonCurHP[cp];
                     if(isWild(battleType[cp])){battleStep[cp] = 51;} //배틀종료
                     else{battleStep[cp] = 52;} //배틀종료
+                    pps.settingMusic[cp] = battleEndMusic[battleType[cp]];
+                    BGM.instantPlay();
                     RemoveUnit(ppst.playerPokemonUnit[cp], cp);
-                    vms.removeText();
+                    vms.removeTextAll();
                     pps.userSetLight[cp] = 0;
                 }
             }

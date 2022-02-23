@@ -3,20 +3,20 @@ import scaVariable as n0;
 const ws = Db(2528);//workspace
 const EntryPointLength = 8;//EntryPointLength
 const SpaceLength = 300;//DataBufferSize
-const ObjectCount = 11;//ObjectCount
+const ObjectCount = 12;//ObjectCount
 
 function Init(){
     MPQAddFile('SCARCHIVEMAPCODE', py_open('scakeyfile', 'rb').read());
     MPQAddFile('SCARCHIVEDATA', py_open('scadatafile', 'rb').read());
     //EntryPoint
-    dwwrite_epd(EPD(ws) + 0, 2526138227);
-    dwwrite_epd(EPD(ws) + 1, 1181296374);
-    dwwrite_epd(EPD(ws) + 2, 428083878);
-    dwwrite_epd(EPD(ws) + 3, 2862658369);
-    dwwrite_epd(EPD(ws) + 4, 2783788223);
-    dwwrite_epd(EPD(ws) + 5, 2891952473);
-    dwwrite_epd(EPD(ws) + 6, 2188851916);
-    dwwrite_epd(EPD(ws) + 7, 3119341176);
+    dwwrite_epd(EPD(ws) + 0, 1785821182);
+    dwwrite_epd(EPD(ws) + 1, 3227407327);
+    dwwrite_epd(EPD(ws) + 2, 1280499452);
+    dwwrite_epd(EPD(ws) + 3, 2529929963);
+    dwwrite_epd(EPD(ws) + 4, 1157322976);
+    dwwrite_epd(EPD(ws) + 5, 1310396897);
+    dwwrite_epd(EPD(ws) + 6, 1312733977);
+    dwwrite_epd(EPD(ws) + 7, 1326161535);
     
 }
 
@@ -111,6 +111,11 @@ function ResetValue(tagNum, index){
         n0.scaLocation[cp] = 0;
         break;
     }
+    case 11:
+    {
+        n0.scaPosition[cp] = 0;
+        break;
+    }
     }
 }
 
@@ -180,6 +185,11 @@ function SaveValue(tagNum, Value, index){
     case 10:
     {
         n0.scaLocation[cp] = Value;
+        break;
+    }
+    case 11:
+    {
+        n0.scaPosition[cp] = Value;
         break;
     }
     }
@@ -466,6 +476,27 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
     case 10:
         {
         const objValue = n0.scaLocation[cp];
+        rvalue += objValue;
+        if(objValue != 0){
+            if (objValue > 0xFFFF){
+                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
+                index++;
+                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
+                index++;
+                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
+                index++;
+             }else{
+                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
+                index++;
+                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
+                index++;
+             }
+         }
+        }
+        break;
+    case 11:
+        {
+        const objValue = n0.scaPosition[cp];
         rvalue += objValue;
         if(objValue != 0){
             if (objValue > 0xFFFF){

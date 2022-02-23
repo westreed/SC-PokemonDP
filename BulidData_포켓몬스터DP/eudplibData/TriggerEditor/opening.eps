@@ -28,6 +28,8 @@ const opSpeech  = [
     Db("\x13그럼\n\x13포켓몬스터의 세계로!")
 ];
 
+function openingAction(cp, index);
+function dataSlotAction(cp, index);
 function openingStep(cp){
     if(opStep[cp] == 0){
         if(opDelay[cp] < 96){opDelay[cp] += 1;}
@@ -65,57 +67,49 @@ function openingStep(cp){
         const index = pps.selectMenu[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
-            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
+            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n");
+            t.appendf("\x13\x04포켓몬스터 DP\n");
+            t.appendf("\x13\x1EPokemon Diamond·Pearl\n");
             t.appendf("\x13{:s}\x04새로하기\n", pps.selectIcon1[index]);
             t.appendf("\x13{:s}\x04이어하기\n", pps.selectIcon2[index]);
             t.appendf("\x13\x1C└─────────────────────┘");
         }
         t.DisplayAt(0);
-        if(Deaths(cp, Exactly, 1, "A Stick")){
-            if(index == 0){pps.selectMenu[cp] = 1;}
-            else{pps.selectMenu[cp] = 0;}
-            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-            pps.guiUpdate[cp] = 1;
-        }
-        if(Deaths(cp, Exactly, 2, "A Stick")){
-            if(index == 0){pps.selectMenu[cp] = 1;}
-            else{pps.selectMenu[cp] = 0;}
-            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-            pps.guiUpdate[cp] = 1;
-        }
-        if(Deaths(cp, Exactly, 8, "A Stick")){
-            if(index == 0){
-                pps.selectMenu[cp] = 0;
-                opStep[cp] = 20;
-                vms.removeText();
-                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
-                pps.settingMusic[cp] = 2;
-            }
-            else if(index == 1){
-                pps.selectMenu[cp] = 0;
-                scs.loadCode[cp] = 1;
-                opStep[cp] = 6;
-                vms.removeText();
-                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
-            }
-        }
+        openingAction(cp, index);
         eprintf("{:s}",vms.stickText);
     }
     //데이터로드
     else if(opStep[cp] == 6){
+        const index = pps.selectMenu[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n");
+            t.appendf("\x13{:s}\x041번 슬롯 선택\n",pps.selectIcon1[index]);
+            t.appendf("\x13{:s}\x042번 슬롯 선택\n",pps.selectIcon2[index]);
+            t.appendf("\x13{:s}\x043번 슬롯 선택\n",pps.selectIcon3[index]);
+            t.appendf("\x13{:s}\x044번 슬롯 선택\n",pps.selectIcon4[index]);
+            t.appendf("\x13\x1C└─────────────────────┘");
+        }
+        t.DisplayAt(0);
+        dataSlotAction(cp, index);
+        eprintf("{:s}",vms.stickText);
+    }
+    else if(opStep[cp] == 7){
         t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
-        t.appendf("\x13\x04데이터를 불러오고 있습니다.\n");
+        t.appendf("\x13\x04{}번 슬롯을 불러오고 있습니다.\n",scs.userSlot[cp]+1);
         t.appendf("\x13\x04잠시만 기다려주세요.\n");
         t.appendf("\x13\x1C└─────────────────────┘");
+        t.DisplayAt(0);
         if(scs.playerLoad[cp] > 1){
-            if(scs.playerLoad[cp] == 3){opStep[cp] = 7;}
-            else{opStep[cp] = 5;}
+            if(scs.playerLoad[cp] == 2){opStep[cp] = 8;}
+            else{opStep[cp] = 6; scs.playerLoad[cp] = 0; pps.guiUpdate[cp] = 1;}
         }
     }
     //로드된 캐릭터 생성하기
-    else if(opStep[cp] == 7){
+    else if(opStep[cp] == 8){
         pps.userSetLight[cp] = 31;
         ppu.createPlayer(cp);
+        vms.removeText();
         if(IsUserCP()){SetVariables(vli.locationText,1);}
         opStep[cp] = 25;
     }
@@ -140,5 +134,62 @@ function openingStep(cp){
                 pps.mainStory[cp] = 1;
             }
         }
+    }
+}
+
+function openingAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 1;}
+        else{pps.selectMenu[cp] = 0;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 1;}
+        else{pps.selectMenu[cp] = 0;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        if(index == 0){
+            pps.selectMenu[cp] = 0;
+            opStep[cp] = 20;
+            vms.removeText();
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            pps.settingMusic[cp] = 2;
+        }
+        else if(index == 1){
+            pps.selectMenu[cp] = 0;
+            opStep[cp] = 6;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
+    }
+}
+
+function dataSlotAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pps.selectMenu[cp] = 3;}
+        else{pps.selectMenu[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 3){pps.selectMenu[cp] = 0;}
+        else{pps.selectMenu[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        pps.selectMenu[cp] = 0;
+        opStep[cp] = 5;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        scs.userSlot[cp] = index;
+        scs.loadCode[cp] = 1;
+        opStep[cp] = 7;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
 }
