@@ -1,19 +1,28 @@
+import Battle.battleStart as bbs;
+import Battle.battleGUI as bbg;
 import Interface.userGUI as iug;
 import Item.itemInfo as iif;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.myPokemon as pmp;
 import Pokemon.calculateMethod as pcm;
 import Pokemon.weakRelation as pwr;
+import Pokemon.pokemonStatus as ppst;
 import Player.playerSetting as pps;
+import Variables.locationInfo as vli;
+import Variables.mainSentence as vms;
 import dataTable as dT;
+import functions as fc;
 
 const t = StringBuffer(1024);
 const pokeIndex     = PVariable();
 const pokeAction    = PVariable(); //포켓몬 GUI에서 다른 액션을 취해야할 경우
+const pokeChange    = PVariable(); //포켓몬 교체
+const changeName    = PVariable();
 /*
 pokeAction
 0:가방
-1:배틀 (교체)
+1:배틀 (가방아이템)
+2:배틀 (교체)
 */
 
 /*
@@ -25,8 +34,9 @@ pokeAction
 
 
 function subMenu_PokemonAction(cp, index);
+function subMenu_PokemonBattleAction(cp, index);
 function subMenu_PokemonInfo(cp, height);
-function subMenu_Pokemon(cp, height){
+function subMenu_Pokemon(cp, height, battle){
     const action = pokeAction[cp];
     if(action || iug.subMiniMenu[cp] == 0){
         const index = pokeIndex[cp];
@@ -34,15 +44,20 @@ function subMenu_Pokemon(cp, height){
             pps.guiUpdate[cp] = 0;
             const cpPk = cp*pmp.userPokemonNum;
             t.insert(0);
-            if(action == 0){t.appendf("\t\t\x1D포켓몬\n\n");}
-            else if(action == 1){t.appendf("\t\t\x1D누구에게 사용하시겠습니까?\n\n");}
+            if(battle == 1){t.appendf("\t\t\x1D어떤 포켓몬으로 교체할까요?\n\n");}
+            else if(action == 0){t.appendf("\t\t\x1D포켓몬\n\n");}
+            else if(action == 1){t.appendf("\t\t\x1D누구에게 사용할까요?\n\n");}
 
             for(var i=0; i<6; i++){
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
                 const icon = EUDArray.cast(pps.selectIconList[i]);
                 if(mpk.index){
                     const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
-                    if(pps.battleState[cp]){t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}\n",icon[index], mpk.level, pk.name);}
+                    if(pps.battleState[cp]){
+                        t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}",icon[index],mpk.level,pk.name);
+                        if(bbs.pokemonNumber[cp] == i){t.appendf("\x08(전투)\n");}
+                        else{t.appendf("\n");}
+                    }
                     else{
                         const BTs_HP = pcm.returnStatsHP(pk.BTs);
                         const IVs_HP = pcm.returnIVsHP(mpk.IVs);
@@ -53,7 +68,8 @@ function subMenu_Pokemon(cp, height){
             }
         }
         t.DisplayAt(height);
-        if(action == 0){subMenu_PokemonAction(cp, index);}
+        if(battle == 1){subMenu_PokemonBattleAction(cp, index);}
+        else if(action == 0){subMenu_PokemonAction(cp, index);}
     }
     else{subMenu_PokemonInfo(cp, height);}
 }
@@ -85,6 +101,86 @@ function subMenu_PokemonAction(cp, index){
             iug.subMiniMenu[cp] = index+1;
             pps.guiUpdate[cp] = 1;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}
+
+function subMenu_PokemonBattleAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){pokeIndex[cp] = 5;}
+        else{pokeIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){pokeIndex[cp] = 0;}
+        else{pokeIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //포켓몬 교체
+    if(Deaths(cp, Exactly, 8, "A Stick") && bbs.pokemonNumber[cp] != index){
+        const cpPk = cp*pmp.userPokemonNum;
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+index]);
+        if(mpk.index > 0){
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+            changeName[cp] = pk.name;
+            pokeChange[cp] = 1;
+            iug.subMiniMenu[cp] = index+1;
+            iug.subMenu[cp] = 0;
+            //PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}
+
+function changePokemon(cp){
+    if(pokeChange[cp]){
+        pokeChange[cp] += 1;
+        const changeDelay = pokeChange[cp];
+        if(changeDelay == 2){
+            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+            fc.scanEffect(vli.tempMoveLoc, 980);
+            PlayWAV("staredit\\wav\\emerald_ball throw.wav");
+        }
+        if(changeDelay < 24*2){
+            t.insert(0, "\n\n\n");
+            t.appendf("\x13{:s}\n",vms.sph1);
+            t.appendf("\x13\x04돌아와! \x17{:s}!\n",bbs.pokemonName[cp]);
+            t.appendf("\x13\x04가랏! \x1F{:s}!\n",changeName[cp]);
+            t.appendf("\x13{:s}",vms.sph1);
+            t.DisplayAt(0);
+            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+            Order(ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp], Move, vli.tempMoveLoc);
+        }
+        else{
+            const cpPk = cp*pmp.userPokemonNum;
+            const pkNumber = iug.subMiniMenu[cp]-1;
+            //이전 포켓몬 설정
+            const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
+            mpk.hitpoint = bbg.pokemonCurHP[cp];
+
+            //내 포켓몬 설정
+            bbs.pokemonNumber[cp] = pkNumber;
+            const pUnit = ppst.settingPokemon(cp, true, pkNumber);
+
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp]-1]);
+            const ck = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp+4]-1]);
+            pwr.calculateWeak_PVE(cp, pk.type, ck.type);
+            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+            RemoveUnitAt(1, ppst.playerPokemonUnit[cp], bbs.battleLocation[cp], cp);
+            bbs.battleEPD[cp] = fc.SetNextUnitEPD();
+            CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
+            fc.scanEffect(vli.tempMoveLoc, 391);
+            PlayWAV("staredit\\wav\\Battle recall.wav");
+
+            iug.subMiniMenu[cp] = 0;
+            pokeChange[cp] = 0;
         }
     }
 }

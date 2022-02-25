@@ -1,7 +1,10 @@
 import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
+import Pokemon.pokemonInfo as ppi;
+import Pokemon.myPokemon as pmp;
 import Variables.mainSentence as vms;
 import Variables.locationInfo as vli;
+import Variables.npcInfo as vni;
 import SCA.scaSystem as scs;
 
 
@@ -28,7 +31,6 @@ const opSpeech  = [
     Db("\x13그럼\n\x13포켓몬스터의 세계로!")
 ];
 
-function openingAction(cp, index);
 function dataSlotAction(cp, index);
 function openingStep(cp){
     if(opStep[cp] == 0){
@@ -36,77 +38,166 @@ function openingStep(cp){
         else{opDelay[cp] = 0; opStep[cp] = 1;}
     }
     else if(opStep[cp] == 1){
-        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04ⓒ 2008 Pokemon\n\x13\x04ⓒ 1995-2008 Nintendo\n\x13\x04ⓒ 1995-2008 Creatures Inc.\n\x13\x04ⓒ 1995-2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
+        s.insert(0, "\x13\x1C┌─────────────────────┐\n");
+        s.append("\n");
+        s.append("\x13\x04ⓒ 2008 Pokemon\n");
+        s.append("\x13\x04ⓒ 1995-2008 Nintendo\n");
+        s.append("\x13\x04ⓒ 1995-2008 Creatures Inc.\n");
+        s.append("\x13\x04ⓒ 1995-2008 GAME FREAK Inc.\n");
+        s.append("\n");
+        s.append("\x13\x1C└─────────────────────┘");
+        s.DisplayAt(0);
         if(opDelay[cp] < 216){opDelay[cp] += 1;}
         else{opDelay[cp] = 0; opStep[cp] = 2;}
     }
     else if(opStep[cp] == 2){
-        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\n\x13\x17GAME FREAK\n\x13\x17·PRESENTS·\n\n\x13\x1C└─────────────────────┘");
+        s.insert(0, "\x13\x1C┌─────────────────────┐\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\x13\x17GAME FREAK\n");
+        s.append("\x13\x17·PRESENTS·\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\x13\x1C└─────────────────────┘");
+        s.DisplayAt(0);
         if(opDelay[cp] < 216){opDelay[cp] += 1;}
         else{opDelay[cp] = 0; opStep[cp] = 3;}
     }
     else if(opStep[cp] == 3){
-        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n\n\x13\x04ⓒ 2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
+        s.insert(0, "\x13\x1C┌─────────────────────┐\n");
+        s.append("\x13\x04포켓몬스터 DP\n");
+        s.append("\x13\x1EPokemon Diamond·Pearl\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\x13\x04ⓒ 2008 GAME FREAK Inc.\n");
+        s.append("\x13\x1C└─────────────────────┘");
+        s.DisplayAt(0);
         if(opDelay[cp] < 216){opDelay[cp] += 1;}
         else{opDelay[cp] = 0; opStep[cp] = 4;}
     }
     else if(opStep[cp] == 4){
-        s.printfAt(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n\n\x13\x04ⓒ 2008 GAME FREAK Inc.\n\x13\x1C└─────────────────────┘");
-        if(opDelay[cp] < 36){s.printfAt(7, "\x13\x02F키를 누르면 게임을 시작합니다.");}
-        else{s.printfAt(7, "\x13");}
+        s.insert(0, "\x13\x1C┌─────────────────────┐\n");
+        s.append("\x13\x04포켓몬스터 DP\n");
+        s.append("\x13\x1EPokemon Diamond·Pearl\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\n");
+        s.append("\x13\x04ⓒ 2008 GAME FREAK Inc.\n");
+        s.append("\x13\x1C└─────────────────────┘");
+        s.DisplayAt(0);
+        if(opDelay[cp] < 36){
+            if(scs.globalStat == 0){s.printfAt(5, "\x13\x02SCA런처를 먼저 실행하세요.");}
+            else if(scs.globalStat != 72){s.printfAt(5, "\x13\x02맵정보를 불러오고 있습니다...");}
+            else{s.printfAt(5, "\x13\x02F키를 누르면 게임을 시작합니다.");}
+        }
+        //else{s.printfAt(6, "\x13");}
         if(opDelay[cp] < 72){opDelay[cp] += 1;}
         else{opDelay[cp] = 0;}
-        if(Deaths(cp, Exactly, 16, "A Key")){
+        if(scs.globalStat == 72 && Deaths(cp, Exactly, 16, "A Key")){
             PlayWAV("staredit\\wav\\se_gui_choose.wav");
             s.printfAt(0, "\n\n\n\n\n\n\n");
             opDelay[cp] = 0; opStep[cp] = 5;
             pps.guiUpdate[cp] = 1;
         }
     }
+    //슬롯선택
     else if(opStep[cp] == 5){
         const index = pps.selectMenu[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
-            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n");
+            t.insert(0, "\x13\x1C┌─────────────────────┐\n");
             t.appendf("\x13\x04포켓몬스터 DP\n");
             t.appendf("\x13\x1EPokemon Diamond·Pearl\n");
-            t.appendf("\x13{:s}\x04새로하기\n", pps.selectIcon1[index]);
-            t.appendf("\x13{:s}\x04이어하기\n", pps.selectIcon2[index]);
-            t.appendf("\x13\x1C└─────────────────────┘");
-        }
-        t.DisplayAt(0);
-        openingAction(cp, index);
-        eprintf("{:s}",vms.stickText);
-    }
-    //데이터로드
-    else if(opStep[cp] == 6){
-        const index = pps.selectMenu[cp];
-        if(pps.guiUpdate[cp]){
-            pps.guiUpdate[cp] = 0;
-            t.insert(0, "\n\x13\x1C┌─────────────────────┐\n");
-            t.appendf("\x13{:s}\x041번 슬롯 선택\n",pps.selectIcon1[index]);
-            t.appendf("\x13{:s}\x042번 슬롯 선택\n",pps.selectIcon2[index]);
-            t.appendf("\x13{:s}\x043번 슬롯 선택\n",pps.selectIcon3[index]);
-            t.appendf("\x13{:s}\x044번 슬롯 선택\n",pps.selectIcon4[index]);
+            t.appendf("\n");
+            t.appendf("\x13{:s}1번 슬롯 선택\n",pps.selectIcon1[index]);
+            t.appendf("\x13{:s}2번 슬롯 선택\n",pps.selectIcon2[index]);
+            t.appendf("\x13{:s}3번 슬롯 선택\n",pps.selectIcon3[index]);
             t.appendf("\x13\x1C└─────────────────────┘");
         }
         t.DisplayAt(0);
         dataSlotAction(cp, index);
         eprintf("{:s}",vms.stickText);
     }
-    else if(opStep[cp] == 7){
-        t.insert(0, "\n\x13\x1C┌─────────────────────┐\n\x13\x04포켓몬스터 DP\n\x13\x1EPokemon Diamond·Pearl\n");
-        t.appendf("\x13\x04{}번 슬롯을 불러오고 있습니다.\n",scs.userSlot[cp]+1);
-        t.appendf("\x13\x04잠시만 기다려주세요.\n");
-        t.appendf("\x13\x1C└─────────────────────┘");
+    else if(opStep[cp] == 6){
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            t.insert(0, "\x13\x1C┌─────────────────────┐\n");
+            t.appendf("\x13\x04포켓몬스터 DP\n");
+            t.appendf("\x13\x1EPokemon Diamond·Pearl\n");
+            t.appendf("\n");
+            t.appendf("\x13\x1E{}번 슬롯\x04을 불러오고 있습니다.\n",scs.userSlot[cp]+1);
+            t.appendf("\x13\x04잠시만 기다려주세요.\n");
+            t.appendf("\n");
+            t.appendf("\x13\x1C└─────────────────────┘");
+        }
         t.DisplayAt(0);
         if(scs.playerLoad[cp] > 1){
-            if(scs.playerLoad[cp] == 2){opStep[cp] = 8;}
-            else{opStep[cp] = 6; scs.playerLoad[cp] = 0; pps.guiUpdate[cp] = 1;}
+            //데이터가 있는 경우, 시작할지 다른슬롯을 선택할지 물어보기
+            if(scs.playerLoad[cp] == 2){opStep[cp] = 8; pps.guiUpdate[cp] = 1;}
+            //해당 슬롯에 데이터가 없는 경우 해당슬롯으로 새롭게 게임을 시작할지 물어보기
+            else{opStep[cp] = 7; scs.playerLoad[cp] = 0; pps.guiUpdate[cp] = 1;}
+        }
+    }
+    else if(opStep[cp] == 7){
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            t.insert(0, "\x13\x1C┌─────────────────────┐\n");
+            t.appendf("\x13\x1F《 \x04{}번 슬롯 \x1F》\n",scs.userSlot[cp]+1);
+            t.appendf("\n");
+            t.appendf("\x13\x1E해당 슬롯은 비어있습니다.\n");
+            t.appendf("\n");
+            t.appendf("\x13\x04새로하기 (D)\n");
+            t.appendf("\x13\x04뒤로가기 (A)\n");
+            t.appendf("\x13\x1C└─────────────────────┘");
+        }
+        t.DisplayAt(0);
+        if(Deaths(cp, Exactly, 8, "A Stick")){
+            pps.selectMenu[cp] = 0; opStep[cp] = 20;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            pps.settingMusic[cp] = 2; vms.removeText();
+            pps.guiUpdate[cp] = 1;
+        }
+        if(Deaths(cp, Exactly, 4, "A Stick")){
+            opStep[cp] = 5; pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
+    }
+    else if(opStep[cp] == 8){
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            const cpPk = cp*pmp.userPokemonNum;
+            t.insert(0, "\x13\x1C┌─────────────────────┐\n");
+            t.appendf("\x13\x1F《 \x04{}번 슬롯 \x1F》\n",scs.userSlot[cp]+1);
+            t.appendf("\x13\n\x13");
+            for(var i=0; i<6; i++){
+                if(i == 3){t.appendf("\n\x13");}
+                if(i != 0 && i != 3){t.appendf("\x1F│");}
+                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
+                if(mpk.index){
+                    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+                    t.appendf("\x04Lv.{} {:s}",mpk.level,pk.name);
+                }
+                else{t.appendf("\x1ELv.0 없음");}
+            }
+            t.appendf("\n\x13\x04이어하기 (D)\n");
+            t.appendf("\x13\x04뒤로가기 (A)\n");
+            t.appendf("\x13\x1C└─────────────────────┘");
+        }
+        t.DisplayAt(0);
+        if(Deaths(cp, Exactly, 8, "A Stick")){
+            pps.selectMenu[cp] = 0; opStep[cp] = 9;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            vms.removeText(); pps.guiUpdate[cp] = 1;
+        }
+        if(Deaths(cp, Exactly, 4, "A Stick")){
+            opStep[cp] = 5; pps.guiUpdate[cp] = 1;
+            scs.playerLoad[cp] = 0;
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
         }
     }
     //로드된 캐릭터 생성하기
-    else if(opStep[cp] == 8){
+    else if(opStep[cp] == 9){
         pps.userSetLight[cp] = 31;
         ppu.createPlayer(cp);
         vms.removeText();
@@ -115,7 +206,7 @@ function openingStep(cp){
     }
     //오프닝
     else if(opStep[cp] == 20){
-        s.insert(0, "\n");
+        s.insertf(0, "\x13{:s}\n",vni.npcName[3]);
         s.appendf("\x13{:s}\n", vms.sph1);
         s.appendf("\n\n", vms.sph1);
         //s.appendf("{:s}", opSpeech[vms.sphIndex[cp]]);
@@ -137,6 +228,7 @@ function openingStep(cp){
     }
 }
 
+/*
 function openingAction(cp, index){
     if(Deaths(cp, Exactly, 1, "A Stick")){
         if(index == 0){pps.selectMenu[cp] = 1;}
@@ -159,37 +251,40 @@ function openingAction(cp, index){
             pps.settingMusic[cp] = 2;
         }
         else if(index == 1){
-            pps.selectMenu[cp] = 0;
-            opStep[cp] = 6;
-            pps.guiUpdate[cp] = 1;
-            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+            if(scs.globalStat == 72){
+                pps.selectMenu[cp] = 0;
+                opStep[cp] = 6;
+                pps.guiUpdate[cp] = 1;
+                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            }
+            else{
+                DisplayText("\x07！\x04맵정보와 시간정보가 먼저 로드되어야\n　\x04유저데이터를 로드할 수 있습니다.");
+                pps.guiUpdate[cp] = 1;
+                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+            }
         }
     }
 }
+*/
 
 function dataSlotAction(cp, index){
     if(Deaths(cp, Exactly, 1, "A Stick")){
-        if(index == 0){pps.selectMenu[cp] = 3;}
+        if(index == 0){pps.selectMenu[cp] = 2;}
         else{pps.selectMenu[cp] -= 1;}
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }
     if(Deaths(cp, Exactly, 2, "A Stick")){
-        if(index == 3){pps.selectMenu[cp] = 0;}
+        if(index == 2){pps.selectMenu[cp] = 0;}
         else{pps.selectMenu[cp] += 1;}
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }
-    if(Deaths(cp, Exactly, 4, "A Stick")){
-        pps.selectMenu[cp] = 0;
-        opStep[cp] = 5;
-        pps.guiUpdate[cp] = 1;
-        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
-    }
     if(Deaths(cp, Exactly, 8, "A Stick")){
         scs.userSlot[cp] = index;
         scs.loadCode[cp] = 1;
-        opStep[cp] = 7;
+        opStep[cp] = 6;
+        pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
 }

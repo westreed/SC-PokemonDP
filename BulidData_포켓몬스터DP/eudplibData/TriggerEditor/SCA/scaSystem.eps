@@ -1,10 +1,6 @@
-import Interface.menu_Book as imk;
-import Interface.menu_Bag as imb;
 import Pokemon.calculateMethod as pcm;
-import Pokemon.myPokemon as pmp;
+import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
-import Player.playerUnit as ppu;
-import dataTable as dT;
 import scaVariable as sv;
 import TriggerEditor.SCArchive as sca;
 
@@ -62,91 +58,10 @@ const saveCode      = PVariable(); //세이브명령
 const backupCode    = PVariable(); //백업명령
 const returnLoad    = PVariable();
 const backupCheck   = PVariable();
+const saveState     = PVariable();
 
 const StatusText    = [Db("대기"), Db("로드"), Db("시간로드"), Db("버젼로드"), Db("세이브")];
-const weekText      = [Db("월요일"),Db("화요일"),Db("수요일"),Db("목요일"),Db("금요일"),Db("토요일"),Db("일요일")];
-
-/*
-const scaMain		= PVariable();
-const scaSub		= EUDArray(8*5);
-const scaTrainer	= EUDArray(8*5);
-const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); //(index + 256*level)
-const scaPokemonHP	= EUDArray(8*pmp.userPokemonNum);
-const scaPokemonIVs	= EUDArray(8*pmp.userPokemonNum);
-const scaPokemonEXP	= EUDArray(8*pmp.userPokemonNum);
-const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
-const scaBag		= EUDArray(8*imb.bagMax);
-const scaBook		= EUDArray(8*5);
-const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal*/
-
-//유즈맵데이터를 SCA데이터로 변환하기
-function map2sca(cp){
-    sv.scaMain[cp] = pps.mainStory[cp];
-    //sv.scaSub[cp]
-    //sv.scaTrainer[cp]
-    const cpPk = cp*pmp.userPokemonNum;
-    for (var i=0; i<pmp.userPokemonNum; i++){
-        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-        sv.scaPokemonIL[cpPk+i] = mpk.index + mpk.level*256;
-        sv.scaPokemonHP[cpPk+i] = mpk.hitpoint;
-        sv.scaPokemonIVs[cpPk+i] = mpk.IVs;
-        sv.scaPokemonEXP[cpPk+i] = mpk.ownEXP;
-        sv.scaPokemonIS[cpPk+i] = mpk.item + mpk.state*256;
-    }
-    const cpBg = cp*imb.bagMax;
-    for (var i=0; i<imb.bagMax; i++){
-        sv.scaBag[cpBg+i] = imb.bagItemList[cpBg+i] + imb.bagNumList[cpBg+i]*256;
-    }
-    const cpBk = cp*imk.bookSCANum;
-    const cpBn = cp*imk.pageNumber;
-    for (var i=0; i<imk.bookSCANum; i++){
-        const i32 = i*32;
-        for (var j=0; j<32; j++){sv.scaBook[cpBk + i] += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
-    }
-    sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256;
-    sv.scaPosition[cp] = ppu.playerPosX[cp] + ppu.playerPosY[cp]*8192;
-}
-
-//SCA데이터를 유즈맵데이터로 변환하기
-function sca2map(cp){
-    pps.mainStory[cp] = sv.scaMain[cp];
-
-    const cpPk = cp*pmp.userPokemonNum;
-    for (var i=0; i<pmp.userPokemonNum; i++){
-        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-        const scaPokemonIndex, scaPokemonLevel = pcm.divideData256(sv.scaPokemonIL[cpPk+i]);
-        mpk.index = scaPokemonIndex;
-        mpk.level = scaPokemonLevel;
-        mpk.hitpoint = sv.scaPokemonHP[cpPk+i];
-        mpk.IVs = sv.scaPokemonIVs[cpPk+i];
-        mpk.ownEXP = sv.scaPokemonEXP[cpPk+i];
-        const scaPokemonItem, scaPokemonState = pcm.divideData256(sv.scaPokemonIS[cpPk+i]);
-        mpk.item = scaPokemonItem;
-        mpk.state = scaPokemonState;
-    }
-
-    const cpBg = cp*imb.bagMax;
-    for (var i=0; i<imb.bagMax; i++){
-        const scaBagItem, scaBagNum = pcm.divideData256(sv.scaBag[cpBg+i]);
-        imb.bagItemList[cpBg+i] = scaBagItem;
-        imb.bagNumList[cpBg+i] = scaBagNum;
-    }
-
-    const cpBk = cp*imk.bookSCANum;
-    const cpBn = cp*imk.pageNumber;
-    for (var i=0; i<imk.bookSCANum; i++){
-        const i32 = i*32;
-        for (var j=31; j<=0; j--){
-            if(sv.scaBook[cpBk + i] >= dT.bit32[j]){sv.scaBook[cpBk + i] -= dT.bit32[j]; imk.sinoBook[cpBn+i32+j] = 1;}
-        }
-    }
-    const scaVillage, scaHeal = pcm.divideData256(sv.scaLocation[cp]);
-    pps.lastVisitVillage[cp] = scaVillage;
-    pps.lastVisitHeal[cp] = scaHeal;
-    const scaPosX, scaPosY = pcm.dividePos(sv.scaPosition[cp]);
-    ppu.playerPosX[cp] = scaPosX;
-    ppu.playerPosY[cp] = scaPosY;
-}
+//const weekText      = [Db("월요일"),Db("화요일"),Db("수요일"),Db("목요일"),Db("금요일"),Db("토요일"),Db("일요일")];
 
 function globalLoading(){
     if(globalStat == 0){
@@ -329,6 +244,8 @@ function userLoading(cp){
 function userSaving(cp){
     if(saveCode[cp] == 1){
         if(sca.ConnectStatus() == 1){
+            if(pps.moveState[cp]){saveState[cp] = 0; pmu.changeMoveState(cp, false);}
+            else{saveState[cp] = 1;}
             saveCode[cp] = 2;
             map2sca(cp);
             sca.ResetLastMessage();
@@ -338,26 +255,25 @@ function userSaving(cp){
         }
         else{
             saveCode[cp] = 0;
-            if(1){
-                s.print("\x08！ \x04혼자 플레이하실 땐, SCA런처를 이용하실 수 없습니다.");
-            }
-            else{
-                s.print("\x08■\x04SCA런처를 실행하셔야 합니다.\n\x08  ！\x04다운로드 https://scarchive.kr/main.php");
-            }
+            if(1){s.print("\x08！ \x04혼자 플레이하실 땐, SCA런처를 이용하실 수 없습니다.");}
+            else{s.print("\x08■\x04SCA런처를 실행하셔야 합니다.\n\x08！\x04다운로드 https://scarchive.kr/main.php");}
         }
     }
     else if(saveCode[cp] == 2){
         if(sca.ConnectStatus() == 1){
             if(sca.GetLastMessage() == 6){
                 saveCode[cp] = 0;
+                pmu.changeMoveState(cp, true);
                 s.print("\x1F■\x04데이터를 성공적으로 저장했습니다.");
             }
             else if(sca.GetLastMessage() > 6){
                 saveCode[cp] = 0;
+                pmu.changeMoveState(cp, true);
                 s.print("\x08■\x04데이터를 저장하는데 실패했습니다!");
             }
         }
         else{
+            if(saveState[cp] == 0){pmu.changeMoveState(cp, true);}
             saveCode[cp] = 0;
             s.print("\x08■\x04데이터를 저장하는데 실패했습니다!");
         }

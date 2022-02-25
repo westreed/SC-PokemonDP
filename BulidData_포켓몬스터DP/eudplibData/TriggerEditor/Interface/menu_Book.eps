@@ -68,6 +68,16 @@ function subMenu_BookAction(cp, index){
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }
+    if(Deaths(cp, Exactly, 16, "A Stick")){ //PageUp
+        bookIndex[cp] = 5; nextPage(cp, 0);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 32, "A Stick")){ //PageDown
+        bookIndex[cp] = 0; nextPage(cp, 1);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
     //뒤로가기
     if(Deaths(cp, Exactly, 4, "A Stick")){
         iug.subMenu[cp] = 0;

@@ -104,7 +104,9 @@ function settingSpeed(spd){
 
 //type:야생?트레이너? exp:개체경험치 lucky:cp의포켓몬이 행운의알을 들고 있는가? level:상대레벨
 function returnEXP(type, exp, lucky, level){
-    return (type*exp*lucky*level)/7;
+    var type2 = 1;
+    if(type == 0){type2 = 2;}
+    return (type2*exp*lucky*level)/7;
 }
 
 function returnVersion(ver){

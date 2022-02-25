@@ -73,7 +73,6 @@ function beforeTriggerExec(){
 		fc.updateLight(cp);
 		scs.userLoading(cp);
 		scs.userSaving(cp);
-		ved.delaySystem(cp);
 	}
 }
 
@@ -90,9 +89,7 @@ function afterTriggerExec(){
 			vft.printFlagText(cp); //표지판 텍스트
 			bbs.battleSystem(cp); //배틀시스템
 			iug.printGUI(cp); //유저메뉴
-			if(Deaths(cp, Exactly, 4, "A Key")){
-				scs.saveCode[cp] = 1;
-			}
+			ved.delaySystem(cp); //딜레이 계산
 		}
 	}
 	KillUnit(33, 7); //스캔이펙트 제거

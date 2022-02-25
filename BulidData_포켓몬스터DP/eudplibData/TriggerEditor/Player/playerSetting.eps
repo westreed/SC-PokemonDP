@@ -7,24 +7,28 @@ const userLight         = PVariable();
 const settingMusic      = PVariable(); //재생할 곡 선택
 const playingMusic      = PVariable(); //현재 재생중인 곡
 const setMusic          = PVariable(); //음악재생여부
+const setAutoSave       = PVariable(); //자동저장
 const battleState       = PVariable(); //배틀상태
 const moveState         = PVariable(list(1,1,1,1,0,0,0,0)); //0 못움직임, 1 움직임
 const mainStory         = PVariable();
 const currentLocation   = PVariable(); //현재위치
 const lastVisitVillage  = PVariable(); //마지막으로 방문했던 마을,도시 위치
 const lastVisitHeal     = PVariable(); //마지막으로 방문했던 치료소
+const checkPlaytime     = PVariable(); //1분마다 1씩 오르게
 
 
 const selectMenu        = PVariable(); //선택중인 메뉴의 index (GUI)
-const selectIcon1       = [Db("\x08▶ "), Db(""), Db(""), Db(""), Db(""), Db(""), Db("")];
-const selectIcon2       = [Db(""), Db("\x08▶ "), Db(""), Db(""), Db(""), Db(""), Db("")];
-const selectIcon3       = [Db(""), Db(""), Db("\x08▶ "), Db(""), Db(""), Db(""), Db("")];
-const selectIcon4       = [Db(""), Db(""), Db(""), Db("\x08▶ "), Db(""), Db(""), Db("")];
-const selectIcon5       = [Db(""), Db(""), Db(""), Db(""), Db("\x08▶ "), Db(""), Db("")];
-const selectIcon6       = [Db(""), Db(""), Db(""), Db(""), Db(""), Db("\x08▶ "), Db("")];
-const selectIcon7       = [Db(""), Db(""), Db(""), Db(""), Db(""), Db(""), Db("\x08▶ ")];
+const selectIcon1       = [Db("\x08▶\x1E "), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04")];
+const selectIcon2       = [Db("\x04"), Db("\x08▶\x1E "), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04")];
+const selectIcon3       = [Db("\x04"), Db("\x04"), Db("\x08▶\x1E "), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04")];
+const selectIcon4       = [Db("\x04"), Db("\x04"), Db("\x04"), Db("\x08▶\x1E "), Db("\x04"), Db("\x04"), Db("\x04")];
+const selectIcon5       = [Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x08▶\x1E "), Db("\x04"), Db("\x04")];
+const selectIcon6       = [Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x08▶\x1E "), Db("\x04")];
+const selectIcon7       = [Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x04"), Db("\x08▶\x1E ")];
 const selectIconList    = [selectIcon1, selectIcon2, selectIcon3, selectIcon4, selectIcon5, selectIcon6, selectIcon7];
 const guiUpdate         = PVariable();
+
+const switchIcon        = [Db("\x07ON"), Db("\x08OFF")];
 
 
 const blankText   = [

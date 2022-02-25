@@ -10,8 +10,15 @@ function attackAI(cp){
     if(battleAttackDelay[cp] == 0){
         battleAttackDelay[cp] = 24;
         const battleLoc = bbs.battleLocation[cp];
-        MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, battleLoc);
-        Order(ppst.computerPokemonUnit[cp], P5, battleLoc, Patrol, vli.tempMoveLoc);
+        const pUnit = ppst.playerPokemonUnit[cp];
+        if(Bring(cp, Exactly, 1, pUnit, battleLoc)){
+            MoveLocation(vli.tempMoveLoc, pUnit, cp, battleLoc);
+            Order(ppst.computerPokemonUnit[cp], P5, battleLoc, Patrol, vli.tempMoveLoc);
+        }
+        else{
+            MoveLocation(vli.tempMoveLoc, 37, P5, battleLoc); //상대 포켓몬
+            Order(ppst.computerPokemonUnit[cp], P5, battleLoc, Patrol, vli.tempMoveLoc);
+        }
     }
     else{battleAttackDelay[cp] -= 1;}
 }

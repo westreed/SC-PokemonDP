@@ -52,18 +52,18 @@ function subMenu_Book(cp, height){
         }
         else{
             //아이템 사용
-            imp.subMenu_Pokemon(cp, height);
+            imp.subMenu_Pokemon(cp, height, 0);
             subMenu_ItemUseAction(cp);
         }
     }
 }
 
 function nextPage(cp, value){
-    if(value){
+    if(value){ //1, true 페이지 증가
         if(bagPage[cp] < bagLastPage){bagPage[cp] += 1;}
         else{bagPage[cp] = 0;}
     }
-    else{
+    else{ //0, false 페이지 감소
         if(bagPage[cp] > 0){bagPage[cp] -= 1;}
         else{bagPage[cp] = bagLastPage;}
     }
@@ -79,6 +79,16 @@ function subMenu_BagAction(cp, index){
     if(Deaths(cp, Exactly, 2, "A Stick")){
         if(index == 5){bagIndex[cp] = 0; nextPage(cp, 1);}
         else{bagIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 16, "A Stick")){ //PageUp
+        bagIndex[cp] = 5; nextPage(cp, 0);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 32, "A Stick")){ //PageDown
+        bagIndex[cp] = 0; nextPage(cp, 1);
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }

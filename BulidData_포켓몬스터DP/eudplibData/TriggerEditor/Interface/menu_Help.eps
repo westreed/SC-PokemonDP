@@ -1,0 +1,310 @@
+import Interface.userGUI as iug;
+import Player.playerSetting as pps;
+import Pokemon.pokemonInfo as ppi;
+
+
+
+const t = StringBuffer(1024);
+const helpIndex     = PVariable();
+const helpPage      = PVariable();
+
+const helpText      = [Db("게임목표"),Db("기본정보"),Db("단축키"),Db("비전머신"),Db("아이템"),Db("포켓몬진화")];
+const helpInfoPage  = [1,4,4,8,4,1];
+
+function subMenu_HelpAction(cp, index);
+function subMenu_HelpInfo1(cp, height);
+function subMenu_HelpInfo2(cp, height);
+function subMenu_HelpInfo3(cp, height);
+function subMenu_HelpInfo4(cp, height);
+function subMenu_HelpInfo5(cp, height);
+function subMenu_HelpInfo6(cp, height);
+function subMenu_HelpInfoAction(cp, subIndex);
+function subMenu_Help(cp, height){
+    if(iug.subMiniMenu[cp] == 0){
+        const index = helpIndex[cp];
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            helpPage[cp] = 0;
+            t.insert(0);
+            t.appendf("\t\t\x1D도움말\n\n");
+
+            for(var i=0; i<6; i++){
+                const icon = EUDArray.cast(pps.selectIconList[i]);
+                t.appendf("\t\t{:s}\x04{:s}\n",icon[index],helpText[i]);
+            }
+        }
+        t.DisplayAt(height);
+        subMenu_HelpAction(cp, index);
+    }
+    else{
+        const subIndex = iug.subMiniMenu[cp];
+        if(subIndex == 1){subMenu_HelpInfo1(cp, height);}
+        else if(subIndex == 2){subMenu_HelpInfo2(cp, height);}
+        else if(subIndex == 3){subMenu_HelpInfo3(cp, height);}
+        else if(subIndex == 4){subMenu_HelpInfo4(cp, height);}
+        else if(subIndex == 5){subMenu_HelpInfo5(cp, height);}
+        else if(subIndex == 6){subMenu_HelpInfo6(cp, height);}
+        subMenu_HelpInfoAction(cp, subIndex-1);
+    }
+}
+
+function subMenu_HelpAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){helpIndex[cp] = 5;}
+        else{helpIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){helpIndex[cp] = 0;}
+        else{helpIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //결정
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        iug.subMiniMenu[cp] = index+1;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
+}
+
+//게임목표
+function subMenu_HelpInfo1(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        
+        t.appendf("\t\t\x04각 마을의 체육관 관장에게서 8개의 \x1C배찌\x04를 모으고,\n");
+        t.appendf("\t\t\x04포켓몬 리그 \x1E사천왕\x04과 \x08챔피언\x04에게 도전해야 합니다.\n");
+        t.appendf("\n");
+        t.appendf("\t\t\x04마박사의 부탁에 따라, \x1D신오도감\x04을 완성해야 합니다.\n");
+
+        t.appendf("\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+//기본정보
+function subMenu_HelpInfo2(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        if(page == 0){
+            t.appendf("\t\t\x04대부분의 설정은 기존의 포켓몬게임과 같습니다.\n");
+            t.appendf("\t\t\x04하지만, 포켓몬의 \x1F기술\x04이 삭제되었고 유닛끼리의 \x08전투\x04로 진행됩니다.\n");
+            t.appendf("\t\t\x04전투에 참여한 포켓몬만 경험치를 얻고, 레벨은 같은 포켓몬이어도 \x1E개별적용\x04입니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 1){
+            t.appendf("\t\t\x04종류별로 \x17{}마리\x04의 포켓몬을 만날 수 있습니다.\n",ppi.pokemonNum);
+            t.appendf("\t\t\x04포켓몬은 종족값, 개체값, 레벨에 따라 강하거나 약합니다.\n");
+            t.appendf("\t\t\x04스타팅 포켓몬은 개체값이 \x1F최대치\x04로 고정되어 있습니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 2){
+            t.appendf("\t\t\x04전투 중 체력이 0이 된 포켓몬은 \x1E기절상태\x04가 됩니다.\n");
+            t.appendf("\t\t\x04포켓몬센터에서 치료하거나 기력회복도구를 이용해서 회복할 수 있습니다.\n");
+            t.appendf("\t\t\x04기절상태인 포켓몬은 \x08전투\x04에 참가할 수 없습니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 3){
+            t.appendf("\t\t\x04포켓몬의 각 타입별로 \x1C상성\x04이 존재합니다.\n");
+            t.appendf("\t\t\x04상성공식에 따라 결정되며 상성은 전투시에 표기됩니다.\n");
+            t.appendf("\t\t\x1E최소 0.5배 데미지에서 최대 2배 데미지까지 적용됩니다.\n");
+            t.appendf("\n");
+        }
+        t.appendf("\t\t\x17다음페이지로 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+//단축키
+function subMenu_HelpInfo3(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        if(page == 0){
+            t.appendf("\t\t\x04기본적인 상호작용은 \x17F키\x04를 사용합니다.\n");
+            t.appendf("\t\t\x04대화, 지역이동, 비전머신사용 등 대부분은 F키로 진행됩니다.\n");
+            t.appendf("\n");
+            t.appendf("\n");
+        }
+        else if(page == 1){
+            t.appendf("\t\t\x04인터페이스는\n");
+            t.appendf("\t\t\x04\x17W,S키\x04가 위아래 메뉴이동  \x1CA키\x04는 뒤로가기,취소하기\n");
+            t.appendf("\t\t\x1FD키\x04가 사용하기,결정하기를 의미합니다. 또한,\n");
+            t.appendf("\t\t\x11Q,E키\x04를 통해 페이지단위로 이동할 수도 있습니다.\n");
+        }
+        else if(page == 2){
+            t.appendf("\t\t\x04메뉴는\n");
+            t.appendf("\t\t\x17ESC키 \x04혹은 \x17M키\x04를 통해 열 수 있습니다.\n");
+            t.appendf("\t\t\x04그리고 배경음악은 \x1CInsert키\x04를 통해 끄고 킬 수 있습니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 3){
+            t.appendf("\t\t\x04야생포켓몬 출현정보는\n");
+            t.appendf("\t\t\x04마박사로부터 \x17도감\x04을 획득한 이후, \x1FQ키\x04를 누르면 확인할 수 있습니다.\n");
+            t.appendf("\n");
+            t.appendf("\n");
+        }
+        t.appendf("\t\t\x17다음페이지로 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+//비전머신
+function subMenu_HelpInfo4(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        if(page == 0){
+            t.appendf("\t\t\x04비전머신은 총 7가지입니다.\n");
+            t.appendf("\t\t\x04풀베기, 공중날기, 파도타기,\n");
+            t.appendf("\t\t\x04안개제거, 바위깨기, 폭포오르기, 락클라임\n");
+            t.appendf("\n");
+        }
+        else if(page == 1){
+            t.appendf("\t\t\x07풀베기\x04는\n");
+            t.appendf("\t\t\x04풀로 막힌 길을 뚫을 수 있습니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04스타팅 포켓몬, 비버니, 귀뚤톡크, 꼬몽울 등\n");
+        }
+        else if(page == 2){
+            t.appendf("\t\t\x17공중날기\x04는\n");
+            t.appendf("\t\t\x04한번 다녀갔던 마을의 포켓몬센터로 즉시 이동합니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04찌르꼬, 주뱃, 둥실라이드, 니로우, 페라페 등\n");
+        }
+        else if(page == 3){
+            t.appendf("\t\t\x1F파도타기\x04는\n");
+            t.appendf("\t\t\x04포켓몬 위에 타서 물위를 이동할 수 있습니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04팽도리, 비버통, 갸라도스, 램펄드, 고라파덕 등\n");
+        }
+        else if(page == 4){
+            t.appendf("\t\t\x1E안개제거\x04는\n");
+            t.appendf("\t\t\x04필드의 짙은 안개를 없애 시야를 확보합니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04팽도리, 찌르꼬, 주뱃, 나메일, 비퀸, 흔들풍손 등\n");
+        }
+        else if(page == 5){
+            t.appendf("\t\t\x15바위깨기\x04는\n");
+            t.appendf("\t\t\x04필드에 놓인 금간 바위를 부술 수 있습니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04스타팅 포켓몬, 비버니, 귀뚤톡크, 갸라도스 등\n");
+        }
+        else if(page == 6){
+            t.appendf("\t\t\x1C폭포오르기\x04는\n");
+            t.appendf("\t\t\x04필드에 있는 폭포를 오를 수 있습니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04팽도리, 비버통, 갸라도스, 고라파덕, 브이젤 등\n");
+        }
+        else if(page == 7){
+            t.appendf("\t\t\x11락클라임\x04은\n");
+            t.appendf("\t\t\x04울퉁불퉁한 암벽을 오를 수 있습니다.\n");
+            t.appendf("\t\t\x1E배울 수 있는 포켓몬\n");
+            t.appendf("\t\t\x04모부기, 불꽃숭이, 엠페르트, 비버통, 딱구리 등\n");
+        }
+        t.appendf("\t\t\x17다음페이지로 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+//아이템
+function subMenu_HelpInfo5(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        if(page == 0){
+            t.appendf("\t\t\x04기본적으로 아이템은 \x1E[메뉴]-[가방]\x04에서 확인할 수 있습니다.\n");
+            t.appendf("\t\t\x04아이템 타입에 따라 필드,전투,포켓몬에게 사용할 수 있습니다.\n");
+            t.appendf("\n");
+            t.appendf("\n");
+        }
+        else if(page == 1){
+            t.appendf("\t\t\x04진화의 돌은\n");
+            t.appendf("\t\t\x04포켓몬이 진화하는데 필요한 아이템입니다.\n");
+            t.appendf("\t\t\x04직접 아이템을 포켓몬에게 사용해야 \x1F진화\x04할 수 있습니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 2){
+            t.appendf("\t\t\x04진화도구는\n");
+            t.appendf("\t\t\x04포켓몬에게 해당 아이템을 지니게 한 상태에서\n");
+            t.appendf("\t\t\x1C통신교환\x04을 해야 진화할 수 있습니다.\n");
+            t.appendf("\n");
+        }
+        else if(page == 3){
+            t.appendf("\t\t\x04중요한 도구는\n");
+            t.appendf("\t\t\x04스토리 진행상 필요한 아이템들로 버리거나 팔 수 없습니다.\n");
+            t.appendf("\n");
+            t.appendf("\n");
+        }
+        t.appendf("\t\t\x17다음페이지로 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+//진화
+function subMenu_HelpInfo6(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const index = iug.subMiniMenu[cp]-1;
+        const page = helpPage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}/{})\n\n",helpText[index],page+1,helpInfoPage[index]);
+        if(page == 0){
+            t.appendf("\t\t\x04포켓몬의 진화방식은 총 5가지가 있습니다.\n");
+            t.appendf("\t\t\x04친밀도, 레벨, 진화의돌, 통신교환이 있습니다.\n");
+            t.appendf("\t\t\x04마지막으로, 특정포켓몬이 함께 있어야 하는 방식이 있습니다.\n");
+            t.appendf("\n");
+        }
+        t.appendf("\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)\n");
+    }
+    t.DisplayAt(height);
+}
+
+
+
+
+
+function subMenu_HelpInfoAction(cp, subIndex){
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        helpPage[cp] = 0;
+        iug.subMiniMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //다음페이지
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        if(helpInfoPage[subIndex] != 1){
+            if(helpPage[cp]+1 < helpInfoPage[subIndex]){helpPage[cp] += 1;}
+            else{helpPage[cp] = 0;}
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        }
+    }
+}

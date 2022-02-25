@@ -1,6 +1,7 @@
 import functions as fc;
 import Battle.battleGUI as bbg;
 import Battle.battleAttack as bba;
+import Interface.menu_Pokemon as imp;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
@@ -201,11 +202,12 @@ function battleSystem(cp){
         else if(step == 6){
             //내 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp] == 0){
+                if(imp.pokeChange[cp]){imp.pokeChange[cp] = 0;}
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
                 mpk.state = 1; //기절상태
                 mpk.hitpoint = 0;
                 const nextPokemon = pmp.returnPlayerIndex(cp);
-                if(nextPokemon != 10){battleStep[cp] = 8;}
+                if(nextPokemon != 10){battleStep[cp] = 7;}
                 else{
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
@@ -317,13 +319,14 @@ function battleSystem(cp){
                         mpk.battle = 0;
                         mpk.ownEXP += battleEXP[cp];
                         pokemonName[cp] = pk.name;
+                        PlayWAV("staredit\\wav\\emerald_exp gain.wav");
                         return;
                     }
                 }
                 battleDelay[cp] = 0;
                 battleStep[cp] = 100; //복귀
             }
-            else if(battleDelay[cp] < 24*2){
+            else if(battleDelay[cp] < 24*3){
                 s.insert(0, "\n\n\n");
                 s.appendf("\x13{:s}\n",vms.sph1);
                 s.appendf("\x13\x17{:s}\x04은(는)\n",pokemonName[cp]);

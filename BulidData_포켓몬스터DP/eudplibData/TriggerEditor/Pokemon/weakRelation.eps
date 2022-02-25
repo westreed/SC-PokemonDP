@@ -109,7 +109,7 @@ function calculateWeak_PVE(cp, cp_type, tp_type){
 
     const s = StringBuffer(1024);
     s.printf("내상성 {}+{}={} 상대상성 {}+{}={}",cp_weak[0],cp_weak[1],cp_weak_last,tp_weak[0],tp_weak[1],tp_weak_last);
-    s.printf("\x04내 포켓몬은 상대에게 \x1E{:s} \x04입니다.\n\x04상대 포켓몬은 나에게 \x1E{:s} \x04입니다.\n",weakText[cp_weak_last],weakText[tp_weak_last]);
+    s.printf("\x04내 포켓몬은 상대에게 \x1E{:s} \x04입니다.\n\x04상대 포켓몬은 나에게 \x1E{:s} \x04입니다.",weakText[cp_weak_last],weakText[tp_weak_last]);
 
     const tbl = 1303;
     vl.setPokemonTypeTbl(cp, tbl+cp, typeList[0], typeList[1]);

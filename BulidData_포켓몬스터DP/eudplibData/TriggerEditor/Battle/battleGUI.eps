@@ -3,6 +3,7 @@ import mouseTracking as mt;
 import Battle.battleStart as bbs;
 import Interface.userGUI as iug;
 import Interface.menu_Bag as imb;
+import Interface.menu_Pokemon as imp;
 import Player.playerSetting as pps;
 import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
@@ -10,6 +11,7 @@ import Pokemon.weakRelation as pwr;
 import Pokemon.calculateMethod as pcm;
 import Pokemon.pokemonStatus as ppst;
 import Variables.mainSentence as vms;
+import Variables.etcData as ved;
 
 const t = StringBuffer(1024);
 const b = StringBuffer(1024);
@@ -27,10 +29,14 @@ function battleTextGUI(cp){
         preScreenSizeX = mt.screenSizeX;
         wlen = (mt.screenSizeX-mt.screenWidth) / 20;
     }
-    if(MemoryXEPD(bbs.battleEPD[cp]+0x4C/4, AtLeast, 0x100, 0xFF00)){pokemonCurHP[cp] = hpread_epd(bbs.battleEPD[cp]+2);}
+    if(MemoryXEPD(bbs.battleEPD[cp]+0x4C/4, AtLeast, 0x100, 0xFF00)){
+        pokemonCurHP[cp] = hpread_epd(bbs.battleEPD[cp]+2);
+        if(pokemonCurHP[cp] < 40 && ved.sound_HPDelay[cp] == 0){ved.sound_HPDelay[cp] = 36; PlayWAV("staredit\\wav\\emerald_low hp.wav");}
+    }
     else{pokemonCurHP[cp] = 0;}
     if(MemoryXEPD(bbs.battleEPD[cp+4]+0x4C/4, AtLeast, 0x100, 0xFF00)){pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);}
     else{pokemonCurHP[cp+4] = 0;}
+
     //배틀메뉴 표시
     const sub = iug.subMenu[cp];
     eprintf("{:s}",vms.stickText);
@@ -44,6 +50,8 @@ function battleTextGUI(cp){
         battleMenuGUI(cp);
     }
     else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
+    else if(sub == 3){imp.subMenu_Pokemon(cp, 0, 1);} //포켓몬
+    imp.changePokemon(cp); //포켓몬 교체함수
 }
 
 
@@ -76,6 +84,14 @@ function selectBattleGUI(cp, index){
             iug.subMenu[cp] = 2;
             pps.guiUpdate[cp] = 1;
             vms.removeTextAll();
+        }
+        else if(index == 1){
+            iug.subMenu[cp] = 3;
+            pps.guiUpdate[cp] = 1;
+            vms.removeTextAll();
+        }
+        else if(index == 2){
+
         }
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
