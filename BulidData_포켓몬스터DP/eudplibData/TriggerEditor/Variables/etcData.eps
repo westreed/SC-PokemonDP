@@ -13,8 +13,10 @@ const maxIVs        = 1048575; //모든 개체값이 31인 최고값
 
 const item_HealDelay= PVariable();
 const sound_HPDelay = PVariable();
+const order_Delay   = PVariable();
 
 function delaySystem(cp){
     if(item_HealDelay[cp]){item_HealDelay[cp]--;}
     if(sound_HPDelay[cp]){sound_HPDelay[cp]--;}
+    if(order_Delay[cp]){order_Delay[cp]--;}
 }

@@ -15,12 +15,13 @@ function machine_Surfing(cp){
             if(Deaths(cp, Exactly, 16, "A Key")){
                 s.printf("\x07▶ \x04파도타기를 시전했다!");
                 pps.using_Surfing[cp] = 1;
+                pps.settingMusic[cp] = 25; //파도타기 음악
                 Order(pps.playerUnit[cp], cp, 64, Move, vli.moveLoc+cp);
-                //bwrite(0x663150 + pps.playerUnit[cp], 13); //유닛높이 수정
-                //inAir(0x4) + No Collide(0x200000) + Is Gathering(0x800000)
                 SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
                 surfingEPD[cp] = fc.SetNextUnitEPD();
                 CreateUnit(1, ved.surfingUnit, vli.moveLoc+cp, cp);
+                fc.SetUnitColorEPD(surfingEPD[cp], 11);
+                SetMemoryXEPD(surfingEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
             }
         }
     }
@@ -34,9 +35,9 @@ function machine_Surfing(cp){
                 if(Bring(AllPlayers, Exactly, 1, "Men", vli.moveLoc+cp)){
                     s.printf("\x07▶ \x04파도타기 종료");
                     pps.using_Surfing[cp] = 0;
+                    pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
                     SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0x000000, 0xA00004);
                     RemoveUnit(ved.surfingUnit, cp);
-                    //bwrite(0x663150 + pps.playerUnit[cp], 4); //유닛높이 수정
                 }
             }
         }
@@ -61,7 +62,6 @@ function machine_SurfingMove(cp, key){
         const frontX = ppu.playerGridX[cp]+pps.DirectionX[key];
         const frontY = ppu.playerGridY[cp]+pps.DirectionY[key];
         const frontTile = rt.tilesetInfo[frontY*256+frontX];
-        s.printfAt(1, "내위치 X:{} Y:{}\n명령위치 X:{} Y:{}",ppu.playerGridX[cp],ppu.playerGridY[cp],frontX,frontY);
         if(frontTile != 4 && frontTile != 5){return false;}
     }
     return true;

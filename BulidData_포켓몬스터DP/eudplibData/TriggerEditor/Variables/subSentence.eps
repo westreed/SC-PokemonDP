@@ -1,0 +1,46 @@
+import functions as fc;
+import Battle.battleStart as bbs;
+import Player.movementUnit as pmu;
+import Player.playerSetting as pps;
+import Player.playerUnit as ppu;
+import Pokemon.myPokemon as pmp;
+import Variables.npcInfo as vni;
+import Variables.locationInfo as vli;
+import Variables.mainSentence as vms;
+import Variables.sentenceLog as vsl;
+import Variables.etcData as ved;
+
+
+const subIndex      = PVariable();
+const subStep       = PVariable();
+const subSph        = 2;
+
+
+function subSpeech(cp){
+    const index = subIndex[cp];
+    if(Deaths(cp, Exactly, 16, "A Key")){
+        const currentLoc = pps.currentLocation[cp];
+        if(index == 0){
+            if(currentLoc == 0){
+                if(pps.mainStory[cp] > 11 && Bring(P5, Exactly, 1, vni.medic, vli.moveLoc+cp)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 1;
+                }
+            }
+        }
+        
+    }
+    if(index){
+        const step = subStep[cp];
+        //집에서 엄마와 대화 (체력회복)
+        if(index == 1){
+            if(step == 0){
+                vms.speechText(cp, vli.moveLoc+cp, vsl.healMother, subSph, true);
+                if(vms.sphDelay[cp] == 0 && vms.sphIndex[cp] == 2){
+                    vms.sphDelay[cp] = 1; pmp.healMyPokemon(cp);
+                    PlayWAV("staredit\\wav\\Pokemon Healed.ogg");
+                }
+            }else{vms.endStep(cp, subSph);}
+        }
+    }
+}

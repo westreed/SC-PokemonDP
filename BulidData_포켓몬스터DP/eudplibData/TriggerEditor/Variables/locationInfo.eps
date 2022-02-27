@@ -70,7 +70,7 @@ function updateLocation(cp){
                         //마지막으로 방문한 치료가능 위치 갱신
                         pps.lastVisitHeal[cp] = i;
                     }
-                    if(mapMusic[i] != pps.settingMusic[cp]){
+                    if(mapMusic[i] != pps.settingMusic[cp] && pps.using_Surfing[cp] == 0){
                         //방문한 장소의 음악으로 변경하기
                         pps.settingMusic[cp] = mapMusic[i];
                     }

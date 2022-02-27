@@ -85,21 +85,35 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
                     if(curHP != maxHP){
                         if(curHP + healing < mpk.hitpoint){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, healing*256);}
                         else{SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, maxHP*256);}
-                    }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+                    }else{
+                        DisplayText("\x07！\x04포켓몬이 건강한 상태입니다.");
+                        PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                        return false;
+                    }
                 }
                 else{
                     if(mpk.hitpoint != maxHP){
                         if(mpk.hitpoint + healing < mpk.hitpoint){mpk.hitpoint += healing;}
                         else{mpk.hitpoint = maxHP;}
-                    }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+                    }else{
+                        DisplayText("\x07！\x04포켓몬이 건강한 상태입니다.");
+                        PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                        return false;
+                    }
                 }
                 s.printf("\x07！\x04{:s}의 체력이 {}만큼 회복되었습니다.",pk.name, healing);
                 PlayWAV("staredit\\wav\\HP Restore.wav");
                 imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
                 ved.item_HealDelay[cp] = 72;
             }
-            else{s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);}
-        }else{s.printf("\x08！\x04{:s}은(는) 기절상태입니다.", pk.name);}
+            else{
+                s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+            }
+        }else{
+            s.printf("\x08！\x04{:s}은(는) 기절상태입니다.", pk.name);
+            PlayWAV("staredit\\wav\\se_gui_choose.wav");
+        }
     }
     //기력회복도구
     else if(itType == 6){
@@ -112,7 +126,10 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
             s.printf("\x07！\x04{:s}은(는) \x17건강한 상태\x04로 회복되었습니다.",pk.name);
             PlayWAV("staredit\\wav\\HP Restore.wav");
             imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
-        }else{s.printf("\x08！\x04{:s}은(는) \x1E기절\x04한 포켓몬에게 사용할 수 있습니다.", it.name);}
+        }else{
+            s.printf("\x08！\x04{:s}은(는) \x1E기절\x04한 포켓몬에게 사용할 수 있습니다.", it.name);
+            PlayWAV("staredit\\wav\\se_gui_choose.wav");
+        }
     }
     //영양제
     else if(itType == 9){

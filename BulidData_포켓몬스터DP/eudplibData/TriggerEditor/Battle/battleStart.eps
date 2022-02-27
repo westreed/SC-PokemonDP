@@ -340,7 +340,8 @@ function battleSystem(cp){
         //배틀종료 후 원래자리로 복귀 (패배)
         else if(step == 99){
             const lastHeal = pps.lastVisitHeal[cp];
-            MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.mapLoc[lastHeal]);
+            MoveLocation(vli.lastLoc+cp, 46, P5, vli.mapLoc[lastHeal]);
+            MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.lastLoc+cp);
             CenterView(vli.mapLoc[lastHeal]);
             battleStep[cp] = 101;
         }

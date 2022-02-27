@@ -8,6 +8,7 @@ def onPluginStart():
         SetMemory(0x664500, Add, -3840),# units:Graphics  index:9    from 86 To 71
         SetMemory(0x664500, Add, -131072),# units:Graphics  index:10    from 73 To 71
         SetMemory(0x664504, Add, -3328),# units:Graphics  index:13    from 89 To 76
+        SetMemory(0x664520, Add, 0),# units:Graphics  index:41    from 5 To 5
         SetMemory(0x664524, Add, 16128),# units:Graphics  index:45    from 13 To 76
         SetMemory(0x664524, Add, 838860800),# units:Graphics  index:47    from 0 To 50
         SetMemory(0x66115C, Add, -40),# units:Construction Animation  index:43    from 40 To 0
@@ -16,7 +17,7 @@ def onPluginStart():
         SetMemory(0x6647F0, Add, -256),# units:Shield Enable  index:65    from 1 To 0
         SetMemory(0x663158, Add, -14),# units:Elevation Level  index:8    from 18 To 4
         SetMemory(0x663158, Add, -3072),# units:Elevation Level  index:9    from 16 To 4
-        SetMemory(0x663178, Add, 2048),# units:Elevation Level  index:41    from 4 To 12
+        SetMemory(0x663178, Add, -256),# units:Elevation Level  index:41    from 4 To 3
         SetMemory(0x663178, Add, -234881024),# units:Elevation Level  index:43    from 18 To 4
         SetMemory(0x66317C, Add, -14),# units:Elevation Level  index:44    from 18 To 4
         SetMemory(0x66317C, Add, -3584),# units:Elevation Level  index:45    from 18 To 4
@@ -491,6 +492,9 @@ def onPluginStart():
         SetMemory(0x656994, Add, -8192),# weapons:Attack Angle  index:5    from 64 To 32
         SetMemory(0x656994, Add, -6291456),# weapons:Attack Angle  index:6    from 128 To 32
         SetMemory(0x656994, Add, 268435456),# weapons:Attack Angle  index:7    from 16 To 32
+        SetMemory(0x6C9C80, Add, 37552128),# flingy:Acceleration  index:5    from 67 To 640
+        SetMemory(0x6C9944, Add, -12226),# flingy:Halt Distance  index:5    from 12227 To 1
+        SetMemory(0x6C9E24, Add, 10240),# flingy:Turn Radius  index:5    from 40 To 80
         SetMemory(0x66A028, Add, 262144),# images:Draw Function  index:514    from 9 To 13
         SetMemory(0x66EC48, Add, 155),# images:Iscript ID  index:0    from 0 To 155
     ])

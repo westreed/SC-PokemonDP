@@ -299,6 +299,13 @@ function SetPColor(pnum, color){
     bwrite(mcolor_dst, color);
 }
 
+function SetUnitColorEPD(epd, color) {
+    epd += 0x0C/4;
+    const sprite = epdread_epd(epd);
+    DoActions(sprite.AddNumber(0x0A/4));
+    SetMemoryXEPD(sprite, SetTo, color * 65536, 0xFF0000);
+}
+
 function __SpawnBase(epd, unit: TrgUnit, newUnit: TrgUnit) {
     if (
         MemoryXEPD(epd + 0x64/4, Exactly, unit, 0xFFFF)

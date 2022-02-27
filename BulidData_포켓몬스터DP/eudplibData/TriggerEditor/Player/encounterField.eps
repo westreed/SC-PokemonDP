@@ -1,0 +1,24 @@
+import Battle.battleStart as bbs;
+import Player.playerSetting as pps;
+import Pokemon.wildPokemonList as ppl;
+import Pokemon.pokemonInfo as ppi;
+import Variables.locationInfo as vli;
+
+
+const s = StringBuffer(1024);
+
+function encounterPokemon(cp){
+    const currentPos = vli.mapLoc[pps.currentLocation[cp]];
+    for(var m=0; m<ppl.fieldList._arrlen; m++){
+        if(ppl.fieldList[m] == currentPos){
+            const wildList = EUDArray.cast(ppl.fieldPokemon[m]);
+            const index = 3*(dwrand() % wildList[0])+1; //0~n
+            
+            const wildIndex = wildList[index]; //pokemonIndex
+            const wildRand  = wildList[index+2]+1;
+            const wildLevel = dwrand() % wildRand + wildList[index+1];
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[wildIndex]);
+            bbs.wildSetting(cp, 0, wildIndex, wildLevel);
+        }
+    }
+}

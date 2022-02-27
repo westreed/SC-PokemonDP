@@ -16,10 +16,8 @@ MSQCSpecial.Exactly(4) : MSQCSpecialBuffer, 400
 MSQCCondiction.Exactly(1) ; xy , MSQCValue : MSQCBuffer
 
 QCDebug : False
-MouseDown(R) : A Key, 1
 ESC; NotTyping : A Key, 2
 M; NotTyping : A Key, 2
-`; NotTyping : A Key, 4
 F; NotTyping : A Key, 16
 move.Exactly(1); NotTyping; KeyPress(W) : A Stick, 1
 move.Exactly(1); NotTyping; KeyPress(S) : A Stick, 2

@@ -142,6 +142,21 @@ function resetPokemonBattleData(cp){
     }
 }
 
+function healMyPokemon(cp){
+    const cpPk = userPokemonNum*cp;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
+        if(mpk.index){
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+            const BTs_HP = pcm.returnStatsHP(pk.BTs);
+            const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+            const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+            mpk.hitpoint = maxHP;
+            mpk.state = 0;
+        }
+    }
+}
+
 /*
 SCA 런처로 포켓몬 데이터를 저장할 때
 체력, 레벨, 보유경험치, 지니고 있는 아이템, 개체값

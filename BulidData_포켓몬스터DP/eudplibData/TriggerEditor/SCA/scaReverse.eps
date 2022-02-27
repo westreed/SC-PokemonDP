@@ -17,7 +17,7 @@ const scaPokemonIVs	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonEXP	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
 const scaBag		= EUDArray(8*imb.bagMax);
-const scaBook		= EUDArray(8*5);
+const scaBook		= EUDArray(8*5); const sinoBook      = EUDArray(4*156);
 const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal*/
 
 //유즈맵데이터를 SCA데이터로 변환하기
@@ -77,8 +77,9 @@ function sca2map(cp){
     const cpBn = cp*imk.pageNumber;
     for (var i=0; i<imk.bookSCANum; i++){
         const i32 = i*32;
-        for (var j=31; j<=0; j--){
-            if(sv.scaBook[cpBk + i] >= dT.bit32[j]){sv.scaBook[cpBk + i] -= dT.bit32[j]; imk.sinoBook[cpBn+i32+j] = 1;}
+        for (var j=32; 0<j; j--){
+            if(sv.scaBook[cpBk + i] >= dT.bit32[j-1]){sv.scaBook[cpBk + i] -= dT.bit32[j-1]; imk.sinoBook[cpBn+i32+j-1] = 1;}
+            else{imk.sinoBook[cpBn+i32+j-1] = 0;}
         }
     }
     const scaVillage, scaHeal = pcm.divideData256(sv.scaLocation[cp]);

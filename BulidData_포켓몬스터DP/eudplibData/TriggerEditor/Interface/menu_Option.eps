@@ -15,9 +15,9 @@ function subMenu_Option(cp, height){
         t.insert(0);
         t.appendf("\t\t\x1D옵션\n\n");
 
-        t.appendf("\t\t{:s}\x04배경음악 ({:s}\x04)\n",pps.selectIcon1[index],pps.switchIcon[pps.setMusic[cp]]);
-        t.appendf("\t\t{:s}\x04저장하기 (\x1E{}슬롯\x04)\n",pps.selectIcon2[index],scs.userSlot[cp]+1);
-        t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon3[index]);
+        t.appendf("\t\t{:s}\x04저장하기 (\x1E{}슬롯\x04)\n",pps.selectIcon1[index],scs.userSlot[cp]+1);
+        t.appendf("\t\t{:s}\x04배경음악 ({:s}\x04)\n",pps.selectIcon2[index],pps.switchIcon[pps.setMusic[cp]]);
+        t.appendf("\t\t{:s}\x04화면고정 ({:s}\x04)\n",pps.selectIcon3[index],pps.switchIcon[pps.setScreen[cp]]);
         t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon4[index]);
         t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon5[index]);
         t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon6[index]);
@@ -60,12 +60,16 @@ function subMenu_OptionAction(cp, index){
     //옵션설정
     if(Deaths(cp, Exactly, 8, "A Stick")){
         if(index == 0){
+            if(isSaveState(cp, true)){scs.saveCode[cp] = 1;}
+            PlayWAV("staredit\\wav\\PC Login.wav");
+        }
+        else if(index == 1){
             pps.setMusic[cp] = !pps.setMusic[cp];
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
-        else if(index == 1){
-            if(isSaveState(cp, true)){scs.saveCode[cp] = 1;}
-            PlayWAV("staredit\\wav\\PC Login.wav");
+        else if(index == 2){
+            pps.setScreen[cp] = !pps.setScreen[cp];
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
         pps.guiUpdate[cp] = 1;
     }

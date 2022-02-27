@@ -29,7 +29,7 @@ function subMenu_Book(cp, height){
             
             for(var i=0; i<6; i++){
                 const icon = EUDArray.cast(pps.selectIconList[i]);
-                if(!sinoBook[cp200+page+i] && page+i < ppi.pokemonNum){
+                if(sinoBook[cp200+page+i] && page+i < ppi.pokemonNum){
                     const pk = ppi.Pokemon1.cast(ppi.pokemonList[page+i]);
                     t.appendf("\t\t{:s}\x04No.{} {:s}\n",icon[index],page+i+1,pk.name);
                 }else{t.appendf("\t\t{:s}\x04No.{} ???\n",icon[index],page+i+1);}
@@ -88,7 +88,7 @@ function subMenu_BookAction(cp, index){
     if(Deaths(cp, Exactly, 8, "A Stick")){
         const cp200 = cp*pageNumber;
         const page = 6*bookPage[cp];
-        if(!sinoBook[cp200+page+bookIndex[cp]] && page+bookIndex[cp] < ppi.pokemonNum){
+        if(sinoBook[cp200+page+bookIndex[cp]] && page+bookIndex[cp] < ppi.pokemonNum){
             iug.subMiniMenu[cp] = page+bookIndex[cp]+1;
             pps.guiUpdate[cp] = 1;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
