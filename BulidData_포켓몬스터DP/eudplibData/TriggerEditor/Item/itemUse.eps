@@ -46,7 +46,18 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
 
     }//진화도구
     else if(itType == 1){
-
+        imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
+        const preItem = mpk.item;
+        mpk.item = itemIndex+1;
+        s.insert(0);
+        s.appendf("\x07！\x04{:s}에게 \x1D{:s}\x04을(를) 지니게 합니다.", pk.name, it.name);
+        if(preItem){
+            const preIt = iif.Item.cast(iif.itemList[preItem-1]);
+            s.appendf("\n　\x04지니고 있던 \x1E{:s}\x04을(를) 가방에 넣었습니다.",preIt.name);
+            imb.addItem(cp, preItem-1, 1);
+        }
+        PlayWAV("staredit\\wav\\emerald_pc pokemon.wav");
+        s.Display();
     }
     //몬스터볼
     else if(itType == 2){
@@ -54,7 +65,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
     }
     //필드도구
     else if(itType == 3){
-
+        
     }
     //도망도구
     else if(itType == 4){
@@ -62,35 +73,46 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
     }
     //체력회복도구 & 음료수
     else if(itType == 5 || itType == 7){
-        if(ved.item_HealDelay[cp] == 0){
-            const BTs_HP = pcm.returnStatsHP(pk.BTs);
-            const IVs_HP = pcm.returnIVsHP(mpk.IVs);
-            const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
-            if(state){
-                const curHP = bbg.pokemonCurHP[cp];
-                if(curHP != maxHP){
-                    if(curHP + it.value < mpk.hitpoint){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, it.value*256);}
-                    else{SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, maxHP*256);}
-                }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+        if(mpk.state == 0){ //기절하지 않은 포켓몬일 때
+            if(ved.item_HealDelay[cp] == 0){
+                var healing = it.value;
+                const BTs_HP = pcm.returnStatsHP(pk.BTs);
+                const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+                const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+                if(it.index == 26){healing = maxHP;}
+                if(state){
+                    const curHP = bbg.pokemonCurHP[cp];
+                    if(curHP != maxHP){
+                        if(curHP + healing < mpk.hitpoint){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, healing*256);}
+                        else{SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, maxHP*256);}
+                    }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+                }
+                else{
+                    if(mpk.hitpoint != maxHP){
+                        if(mpk.hitpoint + healing < mpk.hitpoint){mpk.hitpoint += healing;}
+                        else{mpk.hitpoint = maxHP;}
+                    }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
+                }
+                s.printf("\x07！\x04{:s}의 체력이 {}만큼 회복되었습니다.",pk.name, healing);
+                PlayWAV("staredit\\wav\\HP Restore.wav");
+                imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
+                ved.item_HealDelay[cp] = 72;
             }
-            else{
-                if(mpk.hitpoint != maxHP){
-                    if(mpk.hitpoint + it.value < mpk.hitpoint){mpk.hitpoint += it.value;}
-                    else{mpk.hitpoint = maxHP;}
-                }else{DisplayText("\x07！\x04포켓몬이 건강한 상태입니다."); return false;}
-            }
-            s.printf("\x07！\x04{:s}의 체력이 {}만큼 회복되었습니다.",pk.name, it.value);
-            PlayWAV("staredit\\wav\\HP Restore.wav");
-            imb.bagNumList[bagSelect] -= 1;
-            if(itemNum == 1){imb.bagItemList[bagSelect] = 0; iug.subMiniMenu[cp] = 0;}
-            ved.item_HealDelay[cp] = 72;
-        }
-        else{
-            s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);
-        }
+            else{s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);}
+        }else{s.printf("\x08！\x04{:s}은(는) 기절상태입니다.", pk.name);}
     }
     //기력회복도구
     else if(itType == 6){
+        if(mpk.state == 1){ //기절상태일 때
+            const BTs_HP = pcm.returnStatsHP(pk.BTs);
+            const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+            const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+            mpk.state = 0; //건강상태
+            mpk.hitpoint = maxHP/it.value;
+            s.printf("\x07！\x04{:s}은(는) \x17건강한 상태\x04로 회복되었습니다.",pk.name);
+            PlayWAV("staredit\\wav\\HP Restore.wav");
+            imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
+        }else{s.printf("\x08！\x04{:s}은(는) \x1E기절\x04한 포켓몬에게 사용할 수 있습니다.", it.name);}
     }
     //영양제
     else if(itType == 9){
@@ -118,3 +140,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
     Db('경험치조절도구'),1, //10 지니기
     Db('판매용도구'),0,    //11 판매용
 ];*/
+
+function giveItem(cp, pokemon, item){
+
+}

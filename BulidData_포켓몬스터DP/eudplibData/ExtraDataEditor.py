@@ -56,6 +56,8 @@ def onPluginStart():
     bytebuffer = bytearray([1,0,228,0,208,130,66,0,64,68,66,0,0,0,0,0,152,2,0,0,2,0,229,0,208,130,66,0,240,51,66,0,0,0,0,0,153,2,0,0,3,0,230,0,48,143,66,0,128,67,66,0,0,0,0,0,154,2,0,0,4,0,254,0,208,130,66,0,64,65,66,0,0,0,0,0,155,2,0,0,5,0,255,0,208,130,66,0,112,51,66,0,0,0,0,0,156,2,0,0])
     btnptr1 = Db(bytebuffer)
     bytebuffer = bytearray([])
+    btnptr41 = Db(bytebuffer)
+    bytebuffer = bytearray([])
     btnptr45 = Db(bytebuffer)
     bytebuffer = bytearray([])
     btnptr54 = Db(bytebuffer)
@@ -78,6 +80,10 @@ def onPluginStart():
     DoActions([
         SetMemory(0x518864, SetTo, btnptr0),
         SetMemory(0x518860, SetTo, 0),
+    ])
+    DoActions([
+        SetMemory(0x5189D8, SetTo, btnptr41),
+        SetMemory(0x5189D4, SetTo, 0),
     ])
     DoActions([
         SetMemory(0x518A08, SetTo, btnptr45),

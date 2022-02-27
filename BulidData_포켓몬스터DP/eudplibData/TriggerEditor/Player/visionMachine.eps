@@ -1,0 +1,68 @@
+import functions as fc;
+import Player.playerUnit as ppu;
+import Player.playerSetting as pps;
+import Variables.locationInfo as vli;
+import Variables.etcData as ved;
+import readTile as rt;
+
+const s = StringBuffer(1024);
+const surfingEPD    = PVariable();
+
+function machine_Surfing(cp){
+    //파도타기가 아닐 때
+    if(pps.using_Surfing[cp] == 0){
+        if(pps.currentTileset[cp] == 4){
+            if(Deaths(cp, Exactly, 16, "A Key")){
+                s.printf("\x07▶ \x04파도타기를 시전했다!");
+                pps.using_Surfing[cp] = 1;
+                Order(pps.playerUnit[cp], cp, 64, Move, vli.moveLoc+cp);
+                //bwrite(0x663150 + pps.playerUnit[cp], 13); //유닛높이 수정
+                //inAir(0x4) + No Collide(0x200000) + Is Gathering(0x800000)
+                SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
+                surfingEPD[cp] = fc.SetNextUnitEPD();
+                CreateUnit(1, ved.surfingUnit, vli.moveLoc+cp, cp);
+            }
+        }
+    }
+    else{
+        MoveLocation(vli.moveLoc+cp, ved.surfingUnit, cp, 64);
+        MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.moveLoc+cp);
+        SetMemoryEPD(surfingEPD[cp] + 0x14C/4, SetTo, 0); //공중밀림 삭제
+        SetMemoryXEPD(surfingEPD[cp] + 0xDC/4, SetTo, 0, 0x40000); //무브유닛 랙 제거
+        if(pps.currentTileset[cp] == 4){
+            if(Deaths(cp, Exactly, 16, "A Key")){
+                if(Bring(AllPlayers, Exactly, 1, "Men", vli.moveLoc+cp)){
+                    s.printf("\x07▶ \x04파도타기 종료");
+                    pps.using_Surfing[cp] = 0;
+                    SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0x000000, 0xA00004);
+                    RemoveUnit(ved.surfingUnit, cp);
+                    //bwrite(0x663150 + pps.playerUnit[cp], 4); //유닛높이 수정
+                }
+            }
+        }
+    }
+}
+
+
+
+// #1 풀
+// #2 언덕풀
+// #3 내려갈 수 있는 언덕
+// #4 파도타기 위치 (파도타기는 파도타기 위치에서만 가능하며 끝낼때도 방향에 해당 지형이 있어야 한다)
+// #5 물 (파도타기 이동가능한 지형)
+// #6 폭포오르기
+// #7 풀베기 지형
+// #8 락클라임
+// #9 자전거도로 (자전거를 탄 상태에서만 지나갈 수 있는 도로)
+
+//실시간으로 체크해야함....
+function machine_SurfingMove(cp, key){
+    if(pps.using_Surfing[cp] == 1){
+        const frontX = ppu.playerGridX[cp]+pps.DirectionX[key];
+        const frontY = ppu.playerGridY[cp]+pps.DirectionY[key];
+        const frontTile = rt.tilesetInfo[frontY*256+frontX];
+        s.printfAt(1, "내위치 X:{} Y:{}\n명령위치 X:{} Y:{}",ppu.playerGridX[cp],ppu.playerGridY[cp],frontX,frontY);
+        if(frontTile != 4 && frontTile != 5){return false;}
+    }
+    return true;
+}

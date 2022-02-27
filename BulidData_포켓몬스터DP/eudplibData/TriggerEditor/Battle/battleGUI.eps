@@ -31,7 +31,7 @@ function battleTextGUI(cp){
     }
     if(MemoryXEPD(bbs.battleEPD[cp]+0x4C/4, AtLeast, 0x100, 0xFF00)){
         pokemonCurHP[cp] = hpread_epd(bbs.battleEPD[cp]+2);
-        if(pokemonCurHP[cp] < 40 && ved.sound_HPDelay[cp] == 0){ved.sound_HPDelay[cp] = 36; PlayWAV("staredit\\wav\\emerald_low hp.wav");}
+        if(pokemonCurHP[cp] < 40 && ved.sound_HPDelay[cp] == 0){ved.sound_HPDelay[cp] = 40; PlayWAV("staredit\\wav\\emerald_low hp.wav");}
     }
     else{pokemonCurHP[cp] = 0;}
     if(MemoryXEPD(bbs.battleEPD[cp+4]+0x4C/4, AtLeast, 0x100, 0xFF00)){pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);}

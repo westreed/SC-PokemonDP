@@ -13,7 +13,6 @@ const bagItemList   = EUDArray(4*bagMax);
 const bagNumList    = EUDArray(4*bagMax);
 const bagIndex      = PVariable();
 const bagPage       = PVariable();
-const bagItemType   = PVariable(); //아이템타입의 itemType
 const bagType       = PVariable(); //아이템의 타입
 
 
@@ -111,31 +110,6 @@ function subMenu_BagAction(cp, index){
     }
 }
 
-function addItem(cp, item, num){
-    const cpBag = cp*bagMax;
-    var blankIndex = bagMax+1;
-    for(var i=0; i<bagMax; i++){
-        //같은 아이템이 가방에 있는 경우
-        if(bagItemList[cpBag+i] == item+1){
-            bagNumList[cpBag+i] += num;
-            return;
-        }
-        //같은 아이템이 없는 경우를 대비해서 빈공간도 수색하기
-        if(blankIndex == bagMax+1 && bagItemList[cpBag+i] == 0){
-            blankIndex = i;
-        }
-    }
-    //같은 아이템이 없는 경우
-    if(blankIndex == bagMax+1){
-        //빈 공간이 없음
-        DisplayText("\x08！\x04가방에 공간이 없습니다.");
-    }
-    else{
-        bagItemList[cpBag+blankIndex] = item+1; //아이템값이 0부터 시작함.
-        bagNumList[cpBag+blankIndex] = num;
-    }
-}
-
 function subMenu_BagInfo(cp, height){
     if(pps.guiUpdate[cp]){
         pps.guiUpdate[cp] = 0;
@@ -143,13 +117,12 @@ function subMenu_BagInfo(cp, height){
         const itemIndex = bagItemList[select]-1;
         const itemNum   = bagNumList[select];
         const it = iif.Item.cast(iif.itemList[itemIndex]);
-        bagItemType[cp] = iif.itemType[2*it.type+1];
         bagType[cp] = it.type;
 
         t.insert(0);
         t.appendf("\t\t\x1D{:s} \x1E({}개 보유)\n\n",it.name, itemNum);
         t.appendf("\t\t\x04{:s}\n\n",it.text);
-        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemType[2*it.type]);
+        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemTypeText[it.type]);
         if(pps.battleState[cp]){
             if(iiu.isNotBattleType(bagType[cp])){t.appendf("\t\t\x1E사용하기 (D)\n");}
             else{t.appendf("\t\t\x17사용하기 (D)\n");}
@@ -229,5 +202,62 @@ function subMenu_ItemUseAction(cp){
     if(Deaths(cp, Exactly, 8, "A Stick")){
         const select = iug.subMiniMenu[cp]-1;
         iiu.item_useFunction(cp, select, index);
+    }
+}
+
+function sortBag(cp){
+    const cpBag = cp*bagMax;
+    for(var i=0; i < bagMax; i++){
+        for(var j=1; j < bagMax; j++){
+            if(MemoryEPD(EPD(bagItemList)+cpBag+j, AtLeast, 1) && MemoryEPD(EPD(bagItemList)+cpBag+j-1, Exactly, 0)){
+                bagItemList[cpBag+j-1] = bagItemList[cpBag+j];
+                bagNumList[cpBag+j-1] = bagNumList[cpBag+j];
+                bagItemList[cpBag+j] = 0;
+                bagNumList[cpBag+j] = 0;
+            }
+        }
+    }
+}
+
+function addItem(cp, item, num){
+    const cpBag = cp*bagMax;
+    var blankIndex = bagMax+1;
+    for(var i=0; i<bagMax; i++){
+        //같은 아이템이 가방에 있는 경우
+        if(MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1)){
+            bagNumList[cpBag+i] += num;
+            return;
+        }
+        //같은 아이템이 없는 경우를 대비해서 빈공간도 수색하기
+        if(blankIndex == bagMax+1 && MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, 0)){
+            blankIndex = i;
+        }
+    }
+    //같은 아이템이 없는 경우
+    if(blankIndex == bagMax+1){
+        //빈 공간이 없음
+        DisplayText("\x08！\x04가방에 공간이 없습니다.");
+    }
+    else{
+        bagItemList[cpBag+blankIndex] = item+1; //아이템값이 0부터 시작함.
+        bagNumList[cpBag+blankIndex] = num;
+    }
+}
+
+function subItem(cp, item, num){
+    const cpBag = cp*bagMax;
+    for(var i=0; i<bagMax; i++){
+        //빼고자 하는 아이템인 경우
+        if(MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1)){
+            if(MemoryEPD(EPD(bagNumList)+cpBag+i, AtLeast, num+1)){
+                bagNumList[cpBag+i] -= num;
+            }else{
+                bagItemList[cpBag+i] = 0;
+                bagNumList[cpBag+i] = 0;
+                iug.subMiniMenu[cp] = 0; //열린 서브메뉴 닫기
+                sortBag(cp); //인벤정렬
+            }
+            return;
+        }
     }
 }

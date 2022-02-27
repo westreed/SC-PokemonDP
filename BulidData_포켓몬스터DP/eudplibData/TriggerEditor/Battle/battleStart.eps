@@ -180,7 +180,8 @@ function battleSystem(cp){
             if(battleUnit[cp] != 999){CreateUnit(1, battleUnit[cp], vli.tempMoveLoc, P5);}
 
             //내 포켓몬의 이전체력 가져오기
-            const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cp*18+pkNumber]);
+            const cpPk = cp*pmp.userPokemonNum;
+            const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
             SetMemoryEPD(battleEPD[cp]+2, SetTo, mk.hitpoint*256);
             battleStep[cp] += 1;
         }

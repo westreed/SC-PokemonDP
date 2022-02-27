@@ -1,7 +1,10 @@
 import functions as fc;
 import Player.playerUnit as ppu;
 import Player.playerSetting as pps;
+import Player.visionMachine as pvm;
 import Variables.locationInfo as vli;
+import Variables.etcData as ved;
+import readTile as rt;
 
 const s = StringBuffer(1024);
 
@@ -9,6 +12,15 @@ function unitPosition(cp){
     MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
     const x,y = posread_epd(ppu.playerEPD[cp]+0x28/4);
     const x1,y1 = x/32, y/32;
+
+    //플레이어의 위치가 변한 경우
+    if(ppu.playerGridX[cp] != x1 || ppu.playerGridY[cp] != y1){
+        const tileInfo = rt.tilesetInfo[y1*256+x1]; //현재 위치의 타일정보 가져오기
+        pps.currentTileset[cp] = tileInfo;
+        //풀 밟는 효과 주기
+        if(tileInfo == 1){fc.scanEffect(vli.moveLoc+cp, 514);}
+    }
+    pvm.machine_Surfing(cp); //파도타기
     ppu.playerPosX[cp],ppu.playerPosY[cp] = x,y;
     ppu.playerGridX[cp],ppu.playerGridY[cp] = x1,y1;
 }
@@ -18,16 +30,48 @@ function movePlayer(cp){
         unitPosition(cp);
         if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
             const epd = ppu.playerEPD[cp];
-            //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
-            if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
-                setloc_epd(vli.tempMoveLoc, epd+0x10/4);
-                const angle = fc.LocationAngle(vli.moveLoc+cp, vli.tempMoveLoc);
-                //s.printf("각도:{}",angle);
+            const pUnit = pps.playerUnit[cp];
+            for(var key = 0; key < 4; key++){
+                if(Deaths(cp, Exactly, pps.keyInput[key], "A Stick")){
+                    const moveSt = pvm.machine_SurfingMove(cp, key); //파도타기
+                    if(moveSt){
+                        MoveLocation(vli.tempMoveLoc, pUnit, cp, 64);
+                        addloc(vli.tempMoveLoc, pps.moveDirectX[key],pps.moveDirectY[key]);
+                        RemoveUnitAt(1, ved.junkUnit, vli.tempMoveLoc, cp);
+                        if(Bring(AllPlayers, AtLeast, 2, "(any unit)", vli.tempMoveLoc)){return;}
+                        const tempEPD = fc.SetNextUnitEPD();
+                        CreateUnit(1, 13, vli.tempLoc, cp);
+                        SetMemoryEPD(tempEPD+0x110/4, Add, 1);
+                        MoveUnit(1, 13, cp, vli.tempLoc, vli.tempMoveLoc);
+                        if(Bring(cp, Exactly, 1, 13, vli.tempLoc)){return;}
+                        else{
+                            if(pps.using_Surfing[cp]){Order(ved.surfingUnit, cp, 64, Move, vli.tempMoveLoc);}
+                            else{Order(pUnit, cp, 64, Move, vli.tempMoveLoc);}
+                        }
+                        break;
+                    }
+                    else{break;}
+                }
             }
+            //s.printfAt(10, "OrderID : {}", bread_epd(ppu.playerEPD[cp]+0x4D/4, 1));
+            // if(Deaths(cp, Exactly, 1, "A Key") && MemoryXEPD(epd+0x4D/4, Exactly, 0x600, 0xFF00)){
+            //     setloc_epd(vli.tempMoveLoc, epd+0x10/4);
+            //     const angle = fc.LocationAngle(vli.moveLoc+cp, vli.tempMoveLoc);
+            //     pps.currentAngle[cp] = angle;
+            //     s.printfAt(0,"각도:{}",angle);
+            // }
         }
     }
 }
 
+function changeMoveState(cp, value){
+    pps.moveState[cp] = value;
+    if(IsUserCP()){SetVariables(pps.moveStateMSQC, value);}
+    const pUnit = pps.playerUnit[cp];
+    if(value == 0){Order(pUnit, cp, 64, Move, vli.moveLoc+cp);}
+}
+
+/*
 function changeMoveState(cp, value){
     pps.moveState[cp] = value;
     const pUnit = pps.playerUnit[cp];
@@ -37,7 +81,7 @@ function changeMoveState(cp, value){
         //SetMemoryXEPD(ppu.playerEPD[cp]+0x4C/4, SetTo, 0x100, 0xFF00);
     }
     else{SetMemoryXEPD(EPD(0x662098 + pUnit), SetTo, 2, 0xFF);}
-}
+}*/
 
 // setcurpl(0);
 // setloc_epd("Move", epd+0x28/4);
@@ -83,9 +127,9 @@ function changeMoveState(cp, value){
 //         RemoveUnitAt(1, 227, vli.tempMoveLoc, cp);
 //         if(Bring(AllPlayers, AtLeast, 1, "(any unit)", vli.tempMoveLoc)){return;}
 //         else{
-//             CreateUnit(1, 13, vli.tempLoc, cp);
-//             MoveUnit(1, 13, cp, vli.tempLoc, vli.tempMoveLoc);
-//             if(Bring(cp, Exactly, 1, 13, vli.tempLoc)){RemoveUnit(13, cp); return;}
+//             CreateUnit(1, 13, vli.vli.tempMoveLoc, cp);
+//             MoveUnit(1, 13, cp, vli.vli.tempMoveLoc, vli.tempMoveLoc);
+//             if(Bring(cp, Exactly, 1, 13, vli.vli.tempMoveLoc)){RemoveUnit(13, cp); return;}
 //             else{
 //                 RemoveUnit(13, cp);
 //                 Order("(men)", cp, 64, Move, vli.tempMoveLoc);

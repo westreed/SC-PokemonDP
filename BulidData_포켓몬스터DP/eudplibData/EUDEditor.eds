@@ -21,10 +21,14 @@ ESC; NotTyping : A Key, 2
 M; NotTyping : A Key, 2
 `; NotTyping : A Key, 4
 F; NotTyping : A Key, 16
-W; NotTyping : A Stick, 1
-S; NotTyping : A Stick, 2
-A; NotTyping : A Stick, 4
-D; NotTyping : A Stick, 8
+move.Exactly(1); NotTyping; KeyPress(W) : A Stick, 1
+move.Exactly(1); NotTyping; KeyPress(S) : A Stick, 2
+move.Exactly(1); NotTyping; KeyPress(A) : A Stick, 4
+move.Exactly(1); NotTyping; KeyPress(D) : A Stick, 8
+move.Exactly(0); NotTyping; W : A Stick, 1
+move.Exactly(0); NotTyping; S : A Stick, 2
+move.Exactly(0); NotTyping; A : A Stick, 4
+move.Exactly(0); NotTyping; D : A Stick, 8
 Q; NotTyping : A Stick, 16
 E; NotTyping : A Stick, 32
 

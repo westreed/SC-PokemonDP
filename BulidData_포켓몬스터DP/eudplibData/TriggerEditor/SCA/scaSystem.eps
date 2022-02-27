@@ -2,6 +2,7 @@ import Pokemon.calculateMethod as pcm;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import scaVariable as sv;
+import SCA.scaReverse as scr;
 import TriggerEditor.SCArchive as sca;
 
 
@@ -208,7 +209,7 @@ function userLoading(cp){
                             if(sv.scaMain[cp] > 0){
                                 playerLoad[cp] = 2;
                                 loadCode[cp] = 0;
-                                sca2map(cp);
+                                scr.sca2map(cp);
                                 s.printf("\x1F■\x04유저 데이터를 로드했습니다!");
                             }
                             else{
@@ -247,7 +248,7 @@ function userSaving(cp){
             if(pps.moveState[cp]){saveState[cp] = 0; pmu.changeMoveState(cp, false);}
             else{saveState[cp] = 1;}
             saveCode[cp] = 2;
-            map2sca(cp);
+            scr.map2sca(cp);
             sca.ResetLastMessage();
             sca.SaveData(userSlot[cp]);
             const lust = sca.CommandStatus();

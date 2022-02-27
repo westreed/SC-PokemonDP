@@ -69,8 +69,8 @@ function openingStep(cp){
         s.append("\x13\x1EPokemon Diamond·Pearl\n");
         s.append("\n");
         s.append("\n");
-        s.append("\n");
         s.append("\x13\x04ⓒ 2008 GAME FREAK Inc.\n");
+        s.append("\n");
         s.append("\x13\x1C└─────────────────────┘");
         s.DisplayAt(0);
         if(opDelay[cp] < 216){opDelay[cp] += 1;}
@@ -82,14 +82,14 @@ function openingStep(cp){
         s.append("\x13\x1EPokemon Diamond·Pearl\n");
         s.append("\n");
         s.append("\n");
-        s.append("\n");
         s.append("\x13\x04ⓒ 2008 GAME FREAK Inc.\n");
+        s.append("\n");
         s.append("\x13\x1C└─────────────────────┘");
         s.DisplayAt(0);
         if(opDelay[cp] < 36){
-            if(scs.globalStat == 0){s.printfAt(5, "\x13\x02SCA런처를 먼저 실행하세요.");}
-            else if(scs.globalStat != 72){s.printfAt(5, "\x13\x02맵정보를 불러오고 있습니다...");}
-            else{s.printfAt(5, "\x13\x02F키를 누르면 게임을 시작합니다.");}
+            if(scs.globalStat == 0){s.printfAt(4, "\x13\x02SCA런처를 먼저 실행하세요.");}
+            else if(scs.globalStat != 72){s.printfAt(4, "\x13\x02맵정보를 불러오고 있습니다...");}
+            else{s.printfAt(4, "\x13\x02F키를 누르면 게임을 시작합니다.");}
         }
         //else{s.printfAt(6, "\x13");}
         if(opDelay[cp] < 72){opDelay[cp] += 1;}

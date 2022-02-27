@@ -11,23 +11,21 @@ object Item {
 };
 
 const itemList = EUDArray(60);
-//0:불가 1:메뉴 2:배틀 3:사용&배틀
-const itemType = [
-    Db('진화의돌'),1,      //0 사용
-    Db('진화도구'),1,      //1 지니기
-    Db('몬스터볼'),2,      //2 배틀
-    Db('필드도구'),1,      //3 사용
-    Db('도망도구'),0,      //4 행동불가
-    Db('체력회복도구'),3,   //5 사용&배틀
-    Db('기력회복도구'),3,   //6 사용&배틀
-    Db('음료수'),3,        //7 사용&배틀
-    Db('중요한도구'),0,     //8 보관용
-    Db('영양제'),1,        //9 사용
-    Db('경험치조절도구'),1, //10 지니기
-    Db('판매용도구'),0,    //11 판매용
+
+const itemTypeText = [
+    Db('진화의돌'),     //0
+    Db('진화도구'),     //1
+    Db('몬스터볼'),     //2
+    Db('필드도구'),     //3
+    Db('도망도구'),     //4
+    Db('체력회복도구'),  //5
+    Db('기력회복도구'),  //6
+    Db('음료수'),       //7
+    Db('중요한도구'),    //8
+    Db('영양제'),       //9 이상한사탕 하나 뿐임
+    Db('경험치조절도구'),//10
+    Db('판매용도구'),   //11
 ];
-
-
 
 function itemInit(){
     for (var i=0; i<itemList._arrlen; i++){
@@ -228,21 +226,21 @@ function itemInit(){
     item27.text = Db('기절해 버린 포켓몬 1마리의 HP를 절반까지 회복한다.\n\t\t\x04');
     item27.type = 6;
     item27.price = 1500;
-    item27.value = 0;
+    item27.value = 2;
     const item28 = Item.cast(itemList[28]);
     item28.index = 28;
     item28.name = Db('기력의덩어리');
     item28.text = Db('기절해 버린 포켓몬 1마리의 HP를 모두 회복한다.\n\t\t\x04');
     item28.type = 6;
     item28.price = 4000;
-    item28.value = 0;
+    item28.value = 1;
     const item29 = Item.cast(itemList[29]);
     item29.index = 29;
     item29.name = Db('이상한사탕');
     item29.text = Db('에너지가 가득한 사탕.\n\t\t\x04먹이면 포켓몬 1마리의 레벨이 1만큼 올라간다.');
     item29.type = 9;
     item29.price = 4800;
-    item29.value = 0;
+    item29.value = 1;
     const item30 = Item.cast(itemList[30]);
     item30.index = 30;
     item30.name = Db('맛있는물');

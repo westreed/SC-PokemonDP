@@ -1,5 +1,6 @@
 import Battle.battleStart as bbs;
 import Battle.battleGUI as bbg;
+import Interface.menu_Bag as imb;
 import Interface.userGUI as iug;
 import Item.itemInfo as iif;
 import Pokemon.pokemonInfo as ppi;
@@ -56,13 +57,17 @@ function subMenu_Pokemon(cp, height, battle){
                     if(pps.battleState[cp]){
                         t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}",icon[index],mpk.level,pk.name);
                         if(bbs.pokemonNumber[cp] == i){t.appendf("\x08(전투)\n");}
+                        else if(mpk.state == 1){t.appendf("\x1E(기절)\n");}
                         else{t.appendf("\n");}
                     }
                     else{
-                        const BTs_HP = pcm.returnStatsHP(pk.BTs);
-                        const IVs_HP = pcm.returnIVsHP(mpk.IVs);
-                        const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
-                        t.appendf("\t\t{:s}\x17Lv.{} \x04{:s} \x1E{}/{}\n",icon[index], mpk.level, pk.name, mpk.hitpoint, maxHP);
+                        if(mpk.state == 0){
+                            const BTs_HP = pcm.returnStatsHP(pk.BTs);
+                            const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+                            const maxHP = pcm.returnHitPoints(cp, mpk.level, BTs_HP, IVs_HP);
+                            t.appendf("\t\t{:s}\x17Lv.{} \x04{:s} \x1E{}/{}\n",icon[index], mpk.level, pk.name, mpk.hitpoint, maxHP);
+                        }
+                        else{t.appendf("\t\t{:s}\x17Lv.{} \x04{:s} \x1E(\x08기절\x1E)\n",icon[index], mpk.level, pk.name);}
                     }
                 }else{t.appendf("\t\t{:s}\x04없음\n",icon[index]);}
             }
@@ -128,7 +133,7 @@ function subMenu_PokemonBattleAction(cp, index){
     if(Deaths(cp, Exactly, 8, "A Stick") && bbs.pokemonNumber[cp] != index){
         const cpPk = cp*pmp.userPokemonNum;
         const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+index]);
-        if(mpk.index > 0){
+        if(mpk.index > 0 && mpk.state == 0){
             const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
             changeName[cp] = pk.name;
             pokeChange[cp] = 1;
@@ -160,22 +165,27 @@ function changePokemon(cp){
         }
         else{
             const cpPk = cp*pmp.userPokemonNum;
-            const pkNumber = iug.subMiniMenu[cp]-1;
-            //이전 포켓몬 설정
-            const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
+            const pkNumber = iug.subMiniMenu[cp]-1; //교체할 포켓몬의 볼번호
+            const preNumber = bbs.pokemonNumber[cp];
+            //현재 전투중인 포켓몬 설정
+            const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preNumber]);
             mpk.hitpoint = bbg.pokemonCurHP[cp];
 
-            //내 포켓몬 설정
+            //교체대기 중인 포켓몬 설정
             bbs.pokemonNumber[cp] = pkNumber;
             const pUnit = ppst.settingPokemon(cp, true, pkNumber);
 
             const pk = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp]-1]);
             const ck = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp+4]-1]);
             pwr.calculateWeak_PVE(cp, pk.type, ck.type);
-            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+            MoveLocation(vli.tempMoveLoc, 50, P5, bbs.battleLocation[cp]); //내 포켓몬
             RemoveUnitAt(1, ppst.playerPokemonUnit[cp], bbs.battleLocation[cp], cp);
             bbs.battleEPD[cp] = fc.SetNextUnitEPD();
             CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
+
+            //교체된 포켓몬의 체력 설정하기
+            const mpk2 = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
+            SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, mpk2.hitpoint*256);
             fc.scanEffect(vli.tempMoveLoc, 391);
             PlayWAV("staredit\\wav\\Battle recall.wav");
 
@@ -208,11 +218,13 @@ function subMenu_PokemonInfo(cp, height){
 
         t.insert(0);
         t.appendf("\t\t\x17Lv.{} \x04{:s} \x04({:s}{:s}\x04)\n\n",mpk.level,pk.name,pwr.typeText[type1],pwr.typeText[type2]);
-        t.appendf("\t\t\x08HP \x04{}/{}\n",mpk.hitpoint, unitHP);
+        t.appendf("\t\t\x08HP \x04{}/{}",mpk.hitpoint, unitHP);
+        if(mpk.state == 0){t.appendf("\n");}
+        else{t.appendf(" \x08(기절)\n");}
         t.appendf("\t\t\x1FEXP \x04{}/{}\n",mpk.ownEXP,requireExp[mpk.level]);
         t.appendf("\t\t\x04체력 \x1E{} \x04공격 \x1E{}\n",unitHP,unitAtk);
         t.appendf("\t\t\x04방어 \x1E{} \x04스피드 \x1E{}\n",unitArmor,unitSpeed);
-        t.appendf("\t\t\x11지닌물건 \x04: ");
+        t.appendf("\t\t\x11지닌물건\x1E(D) \x04: ");
         if(mpk.item > 0){
             const pkItem = iif.Item.cast(iif.itemList[mpk.item-1]);
             t.appendf("{:s}\n", pkItem.name);
@@ -227,5 +239,21 @@ function subMenu_PokemonInfo(cp, height){
         iug.subMiniMenu[cp] = 0;
         pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //지닌물건 회수하기
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const pokeIndex = iug.subMiniMenu[cp]-1;
+        const cpPk = cp*pmp.userPokemonNum;
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokeIndex]);
+        //지닌 아이템이 있는 경우
+        if(mpk.item){
+            const preItem = mpk.item;
+            mpk.item = 0;
+            imb.addItem(cp, preItem-1, 1);
+            const pkItem = iif.Item.cast(iif.itemList[preItem-1]);
+            t.printf("\x07！\x04포켓몬이 지닌 \x1D{:s}\x04을(를) 회수했습니다.",pkItem.name);
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
     }
 }

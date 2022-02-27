@@ -6,24 +6,15 @@ import SCA.scaSystem as scs;
 const junkUnit      = 213; //안쓰이는 유닛
 const visionUnit    = 45; //시야생성유닛
 const screenUnit    = 47; //시야무브유닛
+const surfingUnit   = 41; //파도타기유닛
 
 const maxIVs        = 1048575; //모든 개체값이 31인 최고값
 
 
 const item_HealDelay= PVariable();
-const save_AutoDelay= PVariable(list(24*60,24*60,24*60,24*60,0,0,0,0));
 const sound_HPDelay = PVariable();
 
 function delaySystem(cp){
     if(item_HealDelay[cp]){item_HealDelay[cp]--;}
     if(sound_HPDelay[cp]){sound_HPDelay[cp]--;}
-    if(save_AutoDelay[cp]){save_AutoDelay[cp]--;}
-    else{
-        save_AutoDelay[cp] = 24*120;
-        if(imo.isSaveState(cp, false)){
-            scs.saveCode[cp] = 1;
-            DisplayText("\x07！\x04데이터를 저장 중입니다...\n　\x1E저장 도중에 나가면, 데이터가 초기화됩니다.");
-            PlayWAV("staredit\\wav\\PC Login.wav");
-        }
-    }
 }
