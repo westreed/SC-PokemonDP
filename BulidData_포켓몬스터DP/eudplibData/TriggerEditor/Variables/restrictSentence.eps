@@ -1,0 +1,48 @@
+import Player.movementUnit as pmu;
+import Player.playerSetting as pps;
+import Variables.npcInfo as vni;
+import Variables.locationInfo as vli;
+import Variables.mainSentence as vms;
+import Variables.sentenceLog as vsl;
+
+
+const restrict      = 1;
+const restrictStep  = PVariable();
+const restrictIndex = PVariable();
+
+function restrictAction(cp){
+    const index = restrictIndex[cp];
+    if(index == 0){
+        const main = pps.mainStory[cp];
+        //용식이와 대화를 하지 않고 나가려고 할 때
+        if(main <= 4){
+            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Story]3")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                vms.moveLocationPlayer(cp, vli.tempMoveLoc, 0, 32); //플레이어기준으로 로케이션 이동
+                pmu.changeMoveState(cp, false);
+                Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
+                restrictIndex[cp] = 1;
+            }
+        }
+        //마박사의 포켓몬 고르기 이벤트를 진행하지 않고 나가려고 할 때
+        else if(main <= 11){
+            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Back]1")){
+                vms.moveLocationPlayer(cp, vli.tempMoveLoc, -32, 0); //플레이어기준으로 로케이션 이동
+                pmu.changeMoveState(cp, false);
+                Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
+                restrictIndex[cp] = 2;
+            }
+        }
+    }
+    else{
+        const step = restrictStep[cp];
+        if(index == 1){
+            if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.storyLog4, restrict, true);}
+            else{vms.endStep(cp,restrict);}
+        }
+        else if(index == 2){
+            if(step < 12){restrictStep[cp] += 1;}
+            else{vms.endStep(cp,restrict); pmu.changeMoveState(cp, true);}
+        }
+    }
+}

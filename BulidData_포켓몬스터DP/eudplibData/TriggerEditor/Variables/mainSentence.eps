@@ -8,29 +8,24 @@ import Variables.npcInfo as vni;
 import Variables.sentenceLog as vsl;
 import Variables.etcData as ved;
 import Variables.subSentence as vus;
+import Variables.restrictSentence as vrs;
 import BGMPlayer as BGM;
 
 const s = StringBuffer(1024);
 const t = StringBuffer(1024);
 const actionStep    = PVariable();
-const restrictStep  = PVariable();
-const restrictIndex = PVariable();
 const restoreMusic  = PVariable();
 const sphIndex      = PVariable();
 const sphDelay      = PVariable();
 
 const action        = 0;
-const restrict      = 1;
+const npcNum        = 4; //메인스토리 진행 중 움직이는 NPC 관리용
+const npcEPD        = EUDArray(4*npcNum);
 
-const npcNum    = 4; //메인스토리 진행 중 움직이는 NPC 관리용
-const npcEPD    = EUDArray(4*npcNum);
-
-const sph1      = Db("\x04────────────────");
-const sph2      = Db("\x04──────────\x11다음 F키\x04──");
-const sph3      = Db("\n\n\n\n\x13\x11｜\n\x13\x11·");
-const stickText = Db("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소/뒤로\x08 ]");
-
-function restrictAction(cp);
+const sph1          = Db("\x04────────────────");
+const sph2          = Db("\x04──────────\x11다음 F키\x04──");
+const sph3          = Db("\n\n\n\n\x13\x11｜\n\x13\x11·");
+const stickText     = Db("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소/뒤로\x08 ]");
 
 function removeText(){
     t.printfAt(0, "\n\n\n\n\n\n\n\n");
@@ -42,13 +37,13 @@ function removeTextAll(){
 
 function nextStep(cp,type){
     if(type == 0){actionStep[cp] += 1;}
-    else if(type == 1){restrictStep[cp] += 1;}
+    else if(type == 1){vrs.restrictStep[cp] += 1;}
     else if(type == 2){vus.subStep[cp] += 1;}
 }
 
 function endStep(cp,type){
     if(type == 0){actionStep[cp] = 0; pps.mainStory[cp] += 1;}
-    else if(type == 1){restrictStep[cp] = 0; restrictIndex[cp] = 0;}
+    else if(type == 1){vrs.restrictStep[cp] = 0; vrs.restrictIndex[cp] = 0;}
     else if(type == 2){vus.subStep[cp] = 0; vus.subIndex[cp] = 0;}
 }
 
@@ -71,6 +66,7 @@ function resetNPC(cp){
     for(var i=0; i<npcNum; i++){npcEPD[cpi+i] = 0;}
 }
 
+//상시발동 트리거 : removeTimer가 1일 때 삭제시키는 함수
 function removeNPC(cp){
     const cpi = cp*npcNum;
     for(var i=0; i<npcNum; i++){
@@ -85,8 +81,17 @@ function removeNPC(cp){
     }
 }
 
+//npc Index -> npc EPD
 function npcIndex(cp, index){
     return npcEPD[cp*npcNum+index];
+}
+
+//느낌표 텍스트
+function bangText(cp, loc:TrgLocation){
+    CenterView(loc);
+    t.printfAt(0,"{:s}", sph3);
+    if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
+    else{sphDelay[cp] = 0; nextStep(cp,action);}
 }
 
 function speechText(cp, loc:TrgLocation, log:EUDArray, type, state){
@@ -121,10 +126,10 @@ function speechText(cp, loc:TrgLocation, log:EUDArray, type, state){
 //메인시나리오 진행
 function speechSystem(cp){
     removeNPC(cp);
-    restrictAction(cp);
+    vrs.restrictAction(cp);
     vus.subSpeech(cp);
     if(vus.subIndex[cp]){return;}
-    if(restrictIndex[cp]){return;}
+    if(vrs.restrictIndex[cp]){return;}
     const main = pps.mainStory[cp];
     const step = actionStep[cp];
     if(main == 1){
@@ -160,10 +165,7 @@ function speechSystem(cp){
                 nextStep(cp,action);
             }
         }else if(step == 1){
-            CenterView(vli.npcLoc+cp);
-            t.printfAt(0,"{:s}", sph3);
-            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
-            else{sphDelay[cp] = 0; nextStep(cp,action);}
+            bangText(cp, vli.npcLoc+cp);
         }else if(step == 2){
             speechText(cp, vli.npcLoc+cp, vsl.storyLog1, action, true);
         }else{endStep(cp,action);}
@@ -183,10 +185,7 @@ function speechSystem(cp){
             }
         }
         else if(step == 1){
-            CenterView("[Story]2");
-            t.printfAt(0,"{:s}", sph3);
-            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
-            else{sphDelay[cp] = 0; nextStep(cp,action);}
+            bangText(cp, "[Story]2");
         }else if(step == 2){
             speechText(cp, "[Story]2", vsl.storyLog2, action, true);
         }else if(step == 3){
@@ -383,41 +382,49 @@ function speechSystem(cp){
             endStep(cp,action);
         }
     }
+    //잔모래마을에서 빛나와 마주
+    else if(main == 12){
+        if(step == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Story]6")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                pmu.changeMoveState(cp, false);
+                MoveLocation(vli.tempMoveLoc, ved.junkUnit, 11, "[Story]6");
+                createNPC(cp, P6, vli.tempMoveLoc, vni.friend, 0); //빛나
+                addloc(vli.tempMoveLoc, -32, 0);
+                Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
+                nextStep(cp,action);
+            }
+        }else if(step == 1){
+            bangText(cp, vli.moveLoc+cp);
+        }else if(step == 2){
+            speechText(cp, vli.moveLoc+cp, vsl.storyLog14, action, false);
+            if(sphDelay[cp] == 0 && sphIndex[cp] == 4){
+                sphDelay[cp] += 1;
+                MoveLocation(vli.tempMoveLoc, 50, P5, vli.mapLoc[4]);
+                createNPC(cp, P6, vli.tempMoveLoc, vni.rival, 1); //용식
+                PlayWAV("staredit\\wav\\Door enter.wav");
+            }
+            if(sphDelay[cp] == 1 && sphIndex[cp] == 7){
+                sphDelay[cp] += 1;
+                fc.COrderLocEPD(npcIndex(cp,1), 6, vli.mapLoc[6]); //6:move
+                SetMemoryXEPD(npcIndex(cp,1)+0x110/4, SetTo, 0x40, 0xFFFF);
+            }
+        }else if(step == 3){
+            if(sphDelay[cp] == 1){SetMemoryXEPD(npcIndex(cp,0)+0x110/4, SetTo, 0x2, 0xFFFF); pps.userSetLight[cp] = 0;}
+            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
+            else{sphDelay[cp] = 0; nextStep(cp,action);}
+        }else if(step == 4){
+            if(sphDelay[cp] == 1){
+                pps.userSetLight[cp] = 31;
+                MoveLocation(vli.npcLoc+cp, vni.doctor1, P5, vli.mapLoc[7]);
+                addloc(vli.npcLoc+cp, 0, 32);
+                MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.npcLoc+cp);
+                addloc(vli.npcLoc+cp, 32, 0);
+                CenterView(vli.npcLoc+cp);
+            }
+            if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
+            else{sphDelay[cp] = 0; nextStep(cp,action);}
+        }
+    }
 }
 
-function restrictAction(cp){
-    const index = restrictIndex[cp];
-    if(index == 0){
-        const main = pps.mainStory[cp];
-        //용식이와 대화를 하지 않고 나가려고 할 때
-        if(main <= 4){
-            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Story]3")){
-                PlayWAV("staredit\\wav\\se_gui_choose.wav");
-                moveLocationPlayer(cp, vli.tempMoveLoc, 0, 32); //플레이어기준으로 로케이션 이동
-                pmu.changeMoveState(cp, false);
-                Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
-                restrictIndex[cp] = 1;
-            }
-        }
-        //마박사의 포켓몬 고르기 이벤트를 진행하지 않고 나가려고 할 때
-        else if(main <= 11){
-            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Back]1")){
-                moveLocationPlayer(cp, vli.tempMoveLoc, -32, 0); //플레이어기준으로 로케이션 이동
-                pmu.changeMoveState(cp, false);
-                Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
-                restrictIndex[cp] = 2;
-            }
-        }
-    }
-    else{
-        const step = restrictStep[cp];
-        if(index == 1){
-            if(step == 0){speechText(cp, vli.moveLoc+cp, vsl.storyLog4, restrict, true);}
-            else{endStep(cp,restrict);}
-        }
-        else if(index == 2){
-            if(step < 12){restrictStep[cp] += 1;}
-            else{endStep(cp,restrict); pmu.changeMoveState(cp, true);}
-        }
-    }
-}

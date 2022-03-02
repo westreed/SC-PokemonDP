@@ -1,5 +1,6 @@
 import functions as fc;
 import Battle.battleStart as bbs;
+import Interface.menu_Bag as imb;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
@@ -14,24 +15,46 @@ import Variables.etcData as ved;
 const subIndex      = PVariable();
 const subStep       = PVariable();
 const subSph        = 2;
+const trainerNum    = 100;
+const trainerList   = EUDArray(4*trainerNum);
 
 
 function subSpeech(cp){
     const index = subIndex[cp];
     if(Deaths(cp, Exactly, 16, "A Key")){
         const currentLoc = pps.currentLocation[cp];
+        const cpTn = cp*trainerNum;
         if(index == 0){
+            const mLoc = vli.moveLoc+cp;
+            //광휘의 집
             if(currentLoc == 0){
-                if(pps.mainStory[cp] > 11 && Bring(P5, Exactly, 1, vni.medic, vli.moveLoc+cp)){
+                if(pps.mainStory[cp] > 11 && Bring(P5, Exactly, 1, vni.medic, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 1;
                 }
+            }
+            //201번도로
+            else if(currentLoc == 2){
+                if(Bring(P5, Exactly, 1, vni.medic, mLoc)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 2;
+                }else if(Bring(P6, Exactly, 1, vni.medic, mLoc)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 3;
+                } else if(Bring(P5, Exactly, 1, vni.marine, mLoc)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 4;
+                } else if(trainerList[cpTn+0] == 0 && Bring(P6, Exactly, 1, vni.marine, mLoc)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 5;
+                } 
             }
         }
         
     }
     if(index){
         const step = subStep[cp];
+        const cpTn = cp*trainerNum;
         //집에서 엄마와 대화 (체력회복)
         if(index == 1){
             if(step == 0){
@@ -40,7 +63,37 @@ function subSpeech(cp){
                     vms.sphDelay[cp] = 1; pmp.healMyPokemon(cp);
                     PlayWAV("staredit\\wav\\Pokemon Healed.ogg");
                 }
-            }else{vms.endStep(cp, subSph);}
+            } else{vms.endStep(cp, subSph);}
+        }
+        else if(index == 2){
+            if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.subLog1, subSph, true);
+            } else{vms.endStep(cp, subSph);}
+        }
+        else if(index == 3){
+            if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.subLog2, subSph, true);
+            } else{vms.endStep(cp, subSph);}
+        }
+        else if(index == 4){
+            if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.subLog3, subSph, true);
+            } else{vms.endStep(cp, subSph);}
+        }
+        else if(index == 5){
+            if(step == 0){
+                vms.speechText(cp, vli.moveLoc+cp, vsl.subLog4, subSph, true);
+                if(vms.sphDelay[cp] == 0 && vms.sphIndex[cp] == 4){
+                    vms.sphDelay[cp] = 1; imb.addItem(cp, 23, 1, true);
+                }
+            } else{trainerList[cpTn+0] = 1; vms.endStep(cp, subSph);}
         }
     }
 }
+
+
+// const answerLen = 5;
+// const insertField = EUDArray(10);
+// const textField = [Db("_"), Db("A"), Db("B"), ... , Db("Z")];
+// s.insert(0);
+// for(var i=0; i<answerLen; i++){
+//     s.appendf("{:s} ", textField[insertField[i]]);
+// }
+// s.DisplayAt(0);

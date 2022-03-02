@@ -260,7 +260,7 @@ function subMenu_PokemonInfo(cp, height){
         if(mpk.item){
             const preItem = mpk.item;
             mpk.item = 0;
-            imb.addItem(cp, preItem-1, 1);
+            imb.addItem(cp, preItem-1, 1, false);
             const pkItem = iif.Item.cast(iif.itemList[preItem-1]);
             t.printf("\x07！\x04포켓몬이 지닌 \x1D{:s}\x04을(를) 회수했습니다.",pkItem.name);
             pps.guiUpdate[cp] = 1;

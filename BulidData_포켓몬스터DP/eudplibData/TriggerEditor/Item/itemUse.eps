@@ -61,7 +61,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
         if(preItem){
             const preIt = iif.Item.cast(iif.itemList[preItem-1]);
             s.appendf("\n　\x04지니고 있던 \x1E{:s}\x04을(를) 가방에 넣었습니다.",preIt.name);
-            imb.addItem(cp, preItem-1, 1);
+            imb.addItem(cp, preItem-1, 1, false);
         }
         PlayWAV("staredit\\wav\\emerald_pc pokemon.wav");
         s.Display();
@@ -191,7 +191,7 @@ function item_useFunctionNoPoke(cp, bagSelect){
 function throwPoketBall(cp){
     if(throwBall[cp] == 1){
         //야생포켓몬 임시로 옮겨두기
-        const cUnit = ppst.computerPokemonUnit[cp];
+        const cUnit = ppst.playerPokemonUnit[cp+4];
         MoveLocation(vli.npcLoc+cp, cUnit, P5, bbs.battleLocation[cp]);
         MoveUnit(1, cUnit, P5, bbs.battleLocation[cp], vli.tempLoc);
 
@@ -220,7 +220,7 @@ function throwPoketBall(cp){
                     s.printf("rand {} > catchRate {}", rand, catchRate);
                     if(catchRate < 255 && rand > catchRate){ //실패
                         throwBall[cp] = 0; throwNum[cp] = 0;
-                        const cUnit = ppst.computerPokemonUnit[cp];
+                        const cUnit = ppst.playerPokemonUnit[cp+4];
                         MoveUnit(1, cUnit, P5, vli.tempLoc, vli.npcLoc+cp);
                         PlayWAV("staredit\\wav\\Battle jump to ball.wav");
                     }
@@ -234,7 +234,7 @@ function throwPoketBall(cp){
         }
     } else if(throwBall[cp] == 4){
         throwBall[cp] = 0;
-        const cUnit = ppst.computerPokemonUnit[cp];
+        const cUnit = ppst.playerPokemonUnit[cp+4];
         RemoveUnitAt(1, cUnit, vli.tempLoc, P5);
         const ck = pmp.myPokemon.cast(ppst.retrunPokemonList(cp, false, bbs.pokemonNumber[cp+4]));
         const pk = ppi.Pokemon1.cast(ppi.pokemonList[ck.index-1]);

@@ -8,21 +8,23 @@ import Variables.locationInfo as vli;
 const s = StringBuffer(1024);
 
 function encounterPokemon(cp){
-    const currentPos = vli.mapLoc[pps.currentLocation[cp]];
-    //필드리스트 순환
-    for(var m=0; m<ppl.fieldList._arrlen; m++){
-        //필드번호와 내 위치가 일치하는 경우
-        if(ppl.fieldList[m] == currentPos){
-            //해당 필드의 야생포켓몬 리스트 가져오기
-            const wildList = EUDArray.cast(ppl.fieldPokemon[m]);
-            const index = 3*(dwrand() % wildList[0])+1; //0~n
-            
-            const wildIndex = wildList[index]; //pokemonIndex
-            const wildRand  = wildList[index+2]+1;
-            const wildLevel = dwrand() % wildRand + wildList[index+1];
-            const pk = ppi.Pokemon1.cast(ppi.pokemonList[wildIndex]);
-            bbs.wildSetting(cp, 0, wildIndex, wildLevel);
-            return;
+    if(pps.mainStory[cp] > 11){
+        const currentPos = vli.mapLoc[pps.currentLocation[cp]];
+        //필드리스트 순환
+        for(var m=0; m<ppl.fieldList._arrlen; m++){
+            //필드번호와 내 위치가 일치하는 경우
+            if(ppl.fieldList[m] == currentPos){
+                //해당 필드의 야생포켓몬 리스트 가져오기
+                const wildList = EUDArray.cast(ppl.fieldPokemon[m]);
+                const index = 3*(dwrand() % wildList[0])+1; //0~n
+                
+                const wildIndex = wildList[index]; //pokemonIndex
+                const wildRand  = wildList[index+2]+1;
+                const wildLevel = dwrand() % wildRand + wildList[index+1];
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[wildIndex]);
+                bbs.wildSetting(cp, 0, wildIndex, wildLevel);
+                return;
+            }
         }
     }
 }

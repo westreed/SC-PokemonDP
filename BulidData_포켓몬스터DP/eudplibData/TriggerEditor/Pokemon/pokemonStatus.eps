@@ -7,12 +7,11 @@ import Pokemon.calculateMethod as pcm;
 import Variables.language as vl;
 import dataTable as dt;
 
-const playerPokemonUnit     = PVariable(list(1, 2, 8, 19, 0, 0, 0, 0));
-const computerPokemonUnit   = PVariable(list(20, 21, 43, 44, 0, 0, 0, 0));
+const playerPokemonUnit     = PVariable(list(1, 2, 8, 19, 22, 21, 43, 44));
 
 function returnPokemonUnit(cp, type){
     if(type){return playerPokemonUnit[cp];}
-    else{return computerPokemonUnit[cp];}
+    else{return playerPokemonUnit[cp+4];}
 }
 
 function returnPokemonWeapon(cp, type){

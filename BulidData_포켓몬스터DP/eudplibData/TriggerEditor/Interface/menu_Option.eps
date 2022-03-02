@@ -1,6 +1,8 @@
 import Interface.userGUI as iug;
 import Player.playerSetting as pps;
 import Variables.mainSentence as vms;
+import Variables.restrictSentence as vrs;
+import Variables.subSentence as vus;
 import SCA.scaSystem as scs;
 
 
@@ -27,7 +29,7 @@ function subMenu_Option(cp, height){
 }
 
 function isSaveState(cp){
-    if(vms.actionStep[cp] || vms.restrictStep[cp]){
+    if(vms.actionStep[cp] || vrs.restrictIndex[cp] || vus.subIndex[cp]){
         DisplayText("\x08！\x04대화중일 때는 저장할 수 없습니다.");
         return false;
     }

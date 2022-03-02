@@ -5,7 +5,7 @@ import Item.itemUse as iiu;
 import Player.playerSetting as pps;
 
 
-
+const s = StringBuffer(1024);
 const t = StringBuffer(1024);
 const bagMax        = 18;
 const bagLastPage   = bagMax/6 - 1;
@@ -225,13 +225,18 @@ function sortBag(cp){
     }
 }
 
-function addItem(cp, item, num){
+function addItem(cp, item, num, text){
     const cpBag = cp*bagMax;
     var blankIndex = bagMax+1;
     for(var i=0; i<bagMax; i++){
         //같은 아이템이 가방에 있는 경우
         if(MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1)){
             bagNumList[cpBag+i] += num;
+            const item = iif.Item.cast(iif.itemList[item]);
+            if(text){
+                s.printf("\x07！\x04{:s}을(를) 손에 넣었다!",item.name);
+                PlayWAV("staredit\\wav\\ObtainedanItem.wav");
+            }
             return;
         }
         //같은 아이템이 없는 경우를 대비해서 빈공간도 수색하기
@@ -247,6 +252,11 @@ function addItem(cp, item, num){
     else{
         bagItemList[cpBag+blankIndex] = item+1; //아이템값이 0부터 시작함.
         bagNumList[cpBag+blankIndex] = num;
+        const item = iif.Item.cast(iif.itemList[item]);
+        if(text){
+            s.printf("\x07！\x04{:s}을(를) 손에 넣었다!",item.name);
+            PlayWAV("staredit\\wav\\ObtainedanItem.wav");
+        }
     }
 }
 

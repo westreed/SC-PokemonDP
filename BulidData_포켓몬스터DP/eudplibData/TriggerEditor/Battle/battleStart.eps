@@ -214,7 +214,7 @@ function battleSystem(cp){
                 else{
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
-                    RemoveUnit(ppst.computerPokemonUnit[cp], P5);
+                    RemoveUnit(ppst.playerPokemonUnit[cp+4], P5);
                     vms.removeTextAll();
                     pps.userSetLight[cp] = 0;
                 }

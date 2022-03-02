@@ -53,11 +53,11 @@ function onPluginStart(){
 		setcurpl(cp);
 		pps.settingMusic[cp] = 1;
 		//RunAIScript("Turn ON Shared Vision for Player 8");
-		imb.addItem(cp, 16, 5);
-		imb.addItem(cp, 0, 1);
-		imb.addItem(cp, 44, 1);
-		imb.addItem(cp, 30, 2);
-		imb.addItem(cp, 23, 2);
+		imb.addItem(cp, 16, 5, false);
+		imb.addItem(cp, 0, 1, false);
+		imb.addItem(cp, 44, 1, false);
+		imb.addItem(cp, 30, 2, false);
+		imb.addItem(cp, 23, 2, false);
 	}
 	setcurpl(4);
 	RunAIScript("Turn ON Shared Vision for Player 1");
