@@ -4,6 +4,7 @@ import Player.playerSetting as pps;
 import Player.movementUnit as pmu;
 
 import Pokemon.pokemonInfo as ppi;
+import Pokemon.myPokemon as pmp;
 
 import Interface.menu_Book as imk;
 import Interface.menu_Bag as imb;
@@ -44,7 +45,7 @@ function mainMenu_UI(cp);
 function mainMenu_Action(cp);
 function printGUI(cp){
     if(Deaths(cp, Exactly, 2, "A Key")){
-        if(mainMenu[cp] == 0){
+        if(mainMenu[cp] == 0 && pmp.evoIng[cp] == 0){
             if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
                 mainMenu[cp] = 1;
                 pps.guiUpdate[cp] = 1;

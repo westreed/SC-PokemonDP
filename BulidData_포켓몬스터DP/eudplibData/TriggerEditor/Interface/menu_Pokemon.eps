@@ -53,10 +53,11 @@ function subMenu_Pokemon(cp, height, battle){
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
                 const icon = EUDArray.cast(pps.selectIconList[i]);
                 if(mpk.index){
+                    const mpkn = pmp.myPokemon2.cast(mpk.next);
                     const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
                     if(pps.battleState[cp]){
                         t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}",icon[index],mpk.level,pk.name);
-                        if(bbs.pokemonNumber[cp] == i){t.appendf("\x08(전투)\n");}
+                        if(mpkn.battle == 1){t.appendf("\x08(전투)\n");}
                         else if(mpk.state == 1){t.appendf("\x1E(기절)\n");}
                         else{t.appendf("\n");}
                     }
@@ -125,9 +126,11 @@ function subMenu_PokemonBattleAction(cp, index){
     }
     //뒤로가기
     if(Deaths(cp, Exactly, 4, "A Stick")){
-        iug.subMenu[cp] = 0;
-        pps.guiUpdate[cp] = 1;
-        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        if(bbs.battleStep[cp] != 7){
+            iug.subMenu[cp] = 0;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
     }
     //포켓몬 교체
     if(Deaths(cp, Exactly, 8, "A Stick") && bbs.pokemonNumber[cp] != index){
@@ -148,9 +151,12 @@ function changePokemon(cp){
     if(pokeChange[cp]){
         pokeChange[cp] += 1;
         const changeDelay = pokeChange[cp];
+        const step = bbs.battleStep[cp];
         if(changeDelay == 2){
-            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
-            fc.scanEffect(vli.tempMoveLoc, 980);
+            if(step != 7){
+                MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+                fc.scanEffect(vli.tempMoveLoc, 980);
+            }
             PlayWAV("staredit\\wav\\emerald_ball throw.wav");
         }
         if(changeDelay < 24*2){
@@ -160,16 +166,20 @@ function changePokemon(cp){
             t.appendf("\x13\x04가랏! \x1F{:s}!\n",changeName[cp]);
             t.appendf("\x13{:s}",vms.sph1);
             t.DisplayAt(0);
-            MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
-            Order(ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp], Move, vli.tempMoveLoc);
+            if(step != 7){
+                MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+                Order(ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp], Move, vli.tempMoveLoc);
+            }
         }
         else{
             const cpPk = cp*pmp.userPokemonNum;
             const pkNumber = iug.subMiniMenu[cp]-1; //교체할 포켓몬의 볼번호
             const preNumber = bbs.pokemonNumber[cp];
-            //현재 전투중인 포켓몬 설정
-            const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preNumber]);
-            mpk.hitpoint = bbg.pokemonCurHP[cp];
+            if(step != 7){
+                //현재 전투중인 포켓몬 설정
+                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preNumber]);
+                mpk.hitpoint = bbg.pokemonCurHP[cp];
+            }
 
             //교체대기 중인 포켓몬 설정
             bbs.pokemonNumber[cp] = pkNumber;
@@ -191,6 +201,7 @@ function changePokemon(cp){
 
             iug.subMiniMenu[cp] = 0;
             pokeChange[cp] = 0;
+            if(step == 7){bbs.battleStep[cp] = 6;}
         }
     }
 }

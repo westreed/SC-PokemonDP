@@ -26,13 +26,13 @@ function subMenu_Option(cp, height){
     subMenu_OptionAction(cp, index);
 }
 
-function isSaveState(cp, text){
+function isSaveState(cp){
     if(vms.actionStep[cp] || vms.restrictStep[cp]){
-        if(text){DisplayText("\x08！\x04대화중일 때는 저장할 수 없습니다.");}
+        DisplayText("\x08！\x04대화중일 때는 저장할 수 없습니다.");
         return false;
     }
     if(pps.battleState[cp]){
-        if(text){DisplayText("\x08！\x04전투중일 때는 저장할 수 없습니다.");}
+        DisplayText("\x08！\x04전투중일 때는 저장할 수 없습니다.");
         return false;
     }
     return true;
@@ -60,7 +60,7 @@ function subMenu_OptionAction(cp, index){
     //옵션설정
     if(Deaths(cp, Exactly, 8, "A Stick")){
         if(index == 0){
-            if(isSaveState(cp, true)){scs.saveCode[cp] = 1;}
+            if(isSaveState(cp)){scs.saveCode[cp] = 1;}
             PlayWAV("staredit\\wav\\PC Login.wav");
         }
         else if(index == 1){

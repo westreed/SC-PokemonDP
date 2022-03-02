@@ -150,13 +150,16 @@ function subMenu_BagInfoAction(cp){
                 PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }
             else{
-                if(iiu.isPokemonItem(bagType[cp])){imp.pokeAction[cp] = 1;}
+                if(iiu.isPokemonItem(bagType[cp])){
+                    imp.pokeAction[cp] = 1;
+                    PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+                }
                 //포켓몬 메뉴를 안거치는 타입
                 else{
-
+                    const select = iug.subMiniMenu[cp]-1;
+                    iiu.item_useFunctionNoPoke(cp, select);
                 }
                 pps.guiUpdate[cp] = 1;
-                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
             }
         }
         else{
@@ -166,13 +169,16 @@ function subMenu_BagInfoAction(cp){
             }
             //포켓몬 메뉴를 안거치는 타입
             else{
-                if(iiu.isPokemonItem(bagType[cp])){imp.pokeAction[cp] = 1;}
+                if(iiu.isPokemonItem(bagType[cp])){
+                    imp.pokeAction[cp] = 1;
+                    PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+                }
                 //포켓몬 메뉴를 안거치는 타입
                 else{
-
+                    const select = iug.subMiniMenu[cp]-1;
+                    iiu.item_useFunctionNoPoke(cp, select);
                 }
                 pps.guiUpdate[cp] = 1;
-                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
             }
         }
     }

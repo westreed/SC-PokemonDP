@@ -1,8 +1,6 @@
 import Player.playerSetting as pps;
 import Variables.etcData as ved;
 
-const s = StringBuffer(1024);
-
 function SetNextUnitPTR(){
     return cunitepdread_epd(EPD(0x628438))[[0]];
 }
@@ -29,18 +27,14 @@ function SingleBan(){
     const c = Db("");
     if(strcmp(a, b) == 0){
         foreach(cp : EUDLoopPlayer('Human', None, None)){
-            setcurpl(cp); s.print("\x13\x1EUDP 플레이는 금지하고 있습니다.\n\x13\x04배틀넷에서 플레이하세요."); Defeat();
+            setcurpl(cp); DisplayText("\x13\x1EUDP 플레이는 금지하고 있습니다.\n\x13\x04배틀넷에서 플레이하세요."); Defeat();
         }
     }
     else if(strcmp(b, c) == 0){
         foreach(cp : EUDLoopPlayer('Human', None, None)){
-            setcurpl(cp); s.print("\x13\x1E싱글 플레이는 금지하고 있습니다.\n\x13\x04배틀넷에서 플레이하세요."); Defeat();
+            setcurpl(cp); DisplayText("\x13\x1E싱글 플레이는 금지하고 있습니다.\n\x13\x04배틀넷에서 플레이하세요."); Defeat();
         }
     }
-    /*for(var i=0; i<6; i++){
-        const d = 0x57EEEB + 36 * i;
-        if(strcmp(b, d) == 0){SetVariables(sys.setUser, i); SetDeaths(i, SetTo, 1, 215); break;}
-    }*/
 }
 
 
@@ -57,7 +51,7 @@ function SpeedBan(){
     else{
         foreach(cp : EUDLoopPlayer('Human', None, None)){
             setcurpl(cp);
-            s.print("\x13\x1E배속 플레이는 금지하고 있습니다.\n\x13\x04방제목에 있는 배속을 빼주세요.");
+            DisplayText("\x13\x1E배속 플레이는 금지하고 있습니다.\n\x13\x04방제목에 있는 배속을 빼주세요.");
             Defeat();
         }
     }
@@ -67,7 +61,7 @@ function exitObserver(){
     for(var i=0; i<4; i++){
         if(getuserplayerid() == 128+i){
             setcurpl(getuserplayerid());
-            s.print("  \x08■ \x04죄송합니다, 이 유즈맵은 관전을 비허용하고 있습니다.");
+            DisplayText("  \x08■ \x04죄송합니다, 이 유즈맵은 관전을 비허용하고 있습니다.");
             EUDPlayerLoop()();
             Defeat();
             EUDEndPlayerLoop();
@@ -135,72 +129,6 @@ function LocationDistance(loc1, loc2) {
     else y = y2 - y1;
     return hypot(x, y);
     //return sqrt((x1 - x2)*(x1 - x2)+(y1-y2)*(y1-y2)) / 2;
-}
-
-function CheckNoneTargetSkillEPD(
-    cp,
-    unitEPD,
-    range,
-    unitLoc: TrgLocation,
-    targetLoc: TrgLocation,
-    skillOrder /*Order*/
-) {
-    unitEPD += 0x4D/4;
-    if (MemoryXEPD(unitEPD, Exactly, skillOrder, 0xFF00)) { //order는 256을 곱한 값을 사용함
-        unitEPD += -((0x4D - 0x28)/4);
-        const x, y = posread_epd(unitEPD);
-        setloc(unitLoc, x, y);
-        unitEPD += (0x58 - 0x28)/4;
-        setloc_epd(targetLoc, unitEPD);
-
-        if (range > LocationDistance(unitLoc, targetLoc)) {
-            MoveLocation(targetLoc, 227, AllPlayers, targetLoc);
-            unitEPD += -((0x58 - 0x4C)/4);
-            SetMemoryXEPD(unitEPD, SetTo, 0x100, 0xFF00);
-            unitEPD += -((0x4D - 0x10)/4);
-            SetMemoryEPD(unitEPD, SetTo, x + y * 65536);
-            return True;
-        }
-    }
-    return False;
-}
-
-function AttackGround(
-    attackLoc: TrgLocation,
-    targetLoc: TrgLocation,
-    attackUnit: TrgUnit,
-    targetUnit: TrgUnit,
-    player: TrgPlayer
-) {
-    if (Memory(0x628438, Exactly, 0)) return;  // avoid EUDError when CCMU
-    const aUnit = cunitepdread_epd(EPD(0x628438))[[1]];
-    CreateUnit(1, attackUnit, attackLoc, player);
-    DoActions(aUnit.AddNumber(0x110 / 4));
-    SetMemoryEPD(aUnit, Add, 2);  // aUnit + 0x110 (CUnit::removeTimer)
-
-    if (Memory(0x628438, Exactly, 0)) return;  // avoid EUDError when CCMU
-    const tunitptr, tunit = cunitepdread_epd(EPD(0x628438));
-    CreateUnit(1, targetUnit, targetLoc, player);
-    DoActions(list(
-        tunit.AddNumber(0x110 / 4),
-        aUnit.AddNumber(-((0x110 - 0x5C) / 4))
-    ));
-    SetMemoryEPD(aUnit, SetTo, tunitptr);  // aUnit + 0x5C (CUnit::targetUnit)
-    SetMemoryEPD(tunit, Add, 2);  // tunit + 0x110 (CUnit::removeTimer)
-
-    DoActions(aUnit.AddNumber(-((0x5C - 0x4C) / 4)));
-    SetMemoryXEPD(aUnit, SetTo, 0xA00, 0xFF00);  // order[10]=attack, 0x4D (CUnit::order)
-}
-
-function AttackTargetPTR(cp, createLoc, targetPTR, attackUnit){
-    const aUnit = SetNextUnitEPD();
-    CreateUnit(1, attackUnit, createLoc, cp);
-    DoActions(aUnit.AddNumber(0x110 / 4));
-    SetMemoryEPD(aUnit, Add, 2);  // aUnit + 0x110 (CUnit::removeTimer)
-    DoActions(aUnit.AddNumber(-((0x110 - 0x5C) / 4)));
-    SetMemoryEPD(aUnit, SetTo, targetPTR);
-    DoActions(aUnit.AddNumber(-((0x5C - 0x4C) / 4)));
-    SetMemoryXEPD(aUnit, SetTo, 0xA00, 0xFF00);
 }
 
 function LocationAngle(originLoc, destLoc){
@@ -272,26 +200,6 @@ function BuildResetEPD(unitEPD) {
     ));
 }
 
-function CheckUnit(player, unit){
-    if(MemoryEPD(EPD(0x582324) + 12 * unit + player, Exactly, 0)){return False;}
-    return True;
-}
-
-function ToggleUnitAvailability(player, unit){
-    var dst = 0x57F27C + player*228 + unit;
-    const q, r = div(dst - 0x58A364, 4);
-    const v = bitlshift(1, 8 * r);
-    SetMemoryXEPD(q, Add, v, v);
-}
-
-function calculateDigits(val1, val2){
-    var temp = (val1*100)/val2;
-    var sec = 0;
-    while(temp >= 100){temp -= 100; sec += 1;}
-    const decimal = temp;
-    return sec, decimal; //초와 소수점 따로 분리.
-}
-
 function SetPColor(pnum, color){
     const pcolor_dst = 0x581D76 + 8 * pnum;
     const mcolor_dst = 0x581DD6 + pnum;
@@ -304,20 +212,6 @@ function SetUnitColorEPD(epd, color) {
     const sprite = epdread_epd(epd);
     DoActions(sprite.AddNumber(0x0A/4));
     SetMemoryXEPD(sprite, SetTo, color * 65536, 0xFF0000);
-}
-
-function __SpawnBase(epd, unit: TrgUnit, newUnit: TrgUnit) {
-    if (
-        MemoryXEPD(epd + 0x64/4, Exactly, unit, 0xFFFF)
-        && MemoryXEPD(epd + 0x4E/4, Exactly, 0, 0xFF0000)
-    ) {
-        SetMemoryXEPD(epd + 0x4D/4, SetTo, (42 << 8) + (1 << 16), 0xFFFF00);
-        SetMemoryXEPD(epd + 0x98/4, SetTo, newUnit, 0xFFFF);
-    }
-}
-
-function SpawnEggEPD(epd, newUnit: TrgUnit) {
-    __SpawnBase(epd, 36, newUnit);
 }
 
 function __LocOrderBase(

@@ -123,8 +123,16 @@ function dividePos(pos){
     pos_x = pos;
     return pos_x, pos_y;
 }
-// const po = ppi.Pokemon1.cast(ppi.pokemonList[index]);
-// const po2 = ppi.Pokemon2.cast(po.next);
-// const hp, atk, amr, spd = pcm.divideStats(po.BTs);
-// const type1, type2 = pcm.divideType(po2.type);
-// s.printf("\x04이름:{:s} 신오도감:{} 종족값:{} {} {} {} 포획률:{} 경험치:{} 타입:{:s} {:s}", po.name, po.book, hp, atk, amr, spd, po.catch, po2.exp, pwr.typeText[type1], pwr.typeText[type2]);
+
+function retrunCatchRate(cp, curHP, maxHP, ball, catch){
+    if(ball == 5){return 256;}
+    const maxHP3 = 3*maxHP;
+    return ((maxHP3-(2*curHP))*ball*catch)/(2*maxHP3);
+}
+
+function returnEvoTarget(unit){
+    if(unit < 256){return unit;}
+    const unitArray = EUDArray(2);
+    unitArray[0],unitArray[1] = divideData256(unit);
+    return unitArray[dwrand() % 2]; //둘중 하나 랜덤으로 반환하기
+}

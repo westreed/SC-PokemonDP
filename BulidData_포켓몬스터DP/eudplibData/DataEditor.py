@@ -497,5 +497,6 @@ def onPluginStart():
         SetMemory(0x6C9E24, Add, 10240),# flingy:Turn Radius  index:5    from 40 To 80
         SetMemory(0x66A028, Add, 262144),# images:Draw Function  index:514    from 9 To 13
         SetMemory(0x66EC48, Add, 155),# images:Iscript ID  index:0    from 0 To 155
+        SetMemory(0x66FB8C, Add, -141),# images:Iscript ID  index:977    from 391 To 250
     ])
 

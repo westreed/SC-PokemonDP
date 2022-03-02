@@ -11,18 +11,16 @@ const surfingEPD    = PVariable();
 function machine_Surfing(cp){
     //파도타기가 아닐 때
     if(pps.using_Surfing[cp] == 0){
-        if(pps.currentTileset[cp] == 4){
-            if(Deaths(cp, Exactly, 16, "A Key")){
-                s.printf("\x07▶ \x04파도타기를 시전했다!");
-                pps.using_Surfing[cp] = 1;
-                pps.settingMusic[cp] = 25; //파도타기 음악
-                Order(pps.playerUnit[cp], cp, 64, Move, vli.moveLoc+cp);
-                SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
-                surfingEPD[cp] = fc.SetNextUnitEPD();
-                CreateUnit(1, ved.surfingUnit, vli.moveLoc+cp, cp);
-                fc.SetUnitColorEPD(surfingEPD[cp], 11);
-                SetMemoryXEPD(surfingEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
-            }
+        if(Deaths(cp, Exactly, 16, "A Key") && pps.currentTileset[cp] == 4){
+            s.printf("\x07▶ \x04파도타기를 시전했다!");
+            pps.using_Surfing[cp] = 1;
+            pps.settingMusic[cp] = 25; //파도타기 음악
+            Order(pps.playerUnit[cp], cp, 64, Move, vli.moveLoc+cp);
+            SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
+            surfingEPD[cp] = fc.SetNextUnitEPD();
+            CreateUnit(1, ved.surfingUnit, vli.moveLoc+cp, cp);
+            fc.SetUnitColorEPD(surfingEPD[cp], 11);
+            SetMemoryXEPD(surfingEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
         }
     }
     else{
@@ -30,15 +28,13 @@ function machine_Surfing(cp){
         MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.moveLoc+cp);
         SetMemoryEPD(surfingEPD[cp] + 0x14C/4, SetTo, 0); //공중밀림 삭제
         SetMemoryXEPD(surfingEPD[cp] + 0xDC/4, SetTo, 0, 0x40000); //무브유닛 랙 제거
-        if(pps.currentTileset[cp] == 4){
-            if(Deaths(cp, Exactly, 16, "A Key")){
-                if(Bring(AllPlayers, Exactly, 1, "Men", vli.moveLoc+cp)){
-                    s.printf("\x07▶ \x04파도타기 종료");
-                    pps.using_Surfing[cp] = 0;
-                    pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
-                    SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0x000000, 0xA00004);
-                    RemoveUnit(ved.surfingUnit, cp);
-                }
+        if(Deaths(cp, Exactly, 16, "A Key") && pps.currentTileset[cp] == 4){
+            if(Bring(AllPlayers, Exactly, 1, "Men", vli.moveLoc+cp)){
+                s.printf("\x07▶ \x04파도타기 종료");
+                pps.using_Surfing[cp] = 0;
+                pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
+                SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0x000000, 0xA00004);
+                RemoveUnit(ved.surfingUnit, cp);
             }
         }
     }

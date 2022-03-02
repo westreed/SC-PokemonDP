@@ -1,12 +1,20 @@
+import Battle.battleStart as bbs;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.calculateMethod as pcm;
+import Player.playerSetting as pps;
+import Variables.mainSentence as vms;
+import Variables.locationInfo as vli;
+import BGMPlayer as BGM;
+import dataTable as dT;
 
 const s = StringBuffer(1024);
 const userPokemonNum        = 18;
 const playerPokemonList     = EUDArray(4*userPokemonNum);   //플레이어가 들고다니는 포켓몬리스트 index:6부터는 PC저장된 포켓몬리스트임
 const computerPokemonList   = EUDArray(4*6);    //플레이어와 상대하는 컴퓨터의 포켓몬데이터
 
-const evoTypeText       = [Db("없음"),Db("친밀도"),Db("레벨"),Db("진화의돌"),Db("통신교환"),Db("특정포켓몬"),Db("아이템")];
+const evoIng                = PVariable();
+const evoWhen               = PVariable();
+const evoTypeText           = [Db("없음"),Db("친밀도"),Db("레벨"),Db("진화의돌"),Db("통신교환"),Db("특정포켓몬"),Db("아이템")];
 
 //포켓몬마다 다른 값을 가지는 개체정보 오브젝트
 object myPokemon {
@@ -15,17 +23,26 @@ object myPokemon {
     var hitpoint;   //2포켓몬체력
     var IVs;        //3포켓몬개체값 (random 0~31)
     var ownEXP;     //4보유경험치
-    var item;       //5지니고 있는 아이템 (통신교환)
+    var item;       //5지니고 있는 아이템 (통신교환) (인덱스값 + 1)
     var state;      //6포켓몬상태 (0:활발, 1:기절)
-    var battle;     //7배틀참여여부 (경험치계산)
+    var next;       //7포인터
+};
+
+object myPokemon2 {
+    var battle;     //0배틀참여여부 (경험치계산)
+    var friendship; //1친밀도
 };
 
 function pokemonListInit(){
     for(var i=0; i<playerPokemonList._arrlen; i++){
         playerPokemonList[i] = myPokemon.alloc();
+        const pk = myPokemon.cast(playerPokemonList[i]);
+        pk.next = myPokemon2.alloc();
     }
     for(var i=0; i<computerPokemonList._arrlen; i++){
         computerPokemonList[i] = myPokemon.alloc();
+        const ck = myPokemon.cast(computerPokemonList[i]);
+        ck.next = myPokemon2.alloc();
     }
 }
 
@@ -52,9 +69,9 @@ function setPokemonData(cp, pokemon, index, lv, hitpoints, IV){
     else{mpk.IVs = IV;} //야생포켓몬의 개체값 가져오기
     
     if(hitpoints == 0){ //야생포켓몬이 아닌 경우
-        const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
-        const vhp, vatk, vamr, vspd = pcm.divideIVs(mpk.IVs);
-        mpk.hitpoint = pcm.returnHitPoints(cp, lv, hp, vhp);
+        const BTs_HP = pcm.returnStatsHP(pk.BTs);
+        const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+        mpk.hitpoint = pcm.returnHitPoints(cp, lv, BTs_HP, IVs_HP);
     }
     //야생포켓몬은 체력도 함께 그대로 대입하기
     else{mpk.hitpoint = hitpoints;}
@@ -74,9 +91,9 @@ function setComputerData(cp, pokemon, index, lv, IV){
     if(IV == 0){mpk.IVs = pcm.createIVs();} //개체값 생성하기
     else{mpk.IVs = IV;} //정해진 개체값 대입하기
     
-    const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
-    const vhp, vatk, vamr, vspd = pcm.divideIVs(mpk.IVs);
-    mpk.hitpoint = pcm.returnHitPoints(cp, lv, hp, vhp);
+    const BTs_HP = pcm.returnStatsHP(pk.BTs);
+    const IVs_HP = pcm.returnIVsHP(mpk.IVs);
+    mpk.hitpoint = pcm.returnHitPoints(cp, lv, BTs_HP, IVs_HP);
 }
 
 function catchPokemon(cp, pokemon, level, hitpoints, IV){
@@ -124,12 +141,14 @@ function returnComputerIndex(cp){
     return 10; //없음
 }
 
+//전투에 참여한 내 포켓몬 수 가져오기
 function returnJoinBattle(cp){
     const cpPk = userPokemonNum*cp;
     var num = 0;
     for(var i=0; i<6; i++){
         const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
-        if(mpk.index > 0 && mpk.battle == 1){num += 1;}
+        const mpkn = myPokemon2.cast(mpk.next);
+        if(mpk.index > 0 && mpkn.battle == 1){num += 1;}
     }
     return num;
 }
@@ -138,7 +157,8 @@ function resetPokemonBattleData(cp){
     const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){
         const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
-        mpk.battle = 0;
+        const mpkn = myPokemon2.cast(mpk.next);
+        mpkn.battle = 0;
     }
 }
 
@@ -156,8 +176,154 @@ function healMyPokemon(cp){
         }
     }
 }
+//포켓몬 레벨업
+function levelupPokemon(cp, index){
+    const cpPk = cp*userPokemonNum;
+    const mpk = myPokemon.cast(playerPokemonList[cpPk+index]);
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+    const pkn = ppi.Pokemon2.cast(pk.next);
+    const requireExp = EUDArray.cast(dT.expList[pkn.expType]);
+    if(mpk.level < 100 && requireExp[mpk.level] <= mpk.ownEXP){
+        mpk.ownEXP -= requireExp[mpk.level]; mpk.level += 1;
+        return true;
+    }
+    return false;
+}
+
+function setEvolveData(cp, pokeIndex, lv, IVs, index1, index2, name1, name2){
+    evoIng[cp] = 1; //진화
+    bbs.pokemonNumber[cp] = pokeIndex;
+    bbs.pokemonLevel[cp] = lv;
+    bbs.pokemonHP[cp+4] = IVs;
+    //진화전
+    bbs.pokemonIndex[cp] = index1;
+    bbs.pokemonName[cp] = name1;
+    //진화후
+    bbs.pokemonIndex[cp+4] = index2;
+    bbs.pokemonName[cp+4] = name2;
+}
+
+//포켓몬 진화
+function evolvePokemon(cp, index, useItem, when){
+    const cpPk = cp*userPokemonNum;
+    const mpk = myPokemon.cast(playerPokemonList[cpPk+index]);
+    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+    const pkn = ppi.Pokemon2.cast(pk.next);
+    //진화대상이 있는 경우
+    if(pkn.evoTarget){ //대상이 2종 이상이면 256을 넘김
+        evoWhen[cp] = when;
+        const nextTarget = pcm.returnEvoTarget(pkn.evoTarget); //하나만 반환
+        const cond, value = pcm.divideType(pkn.evoCond); //16단위 나누기
+        const epk = ppi.Pokemon1.cast(ppi.pokemonList[nextTarget]);
+        //레벨업 상황
+        if(when == 1){
+            //친밀도 조건
+            if(cond == 1){
+                const mpkn = myPokemon2.cast(mpk.next);
+                //친밀도가 220 이상일 때
+                if(mpkn.friendship >= 220){
+                    setEvolveData(cp, cpPk+index, mpk.level, mpk.IVs, mpk.index-1, nextTarget, pk.name, epk.name);
+                    return true;
+                }
+            }
+            //레벨업 조건
+            else if(cond == 2){
+                //레벨 조건을 넘긴 경우
+                if(value <= mpk.level){
+                    setEvolveData(cp, cpPk+index, mpk.level, mpk.IVs, mpk.index-1, nextTarget, pk.name, epk.name);
+                    return true;
+                }
+            }
+            //특정포켓몬이 팀에 있을 때
+            else if(cond == 5){
+                
+            }
+            //특정아이템을 지닌 상태
+            else if(cond == 6){
+                //지니고 있는 아이템이 일치하는 경우
+                if(mpk.item == value+1){
+                    setEvolveData(cp, cpPk+index, mpk.level, mpk.IVs, mpk.index-1, nextTarget, pk.name, epk.name);
+                    return true;
+                }
+            }
+        }
+        //아이템 사용
+        else if(when == 2){
+            //진화의 돌 사용
+            if(cond == 3){
+
+            }
+        }
+        //통신교환
+        else if(when == 3){
+            //통신교환 조건
+            if(cond == 4){
+
+            }
+        }
+    }
+    evoWhen[cp] = 0;
+    s.printf("\x08？\x04진화 개체 없음");
+    return false;
+}
+
+function evolveText(cp){
+    if(evoIng[cp]){
+        evoIng[cp] += 1;
+        if(evoIng[cp] == 2){
+            pps.settingMusic[cp] = 27;
+            BGM.instantPlay();
+        }
+        else if(evoIng[cp] < 8*36){
+            s.insert(0, "\n\n\n");
+            s.appendf("\x13{:s}\n",vms.sph1);
+            s.appendf("\x13\x04오잉...!?\n");
+            s.appendf("\x13\x17{:s}\x04의 모습이...!\n",bbs.pokemonName[cp]);
+            s.appendf("\x13{:s}",vms.sph1);
+            s.DisplayAt(0);
+        }
+        else if(evoIng[cp] == 8*36){
+            pps.settingMusic[cp] = 26;
+            BGM.instantPlay();
+        }
+        else if(evoIng[cp] < 14*36){
+            s.insert(0, "\n\n\n");
+            s.appendf("\x13{:s}\n",vms.sph1);
+            s.appendf("\x13\x04축하합니다! \x17{:s}\x04은(는)\n",bbs.pokemonName[cp]);
+            s.appendf("\x13\x1F{:s}\x04(으)로 진화했습니다!\n",bbs.pokemonName[cp+4]);
+            s.appendf("\x13{:s}",vms.sph1);
+            s.DisplayAt(0);
+        }
+        else{
+            evoIng[cp] = 0;
+            if(bbs.battleStep[cp] == 91){
+                bbs.battleDelay[cp] = 0;
+                pps.settingMusic[cp] = bbs.battleEndMusic[bbs.battleType[cp]];
+            }
+            else{pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];}
+            //진화 포켓몬 설정
+            setPokemonData(cp, bbs.pokemonIndex[cp+4], bbs.pokemonNumber[cp], bbs.pokemonLevel[cp], 0, bbs.pokemonHP[cp+4]);
+            //진화조건을 만족한 포켓몬이 더 있을 수 있으므로, 한번더 함수를 실행함.
+            //evolvePokemon(cp, evoWhen[cp]);
+        }
+    }
+}
 
 /*
-SCA 런처로 포켓몬 데이터를 저장할 때
-체력, 레벨, 보유경험치, 지니고 있는 아이템, 개체값
+...오잉!?
+
+모부기의 모습이...!
+
+축하합니다! 모부기는
+수풀부기로 진화했습니다!
+*/
+
+/*
+0	진화없음    0
+1	친밀도      1
+2	레벨        Type + 16*레벨
+3	진화의돌    Type + 16*돌종류
+4	통신교환    Type + 16*아이템종류
+5	포켓몬      Type + 16*포켓몬종류
+6	아이템      Type + 16*아이템종류
 */

@@ -1,6 +1,7 @@
 [main]
 input: F:\StarCraft\Maps\포켓몬스터 DP\[EUD]포켓몬스터DP.scx
 output: F:\StarCraft\Maps\포켓몬스터 DP\[EUD]포켓몬스터DP_Output.scx
+debug:1
 [DataEditor.py]
 [ExtraDataEditor.py]
 [dataDumper]

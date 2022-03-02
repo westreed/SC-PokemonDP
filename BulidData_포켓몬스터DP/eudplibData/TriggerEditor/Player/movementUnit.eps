@@ -12,7 +12,6 @@ const s = StringBuffer(1024);
 
 
 function unitPosition(cp){
-    MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
     const x,y = posread_epd(ppu.playerEPD[cp]+0x28/4);
     const x1,y1 = x/32, y/32;
 
@@ -34,6 +33,7 @@ function unitPosition(cp){
 
 function movePlayer(cp){
     if(ppu.playerEPD[cp]){
+        MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
         if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
             unitPosition(cp);
             //화면고정 옵션

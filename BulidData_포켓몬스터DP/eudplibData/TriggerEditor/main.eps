@@ -11,6 +11,7 @@ import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Player.soundPlay as psp;
 import Player.teleportSystem as pts;
+import Player.encounterField as pef;
 import Pokemon.myPokemon as pmp;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
@@ -22,6 +23,7 @@ import Variables.flagText as vft;
 import Variables.etcData as ved;
 import SCA.scaSystem as scs;
 import TriggerEditor.SCArchive as sca;
+import build;
 import BGMPlayer as BGM;
 
 
@@ -29,6 +31,7 @@ const s = StringBuffer(1024);
 function onPluginStart(){
 
 	randomize();
+	build.WriteVersion(scs.versionCheck);
 	BGM.loadSound();
 	sca.Init();
 	pps.msqcInit();
@@ -49,7 +52,7 @@ function onPluginStart(){
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		setcurpl(cp);
 		pps.settingMusic[cp] = 1;
-		RunAIScript("Turn ON Shared Vision for Player 8");
+		//RunAIScript("Turn ON Shared Vision for Player 8");
 		imb.addItem(cp, 16, 5);
 		imb.addItem(cp, 0, 1);
 		imb.addItem(cp, 44, 1);
@@ -91,6 +94,8 @@ function afterTriggerExec(){
 			bbs.battleSystem(cp); //배틀시스템
 			iug.printGUI(cp); //유저메뉴
 			ved.delaySystem(cp); //딜레이 계산
+			pmp.evolveText(cp); //포켓몬 진화
+			pef.showFieldPokemon(cp); //야생포켓몬 리스트 표시
 		}
 	}
 	KillUnit(33, 7); //스캔이펙트 제거

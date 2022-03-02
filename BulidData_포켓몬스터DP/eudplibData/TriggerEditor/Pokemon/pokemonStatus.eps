@@ -7,8 +7,8 @@ import Pokemon.calculateMethod as pcm;
 import Variables.language as vl;
 import dataTable as dt;
 
-const playerPokemonUnit     = [1, 2, 8, 19];
-const computerPokemonUnit   = [20, 21, 43, 44];
+const playerPokemonUnit     = PVariable(list(1, 2, 8, 19, 0, 0, 0, 0));
+const computerPokemonUnit   = PVariable(list(20, 21, 43, 44, 0, 0, 0, 0));
 
 function returnPokemonUnit(cp, type){
     if(type){return playerPokemonUnit[cp];}
@@ -58,9 +58,10 @@ function settingPokemon(cp, type, pokemon){
     const weaponType = returnPokemonWeapon(cp, type);
 
     const mk = pmp.myPokemon.cast(retrunPokemonList(cp, type, pokemon));
+    const mkn = pmp.myPokemon2.cast(mk.next);
     const pk = ppi.Pokemon1.cast(ppi.pokemonList[mk.index-1]);
     const pkn = ppi.Pokemon2.cast(pk.next);
-    if(type){mk.battle = 1;}
+    if(type){mkn.battle = 1;}
 
     const unitGrp, portrait = pcm.divideData256(pkn.unit);
     const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
@@ -104,6 +105,7 @@ function settingPokemon(cp, type, pokemon){
     bbs.pokemonName[cp4] = pk.name;
     bbs.pokemonLevel[cp4] = mk.level;
     bbs.pokemonHP[cp4] = unitHP;
+    if(!type){bbs.battleCatch[cp] = pk.catch;}
     vl.setPokemonNameTbl(cp, unitType+1, pk.nameEPD);
     return unitType;
 }

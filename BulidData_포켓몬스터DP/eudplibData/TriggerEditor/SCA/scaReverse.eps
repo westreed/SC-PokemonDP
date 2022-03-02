@@ -44,7 +44,7 @@ function map2sca(cp){
         const i32 = i*32;
         for (var j=0; j<32; j++){sv.scaBook[cpBk + i] += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
     }
-    sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256;
+    sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256 + pps.currentLocation[cp]*65536;
     sv.scaPosition[cp] = ppu.playerPosX[cp] + ppu.playerPosY[cp]*8192;
 }
 
@@ -82,9 +82,10 @@ function sca2map(cp){
             else{imk.sinoBook[cpBn+i32+j-1] = 0;}
         }
     }
-    const scaVillage, scaHeal = pcm.divideData256(sv.scaLocation[cp]);
+    const scaVillage, scaHeal, scaLoc, scaTemp = pcm.divideStats(sv.scaLocation[cp]);
     pps.lastVisitVillage[cp] = scaVillage;
     pps.lastVisitHeal[cp] = scaHeal;
+    pps.currentLocation[cp] = scaLoc;
     const scaPosX, scaPosY = pcm.dividePos(sv.scaPosition[cp]);
     ppu.playerPosX[cp] = scaPosX;
     ppu.playerPosY[cp] = scaPosY;

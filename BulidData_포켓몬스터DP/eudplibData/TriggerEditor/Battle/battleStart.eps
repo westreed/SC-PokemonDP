@@ -2,6 +2,7 @@ import functions as fc;
 import Battle.battleGUI as bbg;
 import Battle.battleAttack as bba;
 import Interface.menu_Pokemon as imp;
+import Interface.userGUI as iug;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
@@ -12,6 +13,7 @@ import Pokemon.pokemonInfo as ppi;
 import Pokemon.weakRelation as pwr;
 import Pokemon.calculateMethod as pcm;
 import Pokemon.pokemonStatus as ppst;
+import dataTable as dT;
 import BGMPlayer as BGM;
 
 const s = StringBuffer(1024);
@@ -22,6 +24,7 @@ const battleType    = PVariable(); //0:야생 1:트레이너 2:라이벌 3:체�
 const battleMusic   = [ 9, 10, 11, 12, 13, 14, 15, 16, 23, 24, 10];
 const battleEndMusic= [18, 19, 19, 21, 20, 20, 20, 18, 22, 18, 19];
 const battleLocation= PVariable();
+const battleCatch   = PVariable(); //포획률저장
 const battleUser    = PVariable(); //PVP인 경우
 const battleUnit    = PVariable(); //배틀상대유닛
 const battleName    = PVariable(); //배틀상대이름
@@ -33,10 +36,6 @@ const pokemonName   = PVariable(); //포켓몬 이름 (cp:유저 cp+4:적)
 const pokemonLevel  = PVariable(); //포켓몬 레벨 (cp:유저 cp+4:적)
 const pokemonHP     = PVariable(); //포켓몬 체력 (cp:유저 cp+4:적)
 const battleMap     = [0,0,0,1,1,1,1]; //battleType별로 맵지정 0:battleLoc, 1:gymLoc
-
-// const battleIndex   = PVariable(); //전투리스트의 인덱스번호
-// const battlePokemon = EUDArray(4*6); //전투리스트 (포켓몬인덱스 + 256*level)
-// const battleIVs     = EUDArray(4*6); //리스트의 개체값 (IVs 계산)
 
 
 /*
@@ -125,7 +124,9 @@ function battleSystem(cp){
             MoveLocation(vli.lastLoc+cp, pps.playerUnit[cp], cp, 64); //마지막 위치 저장
             pps.settingMusic[cp] = battleMusic[battleType[cp]];
             BGM.instantPlay();
+            CreateUnit(1, ved.visionUnit, battleLocation[cp], cp); //시야 생성
             battleEXP[cp] = 0;
+            imp.pokeChange[cp] = 0;
             battleStep[cp] += 1;
         }
         //전투 시작전 화면 깜박이기
@@ -205,10 +206,11 @@ function battleSystem(cp){
             if(bbg.pokemonCurHP[cp] == 0){
                 if(imp.pokeChange[cp]){imp.pokeChange[cp] = 0;}
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
-                mpk.state = 1; //기절상태
-                mpk.hitpoint = 0;
+                const mpkn = pmp.myPokemon2.cast(mpk.next);
+                mpk.state = 1; mpk.hitpoint = 0; mpkn.battle = 0; //기절부여 및 배틀상태 제거
+                iug.subMenu[cp] = 0; iug.subMiniMenu[cp] = 0;
                 const nextPokemon = pmp.returnPlayerIndex(cp);
-                if(nextPokemon != 10){battleStep[cp] = 7;}
+                if(nextPokemon != 10){battleStep[cp] = 7; pps.guiUpdate[cp] = 1;}
                 else{
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
@@ -241,7 +243,7 @@ function battleSystem(cp){
         }
         //내 포켓몬 중 누구를 내보낼 것인가
         else if(step == 7){
-
+            imp.subMenu_Pokemon(cp, 0, 1);
         }
         //컴퓨터는 다음 포켓몬 내보내기
         else if(step == 8){
@@ -310,32 +312,77 @@ function battleSystem(cp){
             battleStep[cp] = 91;
         }
         else if(step == 91){
-            battleDelay[cp] += 1;
-            if(battleDelay[cp] == 1){
-                const cpPk = cp*pmp.userPokemonNum;
-                for(var i=0; i<6; i++){
-                    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-                    if(mpk.index > 0 && mpk.battle == 1){
-                        const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
-                        mpk.battle = 0;
-                        mpk.ownEXP += battleEXP[cp];
-                        pokemonName[cp] = pk.name;
-                        PlayWAV("staredit\\wav\\emerald_exp gain.wav");
-                        return;
+            if(pmp.evoIng[cp] == 0){
+                battleDelay[cp] += 1;
+                if(battleDelay[cp] == 1){
+                    const cpPk = cp*pmp.userPokemonNum;
+                    for(var i=0; i<6; i++){
+                        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
+                        const mpkn = pmp.myPokemon2.cast(mpk.next);
+                        if(mpk.index > 0 && mpkn.battle == 1){
+                            const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+                            mpkn.battle = 0;
+                            mpk.ownEXP += battleEXP[cp];
+                            pokemonName[cp] = pk.name;
+                            pokemonNumber[cp] = i;
+                            pokemonLevel[cp] = mpk.level;
+                            PlayWAV("staredit\\wav\\emerald_exp gain.wav");
+                            return;
+                        }
+                    }
+                    battleDelay[cp] = 0;
+                    battleStep[cp] = 100; //복귀
+                }
+                else if(battleDelay[cp] < 24*3){
+                    s.insert(0, "\n\n\n");
+                    s.appendf("\x13{:s}\n",vms.sph1);
+                    s.appendf("\x13\x17{:s}\x04은(는)\n",pokemonName[cp]);
+                    s.appendf("\x13\x1E{} 경험치\x04를 얻었다!\n",battleEXP[cp]);
+                    s.appendf("\x13{:s}",vms.sph1);
+                    s.DisplayAt(0);
+                }
+                else if(battleDelay[cp] < 24*6){
+                    if(battleDelay[cp] == 24*3){
+                        const levelup = pmp.levelupPokemon(cp, pokemonNumber[cp]);
+                        if(levelup){PlayWAV("staredit\\wav\\Level Up!.ogg");}
+                        else{battleDelay[cp] = 0;}
+                    }
+                    else{
+                        s.insert(0, "\n\n\n");
+                        s.appendf("\x13{:s}\n",vms.sph1);
+                        s.appendf("\x13\x17{:s}\x04은(는)\n",pokemonName[cp]);
+                        s.appendf("\x13\x1C레벨{}\x04로 올랐다!\n",pokemonLevel[cp]+1);
+                        s.appendf("\x13{:s}",vms.sph1);
+                        s.DisplayAt(0);
                     }
                 }
-                battleDelay[cp] = 0;
-                battleStep[cp] = 100; //복귀
+                else{ //진화조건을 만족한 경우
+                    const evolve = pmp.evolvePokemon(cp, pokemonNumber[cp], 0, 1);
+                    if(!evolve){battleDelay[cp] = 0;}
+                }
             }
-            else if(battleDelay[cp] < 24*3){
+        }
+        //포켓몬 포획
+        else if(step == 98){
+            battleDelay[cp] += 1;
+            if(battleDelay[cp] == 1){
+                pps.userSetLight[cp] = 0;
+                vms.removeTextAll();
+                pps.settingMusic[cp] = 26;
+                BGM.instantPlay();
+                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
+                mpk.hitpoint = bbg.pokemonCurHP[cp];
+                RemoveUnit(ppst.playerPokemonUnit[cp], cp);
+            }
+            else if(battleDelay[cp] < 24*7){
                 s.insert(0, "\n\n\n");
                 s.appendf("\x13{:s}\n",vms.sph1);
-                s.appendf("\x13\x17{:s}\x04은(는)\n",pokemonName[cp]);
-                s.appendf("\x13\x1E{} 경험치\x04를 얻었다!\n",battleEXP[cp]);
+                s.appendf("\x13\x04신난다-!\n");
+                s.appendf("\x13\x04{:s}을(를) 붙잡았다!\n",pokemonName[cp+4]);
                 s.appendf("\x13{:s}",vms.sph1);
                 s.DisplayAt(0);
             }
-            else{battleDelay[cp] = 0;}
+            else{battleStep[cp] = 100;}
         }
         //배틀종료 후 원래자리로 복귀 (패배)
         else if(step == 99){
@@ -353,11 +400,13 @@ function battleSystem(cp){
             battleStep[cp] = 101;
         }
         else if(step == 101){
+            RemoveUnit(ved.visionUnit, cp);
             pps.userSetLight[cp] = 31;
             pps.settingMusic[cp] = vms.restoreMusic[cp];
             pmu.changeMoveState(cp, true);
             pps.battleState[cp] = false;
             battleStep[cp] = 0;
+            vms.removeTextAll();
             if(pps.mainStory[cp] == 9){pps.mainStory[cp] += 1;}
         }
     }
