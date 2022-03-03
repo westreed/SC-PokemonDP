@@ -102,7 +102,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
                 ved.item_HealDelay[cp] = 72;
             }
             else{
-                s.printf("\x08！\x04재사용시간 {}초 남았습니다.", ved.item_HealDelay[cp]/24);
+                s.printf("\x08！\x04재사용시간 {}초 남았습니다.", (ved.item_HealDelay[cp]/24)+1);
                 PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }
         }else{

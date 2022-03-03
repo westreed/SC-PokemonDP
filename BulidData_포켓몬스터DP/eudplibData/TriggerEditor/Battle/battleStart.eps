@@ -24,6 +24,7 @@ const battleType    = PVariable(); //0:야생 1:트레이너 2:라이벌 3:체�
 const battleMusic   = [ 9, 10, 11, 12, 13, 14, 15, 16, 23, 24, 10];
 const battleEndMusic= [18, 19, 19, 21, 20, 20, 20, 18, 22, 18, 19];
 const battleLocation= PVariable();
+const battleRun     = PVariable(); //도망횟수
 const battleCatch   = PVariable(); //포획률저장
 const battleUser    = PVariable(); //PVP인 경우
 const battleUnit    = PVariable(); //배틀상대유닛
@@ -53,6 +54,20 @@ function isWild(type){
 function isPVP(type){
     if(type == 8){return true;}
     return false;
+}
+
+function endBattle(cp){
+    RemoveUnit(ppst.playerPokemonUnit[cp], cp);
+    RemoveUnit(ppst.playerPokemonUnit[cp+4], P5);
+    vms.removeTextAll();
+    pps.userSetLight[cp] = 0;
+}
+
+function endPokemon_SetDATA(cp, state){
+    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
+    const mpkn = pmp.myPokemon2.cast(mpk.next);
+    mpkn.battle = 0; mpk.state = state;
+    mpk.hitpoint = bbg.pokemonCurHP[cp];
 }
 
 function wildSetting(cp, type, pokemon, level){
@@ -214,9 +229,7 @@ function battleSystem(cp){
                 else{
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
-                    RemoveUnit(ppst.playerPokemonUnit[cp+4], P5);
-                    vms.removeTextAll();
-                    pps.userSetLight[cp] = 0;
+                    endBattle(cp);
                 }
             }
             //상대 포켓몬이 진 경우
@@ -235,9 +248,7 @@ function battleSystem(cp){
                     else{battleStep[cp] = 52;} //배틀종료
                     pps.settingMusic[cp] = battleEndMusic[battleType[cp]];
                     BGM.instantPlay();
-                    RemoveUnit(ppst.playerPokemonUnit[cp], cp);
-                    vms.removeTextAll();
-                    pps.userSetLight[cp] = 0;
+                    endBattle(cp);
                 }
             }
         }
@@ -302,6 +313,30 @@ function battleSystem(cp){
             else{
                 battleDelay[cp] = 0;
                 battleStep[cp] = 90;
+            }
+        }
+        //도망치기
+        else if(step == 52){
+            const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
+            const mpkn = pmp.myPokemon2.cast(mpk.next);
+            mpkn.battle = 0; mpk.hitpoint = bbg.pokemonCurHP[cp];
+            PlayWAV("staredit\\wav\\Battle flee.wav");
+            endBattle(cp);
+            battleStep[cp] = 53;
+        }
+        else if(step == 53){
+            battleDelay[cp] += 1;
+            if(battleDelay[cp] < 24*4){
+                s.insert(0, "\n\n\n");
+                s.appendf("\x13{:s}\n",vms.sph1);
+                s.appendf("\x13\x04광휘는\n");
+                s.appendf("\x13\x1E야생 {:s}\x04(으)로부터 도망쳤다!\n",pokemonName[cp+4]);
+                s.appendf("\x13{:s}",vms.sph1);
+                s.DisplayAt(0);
+            }
+            else{
+                battleDelay[cp] = 0;
+                battleStep[cp] = 100;
             }
         }
         //경험치 분배하기

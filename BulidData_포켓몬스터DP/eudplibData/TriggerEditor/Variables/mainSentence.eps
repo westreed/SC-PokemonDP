@@ -24,7 +24,7 @@ const npcEPD        = EUDArray(4*npcNum);
 
 const sph1          = Db("\x04────────────────");
 const sph2          = Db("\x04──────────\x11다음 F키\x04──");
-const sph3          = Db("\n\n\n\n\x13\x11｜\n\x13\x11·");
+const sph3          = Db("\n\n\n\x13\x11｜\n\x13\x11·");
 const stickText     = Db("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소/뒤로\x08 ]");
 
 function removeText(){
@@ -415,16 +415,26 @@ function speechSystem(cp){
             else{sphDelay[cp] = 0; nextStep(cp,action);}
         }else if(step == 4){
             if(sphDelay[cp] == 1){
+                const nLoc = vli.npcLoc+cp;
                 pps.userSetLight[cp] = 31;
-                MoveLocation(vli.npcLoc+cp, vni.doctor1, P5, vli.mapLoc[7]);
-                addloc(vli.npcLoc+cp, 0, 32);
-                MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.npcLoc+cp);
-                addloc(vli.npcLoc+cp, 32, 0);
-                CenterView(vli.npcLoc+cp);
+                MoveLocation(nLoc, vni.doctor1, P5, vli.mapLoc[7]);
+                addloc(nLoc, 0, 32);
+                MoveUnit(1, pps.playerUnit[cp], cp, 64, nLoc);
+                CenterView(nLoc);
+                addloc(nLoc, 32, 0);
+                createNPC(cp, P6, nLoc, vni.friend, 0); //빛나
             }
             if(sphDelay[cp] < 24*2){sphDelay[cp] += 1;}
             else{sphDelay[cp] = 0; nextStep(cp,action);}
+        }else if(step == 5){
+            speechText(cp, vli.npcLoc+cp, vsl.storyLog15, action, true);
+            if(sphDelay[cp] == 0 && sphIndex[cp] == 25){
+                sphDelay[cp] += 1;
+                PlayWAV("staredit\\wav\\ObtainedanItem.wav");
+            }
+        }else{
+            SetMemoryXEPD(npcIndex(cp,0)+0x110/4, SetTo, 0x2, 0xFFFF);
+            endStep(cp,action);
         }
     }
 }
-
