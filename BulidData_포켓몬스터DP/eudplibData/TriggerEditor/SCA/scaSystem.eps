@@ -209,7 +209,7 @@ function userLoading(cp){
                             if(sv.scaMain[cp] > 0){
                                 playerLoad[cp] = 2;
                                 loadCode[cp] = 0;
-                                scr.sca2map(cp);
+                                //scr.sca2map(cp);
                                 s.printf("\x1F■\x04유저 데이터를 로드했습니다!");
                             }
                             else{
@@ -264,12 +264,12 @@ function userSaving(cp){
         if(sca.ConnectStatus() == 1){
             if(sca.GetLastMessage() == 6){
                 saveCode[cp] = 0;
-                pmu.changeMoveState(cp, true);
+                if(saveState[cp] == 0){pmu.changeMoveState(cp, true);}
                 s.print("\x1F■\x04데이터를 성공적으로 저장했습니다.");
             }
             else if(sca.GetLastMessage() > 6){
                 saveCode[cp] = 0;
-                pmu.changeMoveState(cp, true);
+                if(saveState[cp] == 0){pmu.changeMoveState(cp, true);}
                 s.print("\x08■\x04데이터를 저장하는데 실패했습니다!");
             }
         }

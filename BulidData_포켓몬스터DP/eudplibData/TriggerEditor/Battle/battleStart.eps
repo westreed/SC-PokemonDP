@@ -1,6 +1,7 @@
 import functions as fc;
 import Battle.battleGUI as bbg;
 import Battle.battleAttack as bba;
+import Interface.menu_Book as imb;
 import Interface.menu_Pokemon as imp;
 import Interface.userGUI as iug;
 import Player.movementUnit as pmu;
@@ -103,6 +104,7 @@ function selectPokemon(cp, index){
         pps.selectMenu[cp] = 0;
         vms.removeText();
         pmp.catchPokemon(cp, startPokemon[index], 5, 0, ved.maxIVs);
+        pps.setStartingPokemon[cp] = startPokemon[index]+1;
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         battleStep[cp] += 1;
     }
@@ -115,9 +117,9 @@ function firstPokemon(cp){
         s.insert(0);
         s.appendf("\n\x13\x02자... 어느 것으로 할까?\n");
         s.appendf("\x13{:s}\n",vms.sph1);
-        s.appendf("\x13{:s}\x04어린잎포켓몬 모부기\n", pps.selectIcon1[index]);
-        s.appendf("\x13{:s}\x04꼬마원숭이포켓몬 불꽃숭이\n", pps.selectIcon2[index]);
-        s.appendf("\x13{:s}\x04펭귄포켓몬 팽도리\n", pps.selectIcon3[index]);
+        s.appendf("\x13{:s}어린잎포켓몬 모부기\n", pps.selectIcon1[index]);
+        s.appendf("\x13{:s}꼬마원숭이포켓몬 불꽃숭이\n", pps.selectIcon2[index]);
+        s.appendf("\x13{:s}펭귄포켓몬 팽도리\n", pps.selectIcon3[index]);
         s.appendf("\x13{:s}",vms.sph1);
     }
     s.DisplayAt(0);
@@ -143,6 +145,7 @@ function battleSystem(cp){
             battleEXP[cp] = 0;
             imp.pokeChange[cp] = 0;
             battleStep[cp] += 1;
+            SetAllianceStatus(P5, Enemy);
         }
         //전투 시작전 화면 깜박이기
         else if(step == 2){
@@ -234,6 +237,7 @@ function battleSystem(cp){
             }
             //상대 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp+4] == 0){
+                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
                 const cpk = pmp.myPokemon.cast(pmp.computerPokemonList[pokemonNumber[cp+4]]);
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[cpk.index-1]);
                 cpk.state = 1; //기절상태
@@ -435,6 +439,7 @@ function battleSystem(cp){
             battleStep[cp] = 101;
         }
         else if(step == 101){
+            SetAllianceStatus(P5, Ally);
             RemoveUnit(ved.visionUnit, cp);
             pps.userSetLight[cp] = 31;
             pps.settingMusic[cp] = vms.restoreMusic[cp];

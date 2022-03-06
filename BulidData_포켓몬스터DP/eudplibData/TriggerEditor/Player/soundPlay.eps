@@ -8,6 +8,12 @@ import BGMPlayer as BGM;
 ------------------------------------------------------------------------------*/
 
 function backgroundMusic(cp){
+    if(Deaths(cp, Exactly, 4, "A Key")){
+        if(pps.setMusic[cp]){DisplayText("\x1C！\x04배경음악을 활성화합니다.");}
+        else{DisplayText("\x1C！\x04배경음악을 비활성화합니다.");}
+        pps.setMusic[cp] = !pps.setMusic[cp];
+        PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+    }
     const setM = pps.settingMusic[cp];
 	if(setM != pps.playingMusic[cp]){
 		pps.playingMusic[cp] = setM;

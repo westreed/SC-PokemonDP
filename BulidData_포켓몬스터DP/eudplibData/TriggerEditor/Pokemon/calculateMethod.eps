@@ -136,3 +136,12 @@ function returnEvoTarget(unit){
     unitArray[0],unitArray[1] = divideData256(unit);
     return unitArray[dwrand() % 2]; //둘중 하나 랜덤으로 반환하기
 }
+
+function divideOption(value, len){
+    const vlist = EUDArray(32);
+    for (var j=len; j>0; j--){
+        const i = j-1;
+        if(value >= dT.bit32[i]){value -= dT.bit32[i]; vlist[i] = 1;}
+    }
+    return vlist;
+}

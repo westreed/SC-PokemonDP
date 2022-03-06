@@ -214,7 +214,7 @@ function throwPoketBall(cp){
             else if(t < 23){addloc(vli.npcLoc+cp,-2,0);}
             if(t == 35){
                 throwNum[cp] += 1;
-                if(throwNum[cp] == 2){
+                if(throwNum[cp] == 3){
                     const catchRate = pcm.retrunCatchRate(cp,bbg.pokemonCurHP[cp+4],bbs.pokemonHP[cp+4],throwValue[cp],bbs.battleCatch[cp]);
                     const rand = dwrand() % 256; //255
                     s.printf("rand {} > catchRate {}", rand, catchRate);
@@ -227,7 +227,7 @@ function throwPoketBall(cp){
                 }
             }
         }
-        if(throwNum[cp] > 2){ //포획성공
+        if(throwNum[cp] > 3){ //포획성공
             PlayWAV("staredit\\wav\\emerald_catch.wav");
             throwBall[cp] = 4;
             throwNum[cp] = 0;

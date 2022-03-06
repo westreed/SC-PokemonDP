@@ -1,30 +1,17 @@
 import PluginVariables as msqcvar;
-import readTile as rt;
-import functions as fc;
-import opening as op;
-import Battle.battleStart as bbs;
-import Interface.userGUI as iug;
-import Interface.menu_Bag as imb;
-import Item.itemInfo as iif;
-import Player.playerUnit as ppu;
-import Player.movementUnit as pmu;
-import Player.playerSetting as pps;
-import Player.soundPlay as psp;
-import Player.teleportSystem as pts;
-import Player.encounterField as pef;
-import Pokemon.myPokemon as pmp;
-import Pokemon.pokemonInfo as ppi;
-import Pokemon.weakRelation as pwr;
-import Pokemon.calculateMethod as pcm;
-import Pokemon.weaponData as pwd;
-import Variables.mainSentence as vms;
-import Variables.locationInfo as vli;
-import Variables.flagText as vft;
-import Variables.etcData as ved;
-import SCA.scaSystem as scs;
-import TriggerEditor.SCArchive as sca;
-import build;
-import BGMPlayer as BGM;
+import readTile as rt;						import functions as fc;
+import opening as op;						import Battle.battleStart as bbs;
+import Interface.userGUI as iug;			import Interface.menu_Bag as imb;
+import Item.itemInfo as iif;				import Player.playerUnit as ppu;
+import Player.movementUnit as pmu;			import Player.playerSetting as pps;
+import Player.soundPlay as psp;				import Player.teleportSystem as pts;
+import Player.encounterField as pef;		import Pokemon.myPokemon as pmp;
+import Pokemon.pokemonInfo as ppi;			import Pokemon.weakRelation as pwr;
+import Pokemon.calculateMethod as pcm;		import Pokemon.weaponData as pwd;
+import Variables.mainSentence as vms;		import Variables.locationInfo as vli;
+import Variables.flagText as vft;			import Variables.etcData as ved;
+import SCA.scaSystem as scs;				import TriggerEditor.SCArchive as sca;
+import build;								import BGMPlayer as BGM;
 
 
 const s = StringBuffer(1024);
@@ -52,6 +39,8 @@ function onPluginStart(){
 	foreach(cp : EUDLoopPlayer(None, Force1)){
 		setcurpl(cp);
 		pps.settingMusic[cp] = 1;
+		SetAllianceStatus(Force2, Ally);
+		SetAllianceStatus(Force3, Ally);
 		//RunAIScript("Turn ON Shared Vision for Player 8");
 		imb.addItem(cp, 16, 5, false);
 		imb.addItem(cp, 0, 1, false);

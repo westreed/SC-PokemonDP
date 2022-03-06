@@ -9,6 +9,14 @@ debug:1
 
 [TriggerEditor\main.eps]
 
+[chatEvent]
+__addr__ : 0x58D900
+__ptrAddr__ : 0x58D904
+__patternAddr__ : 0x58D908
+__lenAddr__ : 0x58D90C
+
+
+!새롭게시작하기 : 2
 [MSQC]
 MSQCSpecial.Exactly(1) : MSQCSpecialBuffer, 100
 MSQCSpecial.Exactly(2) : MSQCSpecialBuffer, 200
@@ -19,6 +27,7 @@ MSQCCondiction.Exactly(1) ; xy , MSQCValue : MSQCBuffer
 QCDebug : False
 ESC; NotTyping : A Key, 2
 M; NotTyping : A Key, 2
+Insert; NotTyping : A Key, 4
 F; NotTyping : A Key, 16
 move.Exactly(1); NotTyping; KeyPress(W) : A Stick, 1
 move.Exactly(1); NotTyping; KeyPress(S) : A Stick, 2
@@ -30,5 +39,5 @@ move.Exactly(0); NotTyping; A : A Stick, 4
 move.Exactly(0); NotTyping; D : A Stick, 8
 Q; NotTyping : A Stick, 16
 E; NotTyping : A Stick, 32
-
+0x58D900, AtLeast, 1;val, 0x58D900: A Chat
 

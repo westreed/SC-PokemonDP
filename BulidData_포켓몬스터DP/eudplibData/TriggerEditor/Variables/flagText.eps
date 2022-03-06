@@ -53,8 +53,7 @@ function printFlagText(cp){
             f.DisplayAt(3);
             printCheck[cp] = 1;
         }
-        else{printFlagEnd(cp);}
-        if(Bring(P8, Exactly, 1, 215, mLoc)){
+        else if(Bring(P8, Exactly, 1, 215, mLoc)){
             f.insert(0);
             f.appendf("\n\x13{:s}\n",vms.sph1);
             f.appendf("\x13\x02여기는 201번도로\n\x13\x02→잔모래마을\n");

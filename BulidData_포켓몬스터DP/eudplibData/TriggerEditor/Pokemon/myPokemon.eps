@@ -1,4 +1,5 @@
 import Battle.battleStart as bbs;
+import Interface.menu_Book as imb;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.calculateMethod as pcm;
 import Player.playerSetting as pps;
@@ -296,6 +297,7 @@ function evolveText(cp){
         }
         else{
             evoIng[cp] = 0;
+            imb.writeSinoBook(cp, bbs.pokemonIndex[cp+4]); //도감기록
             if(bbs.battleStep[cp] == 91){
                 bbs.battleDelay[cp] = 0;
                 pps.settingMusic[cp] = bbs.battleEndMusic[bbs.battleType[cp]];

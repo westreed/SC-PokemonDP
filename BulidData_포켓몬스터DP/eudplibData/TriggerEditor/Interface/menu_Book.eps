@@ -6,6 +6,7 @@ import Pokemon.myPokemon as pmp;
 import Pokemon.weakRelation as pwr;
 
 
+const s = StringBuffer(1024);
 const t = StringBuffer(1024);
 const bookSCANum    = 5;
 const pageNumber    = 156; //6의 배수
@@ -139,5 +140,19 @@ function subMenu_BookInfoAction(cp){
         iug.subMiniMenu[cp] = 0;
         pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+}
+
+
+//포획한 포켓몬만 도감에 저장되게 하기
+function writeSinoBook(cp, pokemon){
+    if(pps.mainStory[cp] > 12){
+        const cp200 = cp*pageNumber;
+        if(MemoryEPD(EPD(sinoBook)+cp200+pokemon, Exactly, 0)){
+            sinoBook[cp200+pokemon] = 1;
+            const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
+            s.printf("\x13\x11{:s}\x04의 데이터가 새롭게\n\x13\x1C포켓몬 도감\x04에 저장됩니다!",pk.name);
+            PlayWAV("staredit\\wav\\Level Up!.ogg");
+        }
     }
 }

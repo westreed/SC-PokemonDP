@@ -1,5 +1,6 @@
 import functions as fc;
 import Battle.battleStart as bbs;
+import Interface.menu_Book as imb;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
@@ -98,16 +99,15 @@ function speechText(cp, loc:TrgLocation, log:EUDArray, type, state){
     CenterView(loc);
     const name = sphIndex[cp]*2;
     const index = name+1;
-    t.insert(0, "\n");
+    t.insert(0, "\n\n");
     t.appendf("\x17{:s}\n", vni.npcName[log[name]]);
     t.appendf("{:s}\n", sph1);
     t.appendf("\n\n");
-    //t.appendf("{:s}\n", log[sphIndex[cp]]);
     t.appendf("{:s}", sph2);
     t.DisplayAt(0);
     const tecolor = 4, 2, 0x1E, 5, 0;
-    if(!s.fadeIn(ptr2s(log[index]), color=tecolor, wait=1, line=3, tag=py_str("log"))){
-        s.printfAt(3,"{:s}",log[index]);
+    if(!s.fadeIn(ptr2s(log[index]), color=tecolor, wait=1, line=4, tag=py_str("log"))){
+        s.printfAt(4,"{:s}",log[index]);
     }
     if(Deaths(cp, Exactly, 16, "A Key")){
         if(log[index+2] != 0){
@@ -117,7 +117,7 @@ function speechText(cp, loc:TrgLocation, log:EUDArray, type, state){
         } else {
             sphIndex[cp] = 0; sphDelay[cp] = 0;
             nextStep(cp,type);
-            t.printAt(0, "\n\n\n\n\n\n");
+            t.printAt(0, "\n\n\n\n\n\n\n");
             pmu.changeMoveState(cp, state);
         }
     }
@@ -382,7 +382,7 @@ function speechSystem(cp){
             endStep(cp,action);
         }
     }
-    //잔모래마을에서 빛나와 마주
+    //잔모래마을에서 빛나와 마주 (도감 획득)
     else if(main == 12){
         if(step == 0){
             if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Story]6")){
@@ -435,6 +435,8 @@ function speechSystem(cp){
         }else{
             SetMemoryXEPD(npcIndex(cp,0)+0x110/4, SetTo, 0x2, 0xFFFF);
             endStep(cp,action);
+            imb.writeSinoBook(cp, pps.setStartingPokemon[cp]-1);
         }
     }
 }
+

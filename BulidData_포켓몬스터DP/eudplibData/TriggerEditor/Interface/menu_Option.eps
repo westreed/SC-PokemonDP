@@ -37,6 +37,9 @@ function isSaveState(cp){
         DisplayText("\x08！\x04전투중일 때는 저장할 수 없습니다.");
         return false;
     }
+    if(scs.saveCode[cp]){
+        return false;
+    }
     return true;
 }
 

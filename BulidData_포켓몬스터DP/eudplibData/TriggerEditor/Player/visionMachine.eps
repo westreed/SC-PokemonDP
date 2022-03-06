@@ -15,6 +15,7 @@ function machine_Surfing(cp){
             s.printf("\x07▶ \x04파도타기를 시전했다!");
             pps.using_Surfing[cp] = 1;
             pps.settingMusic[cp] = 25; //파도타기 음악
+            bwrite(0x663238 + pps.playerUnit[cp], 4); //시야 줄이기
             Order(pps.playerUnit[cp], cp, 64, Move, vli.moveLoc+cp);
             SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0xA00004, 0xA00004);
             surfingEPD[cp] = fc.SetNextUnitEPD();
@@ -33,6 +34,7 @@ function machine_Surfing(cp){
                 s.printf("\x07▶ \x04파도타기 종료");
                 pps.using_Surfing[cp] = 0;
                 pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
+                bwrite(0x663238 + pps.playerUnit[cp], 7); //시야 늘리기
                 SetMemoryXEPD(ppu.playerEPD[cp] + 0x0DC / 4, SetTo, 0x000000, 0xA00004);
                 RemoveUnit(ved.surfingUnit, cp);
             }

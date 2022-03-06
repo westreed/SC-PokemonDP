@@ -25,6 +25,8 @@ function map2sca(cp){
     sv.scaMain[cp] = pps.mainStory[cp];
     //sv.scaSub[cp]
     //sv.scaTrainer[cp]
+
+    //포켓몬 데이터를 sca데이터로 변환하기
     const cpPk = cp*pmp.userPokemonNum;
     for (var i=0; i<pmp.userPokemonNum; i++){
         const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
@@ -34,24 +36,35 @@ function map2sca(cp){
         sv.scaPokemonEXP[cpPk+i] = mpk.ownEXP;
         sv.scaPokemonIS[cpPk+i] = mpk.item + mpk.state*256;
     }
+    //가방 데이터를 sca데이터로 변환하기
     const cpBg = cp*imb.bagMax;
     for (var i=0; i<imb.bagMax; i++){
         sv.scaBag[cpBg+i] = imb.bagItemList[cpBg+i] + imb.bagNumList[cpBg+i]*256;
     }
-    const cpBk = cp*imk.bookSCANum;
-    const cpBn = cp*imk.pageNumber;
+    //도감 데이터를 sca데이터로 변환하기
+    const cpBk = cp*imk.bookSCANum; //sca Index
+    const cpBn = cp*imk.pageNumber; //book Index
     for (var i=0; i<imk.bookSCANum; i++){
         const i32 = i*32;
-        for (var j=0; j<32; j++){sv.scaBook[cpBk + i] += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
+        var value = 0;
+        for (var j=0; j<32; j++){value += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
+        sv.scaBook[cpBk + i] = value;
     }
+    //위치 데이터를 sca 데이터로 변환하기
     sv.scaLocation[cp] = pps.lastVisitVillage[cp] + pps.lastVisitHeal[cp]*256 + pps.currentLocation[cp]*65536;
     sv.scaPosition[cp] = ppu.playerPosX[cp] + ppu.playerPosY[cp]*8192;
+
+    //옵션 데이터를 sca 데이터로 변환하기
+    sv.scaOption[cp] = pps.setMusic[cp] + pps.setScreen[cp]*2;
+    //스타팅 포켓몬 정보를 sca 데이터로 변환하기
+    sv.scaStarting[cp] = pps.setStartingPokemon[cp];
 }
 
 //SCA데이터를 유즈맵데이터로 변환하기
 function sca2map(cp){
     pps.mainStory[cp] = sv.scaMain[cp];
 
+    //sca 포켓몬정보
     const cpPk = cp*pmp.userPokemonNum;
     for (var i=0; i<pmp.userPokemonNum; i++){
         const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
@@ -65,28 +78,42 @@ function sca2map(cp){
         mpk.item = scaPokemonItem;
         mpk.state = scaPokemonState;
     }
-
+    //sca 가방정보
     const cpBg = cp*imb.bagMax;
     for (var i=0; i<imb.bagMax; i++){
         const scaBagItem, scaBagNum = pcm.divideData256(sv.scaBag[cpBg+i]);
         imb.bagItemList[cpBg+i] = scaBagItem;
         imb.bagNumList[cpBg+i] = scaBagNum;
     }
-
+    //sca 도감정보
     const cpBk = cp*imk.bookSCANum;
     const cpBn = cp*imk.pageNumber;
     for (var i=0; i<imk.bookSCANum; i++){
         const i32 = i*32;
-        for (var j=32; 0<j; j--){
-            if(sv.scaBook[cpBk + i] >= dT.bit32[j-1]){sv.scaBook[cpBk + i] -= dT.bit32[j-1]; imk.sinoBook[cpBn+i32+j-1] = 1;}
-            else{imk.sinoBook[cpBn+i32+j-1] = 0;}
+        var value = sv.scaBook[cpBk + i];
+        for (var j=32; j>0; j--){
+            const j1 = j-1;
+            const bkIndex = cpBn+i32+j1;
+            const bit = dT.bit32[j1];
+            if(value >= bit){value -= bit; imk.sinoBook[bkIndex] = 1;}
+            else{imk.sinoBook[bkIndex] = 0;}
         }
     }
+    //sca 위치정보
     const scaVillage, scaHeal, scaLoc, scaTemp = pcm.divideStats(sv.scaLocation[cp]);
     pps.lastVisitVillage[cp] = scaVillage;
     pps.lastVisitHeal[cp] = scaHeal;
     pps.currentLocation[cp] = scaLoc;
+
     const scaPosX, scaPosY = pcm.dividePos(sv.scaPosition[cp]);
     ppu.playerPosX[cp] = scaPosX;
     ppu.playerPosY[cp] = scaPosY;
+
+    //sca 옵션정보
+    const optionArray = EUDArray.cast(pcm.divideOption(sv.scaOption[cp], 2));
+    pps.setMusic[cp] = optionArray[0];
+    pps.setScreen[cp] = optionArray[1];
+
+    //sca 스타팅 포켓몬 데이터
+    pps.setStartingPokemon[cp] = sv.scaStarting[cp];
 }

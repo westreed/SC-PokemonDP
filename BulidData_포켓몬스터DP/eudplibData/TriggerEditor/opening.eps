@@ -2,10 +2,13 @@ import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.myPokemon as pmp;
+import Pokemon.calculateMethod as pcm;
 import Variables.mainSentence as vms;
 import Variables.locationInfo as vli;
 import Variables.npcInfo as vni;
 import SCA.scaSystem as scs;
+import SCA.scaReverse as scr;
+import scaVariable as sv;
 
 
 const s = StringBuffer(1024);
@@ -171,12 +174,12 @@ function openingStep(cp){
             t.appendf("\x13\x1F《 \x04{}번 슬롯 \x1F》\n",scs.userSlot[cp]+1);
             t.appendf("\x13\n\x13");
             for(var i=0; i<6; i++){
+                const scaPokemonIndex, scaPokemonLevel = pcm.divideData256(sv.scaPokemonIL[cpPk+i]);
                 if(i == 3){t.appendf("\n\x13");}
                 if(i != 0 && i != 3){t.appendf("\x1F│");}
-                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-                if(mpk.index){
-                    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
-                    t.appendf("\x04Lv.{} {:s}",mpk.level,pk.name);
+                if(scaPokemonIndex){
+                    const pk = ppi.Pokemon1.cast(ppi.pokemonList[scaPokemonIndex-1]);
+                    t.appendf("\x04Lv.{} {:s}",scaPokemonLevel,pk.name);
                 }
                 else{t.appendf("\x1ELv.0 없음");}
             }
@@ -185,6 +188,7 @@ function openingStep(cp){
             t.appendf("\x13\x1C└─────────────────────┘");
         }
         t.DisplayAt(0);
+        eprintf("\x04데이터를 삭제하고 새롭게 시작하려면, 채팅으로 \"\x1E!새롭게시작하기\x04\"를 입력하세요.");
         if(Deaths(cp, Exactly, 8, "A Stick")){
             pps.selectMenu[cp] = 0; opStep[cp] = 9;
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
@@ -195,10 +199,18 @@ function openingStep(cp){
             scs.playerLoad[cp] = 0;
             PlayWAV("staredit\\wav\\se_gui_misc5.wav");
         }
+        if(Deaths(cp, Exactly, 2, "A Chat")){
+            scs.playerLoad[cp] = 0;
+            pps.selectMenu[cp] = 0; opStep[cp] = 20;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+            pps.settingMusic[cp] = 2; vms.removeText();
+            pps.guiUpdate[cp] = 1;
+        }
     }
     //로드된 캐릭터 생성하기
     else if(opStep[cp] == 9){
         pps.userSetLight[cp] = 31;
+        scr.sca2map(cp); //sca데이터를 유즈맵데이터로 옮기기
         ppu.createPlayer(cp);
         vms.removeText();
         if(IsUserCP()){SetVariables(vli.locationText,1);}
@@ -209,7 +221,6 @@ function openingStep(cp){
         s.insertf(0, "\x13{:s}\n",vni.npcName[3]);
         s.appendf("\x13{:s}\n", vms.sph1);
         s.appendf("\n\n", vms.sph1);
-        //s.appendf("{:s}", opSpeech[vms.sphIndex[cp]]);
         s.appendf("\x13{:s}", vms.sph2);
         s.DisplayAt(0);
         const tecolor = 4, 2, 0x1E, 5, 0;
@@ -227,45 +238,6 @@ function openingStep(cp){
         }
     }
 }
-
-/*
-function openingAction(cp, index){
-    if(Deaths(cp, Exactly, 1, "A Stick")){
-        if(index == 0){pps.selectMenu[cp] = 1;}
-        else{pps.selectMenu[cp] = 0;}
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
-    if(Deaths(cp, Exactly, 2, "A Stick")){
-        if(index == 0){pps.selectMenu[cp] = 1;}
-        else{pps.selectMenu[cp] = 0;}
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
-    if(Deaths(cp, Exactly, 8, "A Stick")){
-        if(index == 0){
-            pps.selectMenu[cp] = 0;
-            opStep[cp] = 20;
-            vms.removeText();
-            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
-            pps.settingMusic[cp] = 2;
-        }
-        else if(index == 1){
-            if(scs.globalStat == 72){
-                pps.selectMenu[cp] = 0;
-                opStep[cp] = 6;
-                pps.guiUpdate[cp] = 1;
-                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
-            }
-            else{
-                DisplayText("\x07！\x04맵정보와 시간정보가 먼저 로드되어야\n　\x04유저데이터를 로드할 수 있습니다.");
-                pps.guiUpdate[cp] = 1;
-                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
-            }
-        }
-    }
-}
-*/
 
 function dataSlotAction(cp, index){
     if(Deaths(cp, Exactly, 1, "A Stick")){

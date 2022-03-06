@@ -3,13 +3,21 @@ import Player.playerUnit as ppu;
 import Player.playerSetting as pps;
 import Player.visionMachine as pvm;
 import Player.encounterField as pef;
+import Variables.mainSentence as vms;
 import Variables.etcData as ved;
 import Variables.locationInfo as vli;
 import readTile as rt;
 
 const s = StringBuffer(1024);
 
-
+function jumpPlayer(cp){
+    if(Deaths(cp, Exactly, 16, "A Key")){
+        vms.moveLocationPlayer(cp, vli.tempMoveLoc, 0, 64);
+        MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
+        fc.scanEffect(vli.tempMoveLoc, 496);
+        PlayWAV("staredit\\wav\\Player jump.wav");
+    }
+}
 
 function unitPosition(cp){
     const x,y = posread_epd(ppu.playerEPD[cp]+0x28/4);
@@ -20,12 +28,15 @@ function unitPosition(cp){
         const tileInfo = rt.tilesetInfo[y1*256+x1]; //현재 위치의 타일정보 가져오기
         pps.currentTileset[cp] = tileInfo;
         //풀 밟는 효과 주기
-        if(tileInfo == 1){
+        if(tileInfo == 1 || tileInfo == 2){
             fc.scanEffect(vli.moveLoc+cp, 514);
             const encounter = dwrand() % 10;
             if(encounter == 0){pef.encounterPokemon(cp);}
         }
     }
+    const curTileset = pps.currentTileset[cp];
+    //내려갈 수 있는 언덕
+    if(curTileset == 3){jumpPlayer(cp);}
     pvm.machine_Surfing(cp); //파도타기
     ppu.playerPosX[cp],ppu.playerPosY[cp] = x,y;
     ppu.playerGridX[cp],ppu.playerGridY[cp] = x1,y1;
@@ -56,9 +67,9 @@ function movePlayer(cp){
                             if(pps.using_Surfing[cp] == 0 && Bring(cp, Exactly, 1, 13, vli.tempLoc)){return;}
                             if(pps.using_Surfing[cp]){Order(ved.surfingUnit, cp, 64, Move, vli.tempMoveLoc); ved.order_Delay[cp] = 2;}
                             else{Order(pUnit, cp, 64, Move, vli.tempMoveLoc);}
-                            break;
+                            return;
                         }
-                        else{break;}
+                        else{return;}
                     }
                 }
             }
