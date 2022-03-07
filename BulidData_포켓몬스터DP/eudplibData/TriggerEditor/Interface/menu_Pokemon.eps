@@ -164,14 +164,6 @@ function subMenu_PokemonBattleAction(cp, index){
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }
-    //뒤로가기
-    if(Deaths(cp, Exactly, 4, "A Stick")){
-        if(bbs.battleStep[cp] != 7){
-            iug.subMenu[cp] = 0;
-            pps.guiUpdate[cp] = 1;
-            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
-        }
-    }
     //포켓몬 교체
     if(Deaths(cp, Exactly, 8, "A Stick") && bbs.pokemonNumber[cp] != index){
         const cpPk = cp*pmp.userPokemonNum;

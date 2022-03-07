@@ -16,14 +16,24 @@ function encounterPokemon(cp){
             if(ppl.fieldList[m] == currentPos){
                 //해당 필드의 야생포켓몬 리스트 가져오기
                 const wildList = EUDArray.cast(ppl.fieldPokemon[m]);
-                const index = 3*(dwrand() % wildList[0])+1; //0~n
-                
-                const wildIndex = wildList[index]; //pokemonIndex
-                const wildRand  = wildList[index+2]+1;
-                const wildLevel = dwrand() % wildRand + wildList[index+1];
-                const pk = ppi.Pokemon1.cast(ppi.pokemonList[wildIndex]);
-                bbs.wildSetting(cp, 0, wildIndex, wildLevel);
-                return;
+                const randWild = dwrand() % 100 + 1;
+                var randValue  = 0;
+                //야생포켓몬 리스트 순환하기
+                for(var i=0; i<wildList[0]; i++){
+                    const index = (4*i)+1; //0~n
+                    randValue += wildList[index+3]; //rand 확률
+                    //확률 시스템을 통해, 특정 야생포켓몬이 걸린 경우
+                    if(randValue >= randWild){
+                        const wildIndex = wildList[index]; //pokemonIndex
+                        const wildRnLv  = wildList[index+2]+1; //맨 뒤의 +1 덕에 1~N 범위를 가지게 됨
+                        var wildLevel = 0;
+                        if(wildRnLv == 1){wildLevel = wildList[index+1];}
+                        else{wildLevel = dwrand() % wildRnLv + wildList[index+1];}
+                        // const pk = ppi.Pokemon1.cast(ppi.pokemonList[wildIndex]);
+                        bbs.wildSetting(cp, 0, wildIndex, wildLevel);
+                        return;
+                    }
+                }
             }
         }
     }
@@ -43,7 +53,8 @@ function showFieldPokemon(cp){
                     s.insert(0);
                     s.appendf("\x13\x1D{:s}\n\x13",vli.mapName[currentLoc]);
                     for(var i=0; i<wildList[0]; i++){
-                        const pokeIndex = wildList[3*i+1]; //0~n
+                        const index = 4*i+1;
+                        const pokeIndex = wildList[index]; //0~n
                         const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokeIndex]);
                         s.appendf("\x04{:s} ",pk.name);
                         if(i > 0 && i % 4 == 0){s.appendf("\n\x13");}
