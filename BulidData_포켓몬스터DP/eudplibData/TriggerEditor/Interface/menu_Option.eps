@@ -20,11 +20,12 @@ function subMenu_Option(cp, height){
         t.appendf("\t\t{:s}\x04저장하기 (\x1E{}슬롯\x04)\n",pps.selectIcon1[index],scs.userSlot[cp]+1);
         t.appendf("\t\t{:s}\x04배경음악 ({:s}\x04)\n",pps.selectIcon2[index],pps.switchIcon[pps.setMusic[cp]]);
         t.appendf("\t\t{:s}\x04화면고정 ({:s}\x04)\n",pps.selectIcon3[index],pps.switchIcon[pps.setScreen[cp]]);
-        t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon4[index]);
+        t.appendf("\t\t{:s}\x04오토배틀 ({:s}\x04)\n",pps.selectIcon4[index],pps.switchIcon[pps.setAutoBattle[cp]]);
         t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon5[index]);
         t.appendf("\t\t{:s}\x04없음\n",pps.selectIcon6[index]);
     }
     t.DisplayAt(height);
+    eprintf("{:s}",vms.stickText);
     subMenu_OptionAction(cp, index);
 }
 
@@ -74,6 +75,10 @@ function subMenu_OptionAction(cp, index){
         }
         else if(index == 2){
             pps.setScreen[cp] = !pps.setScreen[cp];
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+        else if(index == 3){
+            pps.setAutoBattle[cp] = !pps.setAutoBattle[cp];
             PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
         pps.guiUpdate[cp] = 1;

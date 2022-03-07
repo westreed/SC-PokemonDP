@@ -154,6 +154,7 @@ function returnJoinBattle(cp){
     return num;
 }
 
+//전투 데이터 초기화하기
 function resetPokemonBattleData(cp){
     const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){
@@ -163,6 +164,17 @@ function resetPokemonBattleData(cp){
     }
 }
 
+function returnPokemonNumber(cp){
+    var num = 0;
+    const cpPk = userPokemonNum*cp;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
+        if(mpk.index){num ++;}
+    }
+    return num;
+}
+
+//소지중인 포켓몬 체력회복하기
 function healMyPokemon(cp){
     const cpPk = userPokemonNum*cp;
     for(var i=0; i<6; i++){

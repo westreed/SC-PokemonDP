@@ -234,10 +234,10 @@ function battleSystem(cp){
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
                     endBattle(cp);
                 }
+                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
             }
             //상대 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp+4] == 0){
-                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
                 const cpk = pmp.myPokemon.cast(pmp.computerPokemonList[pokemonNumber[cp+4]]);
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[cpk.index-1]);
                 cpk.state = 1; //기절상태
@@ -254,6 +254,7 @@ function battleSystem(cp){
                     BGM.instantPlay();
                     endBattle(cp);
                 }
+                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
             }
         }
         //내 포켓몬 중 누구를 내보낼 것인가
@@ -412,12 +413,14 @@ function battleSystem(cp){
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
                 mpk.hitpoint = bbg.pokemonCurHP[cp];
                 RemoveUnit(ppst.playerPokemonUnit[cp], cp);
+                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
+                pmp.resetPokemonBattleData(cp);
             }
             else if(battleDelay[cp] < 24*7){
                 s.insert(0, "\n\n\n");
                 s.appendf("\x13{:s}\n",vms.sph1);
                 s.appendf("\x13\x04신난다-!\n");
-                s.appendf("\x13\x04{:s}을(를) 붙잡았다!\n",pokemonName[cp+4]);
+                s.appendf("\x13\x1E{:s}\x04을(를) 붙잡았다!\n",pokemonName[cp+4]);
                 s.appendf("\x13{:s}",vms.sph1);
                 s.DisplayAt(0);
             }

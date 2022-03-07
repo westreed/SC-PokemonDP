@@ -4,6 +4,7 @@ import Pokemon.calculateMethod as pcm;
 import Pokemon.pokemonInfo as ppi;
 import Pokemon.myPokemon as pmp;
 import Pokemon.weakRelation as pwr;
+import Variables.mainSentence as vms;
 
 
 const s = StringBuffer(1024);
@@ -37,11 +38,13 @@ function subMenu_Book(cp, height){
             }
         }
         t.DisplayAt(height);
+        eprintf("{:s}",vms.stickText3);
         subMenu_BookAction(cp, index);
     }
     else{
         subMenu_BookInfo(cp, height);
         subMenu_BookInfoAction(cp);
+        eprintf("{:s}",vms.stickText5);
     }
 }
 

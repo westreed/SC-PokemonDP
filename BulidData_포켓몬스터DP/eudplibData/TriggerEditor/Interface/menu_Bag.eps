@@ -3,6 +3,7 @@ import Interface.menu_Pokemon as imp;
 import Item.itemInfo as iif;
 import Item.itemUse as iiu;
 import Player.playerSetting as pps;
+import Variables.mainSentence as vms;
 
 
 const s = StringBuffer(1024);
@@ -41,6 +42,7 @@ function subMenu_Book(cp, height){
 
         }
         t.DisplayAt(height);
+        eprintf("{:s}",vms.stickText3);
         subMenu_BagAction(cp, index);
     }
     else{
@@ -54,6 +56,7 @@ function subMenu_Book(cp, height){
             imp.subMenu_Pokemon(cp, height, 0);
             subMenu_ItemUseAction(cp);
         }
+        eprintf("{:s}",vms.stickText4);
     }
 }
 

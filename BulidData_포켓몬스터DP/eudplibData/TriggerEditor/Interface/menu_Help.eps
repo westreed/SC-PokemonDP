@@ -1,6 +1,7 @@
 import Interface.userGUI as iug;
 import Player.playerSetting as pps;
 import Pokemon.pokemonInfo as ppi;
+import Variables.mainSentence as vms;
 
 
 
@@ -34,6 +35,7 @@ function subMenu_Help(cp, height){
             }
         }
         t.DisplayAt(height);
+        eprintf("{:s}",vms.stickText);
         subMenu_HelpAction(cp, index);
     }
     else{

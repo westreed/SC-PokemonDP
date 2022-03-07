@@ -62,7 +62,6 @@ function printGUI(cp){
     }
     if(mainMenu[cp]){
         const sub = subMenu[cp];
-        eprintf("{:s}",vms.stickText);
         if(sub == 0){mainMenu_UI(cp);}
         else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
         else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
@@ -86,6 +85,7 @@ function mainMenu_UI(cp){
         t.appendf("\t\t{:s}\x04닫기\n",pps.selectIcon6[index]);
     }
     t.DisplayAt(0);
+    eprintf("{:s}",vms.stickText);
     mainMenu_Action(cp, index);
 }
 

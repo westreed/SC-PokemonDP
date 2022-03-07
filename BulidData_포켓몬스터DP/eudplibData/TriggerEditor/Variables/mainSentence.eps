@@ -27,6 +27,10 @@ const sph1          = Db("\x04────────────────")
 const sph2          = Db("\x04──────────\x11다음 F키\x04──");
 const sph3          = Db("\n\n\n\x13\x11｜\n\x13\x11·");
 const stickText     = Db("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x08[ \x04A 취소/뒤로\x08 ]");
+const stickText2    = Db("\x11[ \x04D 교체 \x11]  \x1F[ \x04E 다음페이지\x1F ]  \x1C[ \x04F 지닌물건해제 \x1C]  \x08[ \x04A 뒤로\x08 ]");
+const stickText3    = Db("\x11[ \x04D 선택 \x11]  \x1F[ \x04WS 메뉴이동\x1F ]  \x1D[ \x04QE 페이지이동\x1D ]  \x08[ \x04A 취소/뒤로\x08 ]");
+const stickText4    = Db("\x11[ \x04D 선택 \x11]  \x08[ \x04A 취소/뒤로\x08 ]");
+const stickText5    = Db("\x08[ \x04A 취소/뒤로\x08 ]");
 
 function removeText(){
     t.printfAt(0, "\n\n\n\n\n\n\n\n");
@@ -439,4 +443,3 @@ function speechSystem(cp){
         }
     }
 }
-

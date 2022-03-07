@@ -42,12 +42,18 @@ function map2sca(cp){
         sv.scaBag[cpBg+i] = imb.bagItemList[cpBg+i] + imb.bagNumList[cpBg+i]*256;
     }
     //도감 데이터를 sca데이터로 변환하기
+    var bookNum = 0;
     const cpBk = cp*imk.bookSCANum; //sca Index
     const cpBn = cp*imk.pageNumber; //book Index
     for (var i=0; i<imk.bookSCANum; i++){
         const i32 = i*32;
         var value = 0;
-        for (var j=0; j<32; j++){value += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];}
+        for (var j=0; j<32; j++){
+            if(MemoryEPD(EPD(imk.sinoBook)+cpBn+i32+j, Exactly, 1)){
+                value += imk.sinoBook[cpBn+i32+j]*dT.bit32[j];
+                bookNum ++;
+            }
+        }
         sv.scaBook[cpBk + i] = value;
     }
     //위치 데이터를 sca 데이터로 변환하기
@@ -58,6 +64,8 @@ function map2sca(cp){
     sv.scaOption[cp] = pps.setMusic[cp] + pps.setScreen[cp]*2;
     //스타팅 포켓몬 정보를 sca 데이터로 변환하기
     sv.scaStarting[cp] = pps.setStartingPokemon[cp];
+    //도감에 저장된 포켓몬수 저장하기
+    sv.scaBookNum[cp] = bookNum;
 }
 
 //SCA데이터를 유즈맵데이터로 변환하기
