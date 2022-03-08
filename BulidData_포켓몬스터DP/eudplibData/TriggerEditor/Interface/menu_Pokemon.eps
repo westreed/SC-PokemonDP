@@ -21,33 +21,20 @@ const pokePage      = PVariable(); //내포켓몬정보 페이지
 const pokeAction    = PVariable(); //포켓몬 GUI에서 다른 액션을 취해야할 경우
 const pokeChange    = PVariable(); //포켓몬 교체
 const changeName    = PVariable();
-/*
-pokeAction
-0:가방
-1:배틀 (가방아이템)
-2:위치교환
-*/
-
-/*
-고려해야할 것들
-
-배틀 상황에서 포켓몬 교체를 하려는 경우
-가방에서 포켓몬대상 아이템을 사용하려는 경우 (치료약, 지니게할 아이템 등등)
-*/
-
 
 function subMenu_PokemonAction(cp, index);
 function subMenu_PokemonBattleAction(cp, index);
 function subMenu_PokemonInfo(cp, height);
 function subMenu_Pokemon(cp, height, battle){
     const action = pokeAction[cp];
-    if(action || iug.subMiniMenu[cp] == 0){
+    //battle (1)단순교체 -- 뒤로가기 가능해야함  (2)포켓몬기절 교체 -- 뒤로가기 불가능
+    if(!iug.subMiniMenu[cp] || battle || action){
         const index = pokeIndex[cp];
         if(pps.guiUpdate[cp]){
             pps.guiUpdate[cp] = 0;
             const cpPk = cp*pmp.userPokemonNum;
             t.insert(0);
-            if(battle == 1){t.appendf("\t\t\x1D어떤 포켓몬으로 교체할까요?\n\n");}
+            if(battle){t.appendf("\t\t\x1D어떤 포켓몬으로 교체할까요?\n\n");}
             else if(action == 0){t.appendf("\t\t\x1D포켓몬\n\n");}
             else if(action == 1){t.appendf("\t\t\x1D누구에게 사용할까요?\n\n");}
             else if(action == 2){t.appendf("\t\t\x1D어떤 포켓몬과 위치를 교체할까요?\n\n");}
@@ -61,8 +48,9 @@ function subMenu_Pokemon(cp, height, battle){
                     //전투중일 땐 HP가 계속 변화하므로, HP표기를 안함
                     if(pps.battleState[cp]){
                         t.appendf("\t\t{:s}\x17Lv.{} \x04{:s}",icon[index],mpk.level,pk.name);
-                        if(mpkn.battle == 1){t.appendf("\x08(전투)\n");}
-                        else if(mpk.state == 1){t.appendf("\x1E(기절)\n");}
+                        
+                        if(mpk.state == 1){t.appendf("\x1E(기절)\n");}
+                        else if(bbs.pokemonNumber[cp] == i){t.appendf("\x08(전투)\n");}
                         else{t.appendf("\n");}
                     }
                     else{
@@ -79,7 +67,7 @@ function subMenu_Pokemon(cp, height, battle){
         }
         t.DisplayAt(height);
         eprintf("{:s}",vms.stickText);
-        if(battle == 1){subMenu_PokemonBattleAction(cp, index);}
+        if(battle){subMenu_PokemonBattleAction(cp, index, battle);}
         else if(action == 0 || action == 2){subMenu_PokemonAction(cp, index);}
     }
     else{subMenu_PokemonInfo(cp, height);}
@@ -151,7 +139,7 @@ function subMenu_PokemonAction(cp, index){
     }
 }
 
-function subMenu_PokemonBattleAction(cp, index){
+function subMenu_PokemonBattleAction(cp, index, battle){
     if(Deaths(cp, Exactly, 1, "A Stick")){
         if(index == 0){pokeIndex[cp] = 5;}
         else{pokeIndex[cp] -= 1;}
@@ -164,6 +152,12 @@ function subMenu_PokemonBattleAction(cp, index){
         PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         pps.guiUpdate[cp] = 1;
     }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick") && battle == 1){
+        iug.subMenu[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
     //포켓몬 교체
     if(Deaths(cp, Exactly, 8, "A Stick") && bbs.pokemonNumber[cp] != index){
         const cpPk = cp*pmp.userPokemonNum;
@@ -174,7 +168,6 @@ function subMenu_PokemonBattleAction(cp, index){
             pokeChange[cp] = 1;
             iug.subMiniMenu[cp] = index+1;
             iug.subMenu[cp] = 0;
-            //PlayWAV("staredit\\wav\\se_gui_misc6.wav");
         }
     }
 }
@@ -220,14 +213,16 @@ function changePokemon(cp){
             const pk = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp]-1]);
             const ck = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp+4]-1]);
             pwr.calculateWeak_PVE(cp, pk.type, ck.type);
-            MoveLocation(vli.tempMoveLoc, 50, P5, bbs.battleLocation[cp]); //내 포켓몬
+
             RemoveUnitAt(1, ppst.playerPokemonUnit[cp], bbs.battleLocation[cp], cp);
-            bbs.battleEPD[cp] = fc.SetNextUnitEPD();
-            CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
+            bbs.createMyPokemon(cp, true); //내 포켓몬 생성
+            // MoveLocation(vli.tempMoveLoc, 50, P5, bbs.battleLocation[cp]); //내 포켓몬
+            // bbs.battleEPD[cp] = fc.SetNextUnitEPD();
+            // CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
 
             //교체된 포켓몬의 체력 설정하기
-            const mpk2 = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
-            SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, mpk2.hitpoint*256);
+            // const mpk2 = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
+            // SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, mpk2.hitpoint*256);
             fc.scanEffect(vli.tempMoveLoc, 391);
             PlayWAV("staredit\\wav\\Battle recall.wav");
 

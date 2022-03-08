@@ -57,6 +57,26 @@ function isPVP(type){
     return false;
 }
 
+function createMyPokemon(cp, type){
+    const battleMapLoc = battleLocation[cp];
+    if(type){MoveLocation(vli.tempMoveLoc, 50, P5, battleMapLoc);}
+    else{MoveLocation(vli.tempMoveLoc, 37, P5, battleMapLoc);}
+    var cp4 = cp;
+    const pokeUnit = ppst.returnPokemonUnit(cp, type);
+    if(type == 0){cp4 += 4;}
+    battleEPD[cp4] = fc.SetNextUnitEPD();
+    if(type){CreateUnit(1, pokeUnit, vli.tempMoveLoc, cp);}
+    else{CreateUnit(1, pokeUnit, vli.tempMoveLoc, P5);}
+    fc.SelCircle(battleEPD[cp4], 191);
+
+    if(type){
+        //내 포켓몬의 이전체력 가져오기
+        const cpPk = cp*pmp.userPokemonNum;
+        const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonNumber[cp]]);
+        SetMemoryEPD(battleEPD[cp]+2, SetTo, mk.hitpoint*256);
+    }
+}
+
 function endBattle(cp){
     RemoveUnit(ppst.playerPokemonUnit[cp], cp);
     RemoveUnit(ppst.playerPokemonUnit[cp+4], P5);
@@ -186,22 +206,18 @@ function battleSystem(cp){
 
             //유닛 배치하기
             const battleMapLoc = battleLocation[cp];
-            MoveLocation(vli.tempMoveLoc, 50, P5, battleMapLoc); //내 포켓몬
-            battleEPD[cp] = fc.SetNextUnitEPD();
-            CreateUnit(1, pUnit, vli.tempMoveLoc, cp);
+            createMyPokemon(cp, true); //내 포켓몬
             fc.scanEffect(vli.tempMoveLoc, 391);
             MoveLocation(vli.tempMoveLoc, 50, P6, battleMapLoc); //내 트레이너
             MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
-            MoveLocation(vli.tempMoveLoc, 37, P5, battleMapLoc); //상대 포켓몬
-            battleEPD[cp+4] = fc.SetNextUnitEPD();
-            CreateUnit(1, cUnit, vli.tempMoveLoc, P5);
-            MoveLocation(vli.tempMoveLoc, 37, P6, battleMapLoc); //상대 트레이너
-            if(battleUnit[cp] != 999){CreateUnit(1, battleUnit[cp], vli.tempMoveLoc, P5);}
+            createMyPokemon(cp, false); //상대 포켓몬
+            
+            //트레이너가 있는 경우
+            if(battleUnit[cp] != 999){
+                MoveLocation(vli.tempMoveLoc, 37, P6, battleMapLoc); //상대 트레이너
+                CreateUnit(1, battleUnit[cp], vli.tempMoveLoc, P5);
+            }
 
-            //내 포켓몬의 이전체력 가져오기
-            const cpPk = cp*pmp.userPokemonNum;
-            const mk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pkNumber]);
-            SetMemoryEPD(battleEPD[cp]+2, SetTo, mk.hitpoint*256);
             battleStep[cp] += 1;
         }
         else if(step == 5){
@@ -259,7 +275,7 @@ function battleSystem(cp){
         }
         //내 포켓몬 중 누구를 내보낼 것인가
         else if(step == 7){
-            imp.subMenu_Pokemon(cp, 0, 1);
+            imp.subMenu_Pokemon(cp, 0, 2);
         }
         //컴퓨터는 다음 포켓몬 내보내기
         else if(step == 8){

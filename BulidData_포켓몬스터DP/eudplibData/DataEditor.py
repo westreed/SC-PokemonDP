@@ -4,12 +4,19 @@
 def onPluginStart():
     DoActions([  # Basic DatFile Actions
         SetMemory(0x6644F8, Add, -7),# units:Graphics  index:0    from 78 To 71
+        SetMemory(0x6644F8, Add, 25344),# units:Graphics  index:1    from 74 To 173
+        SetMemory(0x6644F8, Add, 5636096),# units:Graphics  index:2    from 88 To 174
         SetMemory(0x6644FC, Add, -167772160),# units:Graphics  index:7    from 81 To 71
+        SetMemory(0x664500, Add, 95),# units:Graphics  index:8    from 80 To 175
         SetMemory(0x664500, Add, -3840),# units:Graphics  index:9    from 86 To 71
         SetMemory(0x664500, Add, -131072),# units:Graphics  index:10    from 73 To 71
         SetMemory(0x664504, Add, -3328),# units:Graphics  index:13    from 89 To 76
-        SetMemory(0x66450C, Add, -524288),# units:Graphics  index:22    from 86 To 78
+        SetMemory(0x664508, Add, 1476395008),# units:Graphics  index:19    from 88 To 176
+        SetMemory(0x66450C, Add, 24832),# units:Graphics  index:21    from 80 To 177
+        SetMemory(0x66450C, Add, 6160384),# units:Graphics  index:22    from 86 To 180
         SetMemory(0x664520, Add, 0),# units:Graphics  index:41    from 5 To 5
+        SetMemory(0x664520, Add, 2852126720),# units:Graphics  index:43    from 11 To 181
+        SetMemory(0x664524, Add, 175),# units:Graphics  index:44    from 7 To 182
         SetMemory(0x664524, Add, 16128),# units:Graphics  index:45    from 13 To 76
         SetMemory(0x664524, Add, 838860800),# units:Graphics  index:47    from 0 To 50
         SetMemory(0x66115C, Add, -40),# units:Construction Animation  index:43    from 40 To 0
@@ -512,11 +519,69 @@ def onPluginStart():
         SetMemory(0x656994, Add, -8192),# weapons:Attack Angle  index:5    from 64 To 32
         SetMemory(0x656994, Add, -6291456),# weapons:Attack Angle  index:6    from 128 To 32
         SetMemory(0x656994, Add, 268435456),# weapons:Attack Angle  index:7    from 16 To 32
+        SetMemory(0x6CA1AC, Add, 1200),# flingy:Speed  index:173    from 0 To 1200
+        SetMemory(0x6CA1B0, Add, 1200),# flingy:Speed  index:174    from 0 To 1200
+        SetMemory(0x6CA1B4, Add, 1200),# flingy:Speed  index:175    from 0 To 1200
+        SetMemory(0x6CA1B8, Add, 1200),# flingy:Speed  index:176    from 0 To 1200
+        SetMemory(0x6CA1BC, Add, 1200),# flingy:Speed  index:177    from 0 To 1200
+        SetMemory(0x6CA1C8, Add, 1200),# flingy:Speed  index:180    from 0 To 1200
+        SetMemory(0x6CA1CC, Add, 1200),# flingy:Speed  index:181    from 0 To 1200
+        SetMemory(0x6CA1D0, Add, 1200),# flingy:Speed  index:182    from 0 To 1200
         SetMemory(0x6C9C80, Add, 37552128),# flingy:Acceleration  index:5    from 67 To 640
+        SetMemory(0x6C9DD0, Add, 39321600),# flingy:Acceleration  index:173    from 0 To 600
+        SetMemory(0x6C9DD4, Add, 600),# flingy:Acceleration  index:174    from 0 To 600
+        SetMemory(0x6C9DD4, Add, 39321600),# flingy:Acceleration  index:175    from 0 To 600
+        SetMemory(0x6C9DD8, Add, 600),# flingy:Acceleration  index:176    from 0 To 600
+        SetMemory(0x6C9DD8, Add, 39321600),# flingy:Acceleration  index:177    from 0 To 600
+        SetMemory(0x6C9DE0, Add, 600),# flingy:Acceleration  index:180    from 0 To 600
+        SetMemory(0x6C9DE0, Add, 39321600),# flingy:Acceleration  index:181    from 0 To 600
+        SetMemory(0x6C9DE4, Add, 600),# flingy:Acceleration  index:182    from 0 To 600
         SetMemory(0x6C9944, Add, -12226),# flingy:Halt Distance  index:5    from 12227 To 1
+        SetMemory(0x6C9BE4, Add, 1200),# flingy:Halt Distance  index:173    from 0 To 1200
+        SetMemory(0x6C9BE8, Add, 1200),# flingy:Halt Distance  index:174    from 0 To 1200
+        SetMemory(0x6C9BEC, Add, 1200),# flingy:Halt Distance  index:175    from 0 To 1200
+        SetMemory(0x6C9BF0, Add, 1200),# flingy:Halt Distance  index:176    from 0 To 1200
+        SetMemory(0x6C9BF4, Add, 1200),# flingy:Halt Distance  index:177    from 0 To 1200
+        SetMemory(0x6C9C00, Add, 1200),# flingy:Halt Distance  index:180    from 0 To 1200
+        SetMemory(0x6C9C04, Add, 1200),# flingy:Halt Distance  index:181    from 0 To 1200
+        SetMemory(0x6C9C08, Add, 1200),# flingy:Halt Distance  index:182    from 0 To 1200
         SetMemory(0x6C9E24, Add, 10240),# flingy:Turn Radius  index:5    from 40 To 80
+        SetMemory(0x6C9ECC, Add, 10240),# flingy:Turn Radius  index:173    from 0 To 40
+        SetMemory(0x6C9ECC, Add, 2621440),# flingy:Turn Radius  index:174    from 0 To 40
+        SetMemory(0x6C9ECC, Add, 671088640),# flingy:Turn Radius  index:175    from 0 To 40
+        SetMemory(0x6C9ED0, Add, 40),# flingy:Turn Radius  index:176    from 0 To 40
+        SetMemory(0x6C9ED0, Add, 10240),# flingy:Turn Radius  index:177    from 0 To 40
+        SetMemory(0x6C9ED4, Add, 40),# flingy:Turn Radius  index:180    from 0 To 40
+        SetMemory(0x6C9ED4, Add, 10240),# flingy:Turn Radius  index:181    from 0 To 40
+        SetMemory(0x6C9ED4, Add, 2621440),# flingy:Turn Radius  index:182    from 0 To 40
+        SetMemory(0x6C9904, Add, -512),# flingy:Movement Control  index:173    from 2 To 0
+        SetMemory(0x6C9904, Add, -131072),# flingy:Movement Control  index:174    from 2 To 0
+        SetMemory(0x6C9904, Add, -33554432),# flingy:Movement Control  index:175    from 2 To 0
+        SetMemory(0x6C9908, Add, -2),# flingy:Movement Control  index:176    from 2 To 0
+        SetMemory(0x6C9908, Add, -512),# flingy:Movement Control  index:177    from 2 To 0
+        SetMemory(0x6C990C, Add, -2),# flingy:Movement Control  index:180    from 2 To 0
+        SetMemory(0x6C990C, Add, -512),# flingy:Movement Control  index:181    from 2 To 0
+        SetMemory(0x6C990C, Add, -131072),# flingy:Movement Control  index:182    from 2 To 0
+        SetMemory(0x66C3C8, Add, 65536),# images:Clickable  index:634    from 0 To 1
+        SetMemory(0x66C3CC, Add, 65536),# images:Clickable  index:638    from 0 To 1
+        SetMemory(0x66C400, Add, 256),# images:Clickable  index:689    from 0 To 1
+        SetMemory(0x66D750, Add, 65536),# images:Use Full Iscript  index:634    from 0 To 1
+        SetMemory(0x66D754, Add, 65536),# images:Use Full Iscript  index:638    from 0 To 1
+        SetMemory(0x66D788, Add, 256),# images:Use Full Iscript  index:689    from 0 To 1
         SetMemory(0x66A028, Add, 262144),# images:Draw Function  index:514    from 9 To 13
         SetMemory(0x66EC48, Add, 155),# images:Iscript ID  index:0    from 0 To 155
+        SetMemory(0x66EE98, Add, -9),# images:Iscript ID  index:148    from 165 To 156
+        SetMemory(0x66F190, Add, -42),# images:Iscript ID  index:338    from 198 To 156
+        SetMemory(0x66F198, Add, -43),# images:Iscript ID  index:340    from 199 To 156
+        SetMemory(0x66F1A0, Add, -44),# images:Iscript ID  index:342    from 200 To 156
+        SetMemory(0x66F4D8, Add, -182),# images:Iscript ID  index:548    from 268 To 86
+        SetMemory(0x66F630, Add, -181),# images:Iscript ID  index:634    from 337 To 156
+        SetMemory(0x66F640, Add, -181),# images:Iscript ID  index:638    from 337 To 156
+        SetMemory(0x66F70C, Add, -180),# images:Iscript ID  index:689    from 336 To 156
+        SetMemory(0x66FAE8, Add, -253),# images:Iscript ID  index:936    from 409 To 156
+        SetMemory(0x66FB28, Add, -306),# images:Iscript ID  index:952    from 375 To 69
+        SetMemory(0x66FB30, Add, -353),# images:Iscript ID  index:954    from 376 To 23
+        SetMemory(0x66FB38, Add, -221),# images:Iscript ID  index:956    from 377 To 156
         SetMemory(0x66FB8C, Add, -141),# images:Iscript ID  index:977    from 391 To 250
     ])
 

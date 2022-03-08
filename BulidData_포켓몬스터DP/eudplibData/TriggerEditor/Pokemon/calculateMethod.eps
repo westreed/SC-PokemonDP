@@ -77,6 +77,13 @@ function divideData256(value){
     return type1, type2;
 }
 
+function divideData1000(value){
+    var type1 = 0; var type2 = 0;
+    while(value >= 1000){value -= 1000; type2 += 1;}
+    type1 = value;
+    return type1, type2;
+}
+
 function returnHitPoints(cp, level, hp, vhp){
     //=ROUNDDOWN((((hp*10)+vhp*3)*level/100)+10+level, 0)
     return (((20*hp)+5*vhp)*level/100)+50+level;
@@ -145,3 +152,4 @@ function divideOption(value, len){
     }
     return vlist;
 }
+

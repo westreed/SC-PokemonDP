@@ -16,7 +16,7 @@ object Pokemon1 {
 object Pokemon2 {
     var evoTarget;  //0진화대상 (객체번호)(대상이 여러명인경우 대상1+대상2*256)
     var evoCond;    //1진화조건 (진화방식 + 16*값)
-    var unit;       //2포켓몬 (유닛 + 256*포트레잇번호)
+    var unit;       //2포켓몬 (유닛 + 1000*포트레잇번호)
     var weapon;     //3무기정보 (무기번호 + 256*사거리)
     var expType;    //4경험치타입 (0:이상한 1:빠른 2:약간빠른 3:약간느린 4:느린)
 };
@@ -38,7 +38,7 @@ function pokemonInit(){
     const pkn0 = Pokemon2.cast(pk0.next);
     pkn0.evoTarget = 1;
     pkn0.evoCond = 290;
-    pkn0.unit = 6149;
+    pkn0.unit = 24017;
     pkn0.weapon = 512;
     pkn0.expType = 3;
     const pk1 = Pokemon1.cast(pokemonList[1]);
@@ -53,7 +53,7 @@ function pokemonInit(){
     const pkn1 = Pokemon2.cast(pk1.next);
     pkn1.evoTarget = 2;
     pkn1.evoCond = 514;
-    pkn1.unit = 5135;
+    pkn1.unit = 20054;
     pkn1.weapon = 512;
     pkn1.expType = 3;
     const pk2 = Pokemon1.cast(pokemonList[2]);
@@ -68,7 +68,7 @@ function pokemonInit(){
     const pkn2 = Pokemon2.cast(pk2.next);
     pkn2.evoTarget = 0;
     pkn2.evoCond = 0;
-    pkn2.unit = 5646;
+    pkn2.unit = 22050;
     pkn2.weapon = 512;
     pkn2.expType = 3;
     const pk3 = Pokemon1.cast(pokemonList[3]);
@@ -83,7 +83,7 @@ function pokemonInit(){
     const pkn3 = Pokemon2.cast(pk3.next);
     pkn3.evoTarget = 4;
     pkn3.evoCond = 226;
-    pkn3.unit = 1873;
+    pkn3.unit = 7247;
     pkn3.weapon = 512;
     pkn3.expType = 3;
     const pk4 = Pokemon1.cast(pokemonList[4]);
@@ -98,7 +98,7 @@ function pokemonInit(){
     const pkn4 = Pokemon2.cast(pk4.next);
     pkn4.evoTarget = 5;
     pkn4.evoCond = 578;
-    pkn4.unit = 585;
+    pkn4.unit = 2226;
     pkn4.weapon = 512;
     pkn4.expType = 3;
     const pk5 = Pokemon1.cast(pokemonList[5]);
@@ -113,7 +113,7 @@ function pokemonInit(){
     const pkn5 = Pokemon2.cast(pk5.next);
     pkn5.evoTarget = 0;
     pkn5.evoCond = 0;
-    pkn5.unit = 25531;
+    pkn5.unit = 99925;
     pkn5.weapon = 512;
     pkn5.expType = 3;
     const pk6 = Pokemon1.cast(pokemonList[6]);
@@ -128,7 +128,7 @@ function pokemonInit(){
     const pkn6 = Pokemon2.cast(pk6.next);
     pkn6.evoTarget = 7;
     pkn6.evoCond = 258;
-    pkn6.unit = 10026;
+    pkn6.unit = 39137;
     pkn6.weapon = 512;
     pkn6.expType = 3;
     const pk7 = Pokemon1.cast(pokemonList[7]);
@@ -143,7 +143,7 @@ function pokemonInit(){
     const pkn7 = Pokemon2.cast(pk7.next);
     pkn7.evoTarget = 8;
     pkn7.evoCond = 578;
-    pkn7.unit = 10536;
+    pkn7.unit = 41122;
     pkn7.weapon = 512;
     pkn7.expType = 3;
     const pk8 = Pokemon1.cast(pokemonList[8]);
@@ -158,7 +158,7 @@ function pokemonInit(){
     const pkn8 = Pokemon2.cast(pk8.next);
     pkn8.evoTarget = 0;
     pkn8.evoCond = 0;
-    pkn8.unit = 11046;
+    pkn8.unit = 43134;
     pkn8.weapon = 512;
     pkn8.expType = 3;
     const pk9 = Pokemon1.cast(pokemonList[9]);
@@ -173,7 +173,7 @@ function pokemonInit(){
     const pkn9 = Pokemon2.cast(pk9.next);
     pkn9.evoTarget = 10;
     pkn9.evoCond = 226;
-    pkn9.unit = 7680;
+    pkn9.unit = 30000;
     pkn9.weapon = 512;
     pkn9.expType = 3;
     const pk10 = Pokemon1.cast(pokemonList[10]);
@@ -188,7 +188,7 @@ function pokemonInit(){
     const pkn10 = Pokemon2.cast(pk10.next);
     pkn10.evoTarget = 11;
     pkn10.evoCond = 546;
-    pkn10.unit = 6667;
+    pkn10.unit = 26038;
     pkn10.weapon = 512;
     pkn10.expType = 3;
     const pk11 = Pokemon1.cast(pokemonList[11]);
@@ -203,7 +203,7 @@ function pokemonInit(){
     const pkn11 = Pokemon2.cast(pk11.next);
     pkn11.evoTarget = 0;
     pkn11.evoCond = 0;
-    pkn11.unit = 11563;
+    pkn11.unit = 45140;
     pkn11.weapon = 512;
     pkn11.expType = 3;
     const pk12 = Pokemon1.cast(pokemonList[12]);
@@ -218,7 +218,7 @@ function pokemonInit(){
     const pkn12 = Pokemon2.cast(pk12.next);
     pkn12.evoTarget = 13;
     pkn12.evoCond = 242;
-    pkn12.unit = 78;
+    pkn12.unit = 239;
     pkn12.weapon = 512;
     pkn12.expType = 2;
     const pk13 = Pokemon1.cast(pokemonList[13]);
@@ -233,7 +233,7 @@ function pokemonInit(){
     const pkn13 = Pokemon2.cast(pk13.next);
     pkn13.evoTarget = 0;
     pkn13.evoCond = 0;
-    pkn13.unit = 78;
+    pkn13.unit = 239;
     pkn13.weapon = 512;
     pkn13.expType = 2;
     const pk14 = Pokemon1.cast(pokemonList[14]);
@@ -248,7 +248,7 @@ function pokemonInit(){
     const pkn14 = Pokemon2.cast(pk14.next);
     pkn14.evoTarget = 15;
     pkn14.evoCond = 162;
-    pkn14.unit = 5889;
+    pkn14.unit = 23005;
     pkn14.weapon = 512;
     pkn14.expType = 3;
     const pk15 = Pokemon1.cast(pokemonList[15]);
@@ -263,7 +263,7 @@ function pokemonInit(){
     const pkn15 = Pokemon2.cast(pk15.next);
     pkn15.evoTarget = 0;
     pkn15.evoCond = 0;
-    pkn15.unit = 25274;
+    pkn15.unit = 30000;
     pkn15.weapon = 512;
     pkn15.expType = 3;
     const pk16 = Pokemon1.cast(pokemonList[16]);
@@ -278,7 +278,7 @@ function pokemonInit(){
     const pkn16 = Pokemon2.cast(pk16.next);
     pkn16.evoTarget = 17;
     pkn16.evoCond = 242;
-    pkn16.unit = 5135;
+    pkn16.unit = 20054;
     pkn16.weapon = 512;
     pkn16.expType = 3;
     const pk17 = Pokemon1.cast(pokemonList[17]);
@@ -293,7 +293,7 @@ function pokemonInit(){
     const pkn17 = Pokemon2.cast(pk17.next);
     pkn17.evoTarget = 18;
     pkn17.evoCond = 482;
-    pkn17.unit = 5135;
+    pkn17.unit = 20054;
     pkn17.weapon = 512;
     pkn17.expType = 3;
     const pk18 = Pokemon1.cast(pokemonList[18]);
@@ -308,7 +308,7 @@ function pokemonInit(){
     const pkn18 = Pokemon2.cast(pk18.next);
     pkn18.evoTarget = 0;
     pkn18.evoCond = 0;
-    pkn18.unit = 5135;
+    pkn18.unit = 20054;
     pkn18.weapon = 512;
     pkn18.expType = 3;
     const pk19 = Pokemon1.cast(pokemonList[19]);
@@ -323,7 +323,7 @@ function pokemonInit(){
     const pkn19 = Pokemon2.cast(pk19.next);
     pkn19.evoTarget = 20;
     pkn19.evoCond = 258;
-    pkn19.unit = 10026;
+    pkn19.unit = 39137;
     pkn19.weapon = 512;
     pkn19.expType = 3;
     const pk20 = Pokemon1.cast(pokemonList[20]);
@@ -338,7 +338,7 @@ function pokemonInit(){
     const pkn20 = Pokemon2.cast(pk20.next);
     pkn20.evoTarget = 21;
     pkn20.evoCond = 4;
-    pkn20.unit = 10797;
+    pkn20.unit = 42126;
     pkn20.weapon = 512;
     pkn20.expType = 3;
     const pk21 = Pokemon1.cast(pokemonList[21]);
@@ -353,7 +353,7 @@ function pokemonInit(){
     const pkn21 = Pokemon2.cast(pk21.next);
     pkn21.evoTarget = 0;
     pkn21.evoCond = 0;
-    pkn21.unit = 12590;
+    pkn21.unit = 49129;
     pkn21.weapon = 512;
     pkn21.expType = 3;
     const pk22 = Pokemon1.cast(pokemonList[22]);
@@ -368,7 +368,7 @@ function pokemonInit(){
     const pkn22 = Pokemon2.cast(pk22.next);
     pkn22.evoTarget = 23;
     pkn22.evoCond = 322;
-    pkn22.unit = 6149;
+    pkn22.unit = 24017;
     pkn22.weapon = 512;
     pkn22.expType = 4;
     const pk23 = Pokemon1.cast(pokemonList[23]);
@@ -383,7 +383,7 @@ function pokemonInit(){
     const pkn23 = Pokemon2.cast(pk23.next);
     pkn23.evoTarget = 0;
     pkn23.evoCond = 0;
-    pkn23.unit = 6667;
+    pkn23.unit = 26038;
     pkn23.weapon = 512;
     pkn23.expType = 4;
     const pk24 = Pokemon1.cast(pokemonList[24]);
@@ -398,7 +398,7 @@ function pokemonInit(){
     const pkn24 = Pokemon2.cast(pk24.next);
     pkn24.evoTarget = 25;
     pkn24.evoCond = 1;
-    pkn24.unit = 9225;
+    pkn24.unit = 36033;
     pkn24.weapon = 512;
     pkn24.expType = 3;
     const pk25 = Pokemon1.cast(pokemonList[25]);
@@ -413,7 +413,7 @@ function pokemonInit(){
     const pkn25 = Pokemon2.cast(pk25.next);
     pkn25.evoTarget = 26;
     pkn25.evoCond = 179;
-    pkn25.unit = 5384;
+    pkn25.unit = 21029;
     pkn25.weapon = 512;
     pkn25.expType = 3;
     const pk26 = Pokemon1.cast(pokemonList[26]);
@@ -428,7 +428,7 @@ function pokemonInit(){
     const pkn26 = Pokemon2.cast(pk26.next);
     pkn26.evoTarget = 0;
     pkn26.evoCond = 0;
-    pkn26.unit = 5384;
+    pkn26.unit = 21029;
     pkn26.weapon = 512;
     pkn26.expType = 3;
     const pk27 = Pokemon1.cast(pokemonList[27]);
@@ -443,7 +443,7 @@ function pokemonInit(){
     const pkn27 = Pokemon2.cast(pk27.next);
     pkn27.evoTarget = 28;
     pkn27.evoCond = 354;
-    pkn27.unit = 7680;
+    pkn27.unit = 30000;
     pkn27.weapon = 512;
     pkn27.expType = 2;
     const pk28 = Pokemon1.cast(pokemonList[28]);
@@ -458,7 +458,7 @@ function pokemonInit(){
     const pkn28 = Pokemon2.cast(pk28.next);
     pkn28.evoTarget = 29;
     pkn28.evoCond = 1;
-    pkn28.unit = 7680;
+    pkn28.unit = 30000;
     pkn28.weapon = 512;
     pkn28.expType = 2;
     const pk29 = Pokemon1.cast(pokemonList[29]);
@@ -473,7 +473,7 @@ function pokemonInit(){
     const pkn29 = Pokemon2.cast(pk29.next);
     pkn29.evoTarget = 0;
     pkn29.evoCond = 0;
-    pkn29.unit = 25017;
+    pkn29.unit = 97915;
     pkn29.weapon = 512;
     pkn29.expType = 2;
     const pk30 = Pokemon1.cast(pokemonList[30]);
@@ -488,7 +488,7 @@ function pokemonInit(){
     const pkn30 = Pokemon2.cast(pk30.next);
     pkn30.evoTarget = 31;
     pkn30.evoCond = 402;
-    pkn30.unit = 1356;
+    pkn30.unit = 5235;
     pkn30.weapon = 512;
     pkn30.expType = 3;
     const pk31 = Pokemon1.cast(pokemonList[31]);
@@ -503,7 +503,7 @@ function pokemonInit(){
     const pkn31 = Pokemon2.cast(pk31.next);
     pkn31.evoTarget = 32;
     pkn31.evoCond = 4;
-    pkn31.unit = 1356;
+    pkn31.unit = 5235;
     pkn31.weapon = 512;
     pkn31.expType = 3;
     const pk32 = Pokemon1.cast(pokemonList[32]);
@@ -518,7 +518,7 @@ function pokemonInit(){
     const pkn32 = Pokemon2.cast(pk32.next);
     pkn32.evoTarget = 0;
     pkn32.evoCond = 0;
-    pkn32.unit = 11046;
+    pkn32.unit = 43134;
     pkn32.weapon = 512;
     pkn32.expType = 3;
     const pk33 = Pokemon1.cast(pokemonList[33]);
@@ -533,7 +533,7 @@ function pokemonInit(){
     const pkn33 = Pokemon2.cast(pk33.next);
     pkn33.evoTarget = 34;
     pkn33.evoCond = 4;
-    pkn33.unit = 10536;
+    pkn33.unit = 41122;
     pkn33.weapon = 512;
     pkn33.expType = 2;
     const pk34 = Pokemon1.cast(pokemonList[34]);
@@ -548,7 +548,7 @@ function pokemonInit(){
     const pkn34 = Pokemon2.cast(pk34.next);
     pkn34.evoTarget = 0;
     pkn34.evoCond = 0;
-    pkn34.unit = 10536;
+    pkn34.unit = 41122;
     pkn34.weapon = 512;
     pkn34.expType = 2;
     const pk35 = Pokemon1.cast(pokemonList[35]);
@@ -563,7 +563,7 @@ function pokemonInit(){
     const pkn35 = Pokemon2.cast(pk35.next);
     pkn35.evoTarget = 36;
     pkn35.evoCond = 482;
-    pkn35.unit = 5135;
+    pkn35.unit = 20054;
     pkn35.weapon = 512;
     pkn35.expType = 0;
     const pk36 = Pokemon1.cast(pokemonList[36]);
@@ -578,7 +578,7 @@ function pokemonInit(){
     const pkn36 = Pokemon2.cast(pk36.next);
     pkn36.evoTarget = 0;
     pkn36.evoCond = 0;
-    pkn36.unit = 9225;
+    pkn36.unit = 36033;
     pkn36.weapon = 512;
     pkn36.expType = 0;
     const pk37 = Pokemon1.cast(pokemonList[37]);
@@ -593,7 +593,7 @@ function pokemonInit(){
     const pkn37 = Pokemon2.cast(pk37.next);
     pkn37.evoTarget = 38;
     pkn37.evoCond = 482;
-    pkn37.unit = 5384;
+    pkn37.unit = 21029;
     pkn37.weapon = 512;
     pkn37.expType = 0;
     const pk38 = Pokemon1.cast(pokemonList[38]);
@@ -608,7 +608,7 @@ function pokemonInit(){
     const pkn38 = Pokemon2.cast(pk38.next);
     pkn38.evoTarget = 0;
     pkn38.evoCond = 0;
-    pkn38.unit = 5646;
+    pkn38.unit = 22050;
     pkn38.weapon = 512;
     pkn38.expType = 0;
     const pk39 = Pokemon1.cast(pokemonList[39]);
@@ -623,7 +623,7 @@ function pokemonInit(){
     const pkn39 = Pokemon2.cast(pk39.next);
     pkn39.evoTarget = 40;
     pkn39.evoCond = 450;
-    pkn39.unit = 10289;
+    pkn39.unit = 40151;
     pkn39.weapon = 512;
     pkn39.expType = 3;
     const pk40 = Pokemon1.cast(pokemonList[40]);
@@ -638,7 +638,7 @@ function pokemonInit(){
     const pkn40 = Pokemon2.cast(pk40.next);
     pkn40.evoTarget = 41;
     pkn40.evoCond = 4;
-    pkn40.unit = 10289;
+    pkn40.unit = 40151;
     pkn40.weapon = 512;
     pkn40.expType = 3;
     const pk41 = Pokemon1.cast(pokemonList[41]);
@@ -653,7 +653,7 @@ function pokemonInit(){
     const pkn41 = Pokemon2.cast(pk41.next);
     pkn41.evoTarget = 0;
     pkn41.evoCond = 0;
-    pkn41.unit = 10289;
+    pkn41.unit = 40151;
     pkn41.weapon = 512;
     pkn41.expType = 3;
     const pk42 = Pokemon1.cast(pokemonList[42]);
@@ -668,7 +668,7 @@ function pokemonInit(){
     const pkn42 = Pokemon2.cast(pk42.next);
     pkn42.evoTarget = 43;
     pkn42.evoCond = 530;
-    pkn42.unit = 5384;
+    pkn42.unit = 21029;
     pkn42.weapon = 512;
     pkn42.expType = 2;
     const pk43 = Pokemon1.cast(pokemonList[43]);
@@ -683,7 +683,7 @@ function pokemonInit(){
     const pkn43 = Pokemon2.cast(pk43.next);
     pkn43.evoTarget = 0;
     pkn43.evoCond = 0;
-    pkn43.unit = 5384;
+    pkn43.unit = 21029;
     pkn43.weapon = 512;
     pkn43.expType = 2;
     const pk44 = Pokemon1.cast(pokemonList[44]);
@@ -698,7 +698,7 @@ function pokemonInit(){
     const pkn44 = Pokemon2.cast(pk44.next);
     pkn44.evoTarget = 11821;
     pkn44.evoCond = 322;
-    pkn44.unit = 4618;
+    pkn44.unit = 18036;
     pkn44.weapon = 512;
     pkn44.expType = 2;
     const pk45 = Pokemon1.cast(pokemonList[45]);
@@ -713,7 +713,7 @@ function pokemonInit(){
     const pkn45 = Pokemon2.cast(pk45.next);
     pkn45.evoTarget = 0;
     pkn45.evoCond = 0;
-    pkn45.unit = 6149;
+    pkn45.unit = 24017;
     pkn45.weapon = 512;
     pkn45.expType = 2;
     const pk46 = Pokemon1.cast(pokemonList[46]);
@@ -728,7 +728,7 @@ function pokemonInit(){
     const pkn46 = Pokemon2.cast(pk46.next);
     pkn46.evoTarget = 0;
     pkn46.evoCond = 0;
-    pkn46.unit = 2128;
+    pkn46.unit = 8243;
     pkn46.weapon = 512;
     pkn46.expType = 2;
     const pk47 = Pokemon1.cast(pokemonList[47]);
@@ -743,7 +743,7 @@ function pokemonInit(){
     const pkn47 = Pokemon2.cast(pk47.next);
     pkn47.evoTarget = 12848;
     pkn47.evoCond = 114;
-    pkn47.unit = 4618;
+    pkn47.unit = 18036;
     pkn47.weapon = 512;
     pkn47.expType = 2;
     const pk48 = Pokemon1.cast(pokemonList[48]);
@@ -758,7 +758,7 @@ function pokemonInit(){
     const pkn48 = Pokemon2.cast(pk48.next);
     pkn48.evoTarget = 49;
     pkn48.evoCond = 162;
-    pkn48.unit = 4618;
+    pkn48.unit = 18036;
     pkn48.weapon = 512;
     pkn48.expType = 2;
     const pk49 = Pokemon1.cast(pokemonList[49]);
@@ -773,7 +773,7 @@ function pokemonInit(){
     const pkn49 = Pokemon2.cast(pk49.next);
     pkn49.evoTarget = 0;
     pkn49.evoCond = 0;
-    pkn49.unit = 11563;
+    pkn49.unit = 45140;
     pkn49.weapon = 512;
     pkn49.expType = 2;
     const pk50 = Pokemon1.cast(pokemonList[50]);
@@ -788,7 +788,7 @@ function pokemonInit(){
     const pkn50 = Pokemon2.cast(pk50.next);
     pkn50.evoTarget = 51;
     pkn50.evoCond = 162;
-    pkn50.unit = 4870;
+    pkn50.unit = 19021;
     pkn50.weapon = 512;
     pkn50.expType = 2;
     const pk51 = Pokemon1.cast(pokemonList[51]);
@@ -803,7 +803,7 @@ function pokemonInit(){
     const pkn51 = Pokemon2.cast(pk51.next);
     pkn51.evoTarget = 0;
     pkn51.evoCond = 0;
-    pkn51.unit = 6919;
+    pkn51.unit = 27025;
     pkn51.weapon = 512;
     pkn51.expType = 2;
     const pk52 = Pokemon1.cast(pokemonList[52]);
@@ -818,7 +818,7 @@ function pokemonInit(){
     const pkn52 = Pokemon2.cast(pk52.next);
     pkn52.evoTarget = 53;
     pkn52.evoCond = 338;
-    pkn52.unit = 7680;
+    pkn52.unit = 30000;
     pkn52.weapon = 512;
     pkn52.expType = 3;
     const pk53 = Pokemon1.cast(pokemonList[53]);
@@ -833,7 +833,7 @@ function pokemonInit(){
     const pkn53 = Pokemon2.cast(pk53.next);
     pkn53.evoTarget = 0;
     pkn53.evoCond = 0;
-    pkn53.unit = 25017;
+    pkn53.unit = 97915;
     pkn53.weapon = 512;
     pkn53.expType = 3;
     const pk54 = Pokemon1.cast(pokemonList[54]);
@@ -848,7 +848,7 @@ function pokemonInit(){
     const pkn54 = Pokemon2.cast(pk54.next);
     pkn54.evoTarget = 0;
     pkn54.evoCond = 0;
-    pkn54.unit = 5135;
+    pkn54.unit = 20054;
     pkn54.weapon = 512;
     pkn54.expType = 2;
     const pk55 = Pokemon1.cast(pokemonList[55]);
@@ -863,7 +863,7 @@ function pokemonInit(){
     const pkn55 = Pokemon2.cast(pk55.next);
     pkn55.evoTarget = 56;
     pkn55.evoCond = 418;
-    pkn55.unit = 5135;
+    pkn55.unit = 20054;
     pkn55.weapon = 512;
     pkn55.expType = 2;
     const pk56 = Pokemon1.cast(pokemonList[56]);
@@ -878,7 +878,7 @@ function pokemonInit(){
     const pkn56 = Pokemon2.cast(pk56.next);
     pkn56.evoTarget = 0;
     pkn56.evoCond = 0;
-    pkn56.unit = 5384;
+    pkn56.unit = 21029;
     pkn56.weapon = 512;
     pkn56.expType = 2;
     const pk57 = Pokemon1.cast(pokemonList[57]);
@@ -893,7 +893,7 @@ function pokemonInit(){
     const pkn57 = Pokemon2.cast(pk57.next);
     pkn57.evoTarget = 58;
     pkn57.evoCond = 402;
-    pkn57.unit = 4870;
+    pkn57.unit = 19021;
     pkn57.weapon = 512;
     pkn57.expType = 2;
     const pk58 = Pokemon1.cast(pokemonList[58]);
@@ -908,7 +908,7 @@ function pokemonInit(){
     const pkn58 = Pokemon2.cast(pk58.next);
     pkn58.evoTarget = 0;
     pkn58.evoCond = 0;
-    pkn58.unit = 9753;
+    pkn58.unit = 38076;
     pkn58.weapon = 512;
     pkn58.expType = 2;
     const pk59 = Pokemon1.cast(pokemonList[59]);
@@ -923,7 +923,7 @@ function pokemonInit(){
     const pkn59 = Pokemon2.cast(pk59.next);
     pkn59.evoTarget = 60;
     pkn59.evoCond = 482;
-    pkn59.unit = 10289;
+    pkn59.unit = 40151;
     pkn59.weapon = 512;
     pkn59.expType = 2;
     const pk60 = Pokemon1.cast(pokemonList[60]);
@@ -938,7 +938,7 @@ function pokemonInit(){
     const pkn60 = Pokemon2.cast(pk60.next);
     pkn60.evoTarget = 0;
     pkn60.evoCond = 0;
-    pkn60.unit = 11046;
+    pkn60.unit = 43134;
     pkn60.weapon = 512;
     pkn60.expType = 2;
     const pk61 = Pokemon1.cast(pokemonList[61]);
@@ -953,7 +953,7 @@ function pokemonInit(){
     const pkn61 = Pokemon2.cast(pk61.next);
     pkn61.evoTarget = 0;
     pkn61.evoCond = 0;
-    pkn61.unit = 5646;
+    pkn61.unit = 22050;
     pkn61.weapon = 512;
     pkn61.expType = 4;
     const pk62 = Pokemon1.cast(pokemonList[62]);
@@ -968,7 +968,7 @@ function pokemonInit(){
     const pkn62 = Pokemon2.cast(pk62.next);
     pkn62.evoTarget = 63;
     pkn62.evoCond = 514;
-    pkn62.unit = 7680;
+    pkn62.unit = 21029;
     pkn62.weapon = 512;
     pkn62.expType = 1;
     const pk63 = Pokemon1.cast(pokemonList[63]);
@@ -983,7 +983,7 @@ function pokemonInit(){
     const pkn63 = Pokemon2.cast(pk63.next);
     pkn63.evoTarget = 0;
     pkn63.evoCond = 0;
-    pkn63.unit = 7680;
+    pkn63.unit = 36033;
     pkn63.weapon = 512;
     pkn63.expType = 1;
     const pk64 = Pokemon1.cast(pokemonList[64]);
@@ -998,7 +998,7 @@ function pokemonInit(){
     const pkn64 = Pokemon2.cast(pk64.next);
     pkn64.evoTarget = 65;
     pkn64.evoCond = 450;
-    pkn64.unit = 14130;
+    pkn64.unit = 55148;
     pkn64.weapon = 512;
     pkn64.expType = 4;
     const pk65 = Pokemon1.cast(pokemonList[65]);
@@ -1013,7 +1013,7 @@ function pokemonInit(){
     const pkn65 = Pokemon2.cast(pk65.next);
     pkn65.evoTarget = 0;
     pkn65.evoCond = 0;
-    pkn65.unit = 11308;
+    pkn65.unit = 44118;
     pkn65.weapon = 512;
     pkn65.expType = 4;
     const pk66 = Pokemon1.cast(pokemonList[66]);
@@ -1028,7 +1028,7 @@ function pokemonInit(){
     const pkn66 = Pokemon2.cast(pk66.next);
     pkn66.evoTarget = 67;
     pkn66.evoCond = 1;
-    pkn66.unit = 10026;
+    pkn66.unit = 39137;
     pkn66.weapon = 512;
     pkn66.expType = 2;
     const pk67 = Pokemon1.cast(pokemonList[67]);
@@ -1043,7 +1043,7 @@ function pokemonInit(){
     const pkn67 = Pokemon2.cast(pk67.next);
     pkn67.evoTarget = 0;
     pkn67.evoCond = 0;
-    pkn67.unit = 10797;
+    pkn67.unit = 42126;
     pkn67.weapon = 512;
     pkn67.expType = 2;
     const pk68 = Pokemon1.cast(pokemonList[68]);
@@ -1058,7 +1058,7 @@ function pokemonInit(){
     const pkn68 = Pokemon2.cast(pk68.next);
     pkn68.evoTarget = 69;
     pkn68.evoCond = 402;
-    pkn68.unit = 2391;
+    pkn68.unit = 9261;
     pkn68.weapon = 512;
     pkn68.expType = 3;
     const pk69 = Pokemon1.cast(pokemonList[69]);
@@ -1073,7 +1073,7 @@ function pokemonInit(){
     const pkn69 = Pokemon2.cast(pk69.next);
     pkn69.evoTarget = 70;
     pkn69.evoCond = 4;
-    pkn69.unit = 2391;
+    pkn69.unit = 9261;
     pkn69.weapon = 512;
     pkn69.expType = 3;
     const pk70 = Pokemon1.cast(pokemonList[70]);
@@ -1088,7 +1088,7 @@ function pokemonInit(){
     const pkn70 = Pokemon2.cast(pk70.next);
     pkn70.evoTarget = 0;
     pkn70.evoCond = 0;
-    pkn70.unit = 5384;
+    pkn70.unit = 8243;
     pkn70.weapon = 512;
     pkn70.expType = 3;
     const pk71 = Pokemon1.cast(pokemonList[71]);
@@ -1103,7 +1103,7 @@ function pokemonInit(){
     const pkn71 = Pokemon2.cast(pk71.next);
     pkn71.evoTarget = 72;
     pkn71.evoCond = 195;
-    pkn71.unit = 12590;
+    pkn71.unit = 49129;
     pkn71.weapon = 512;
     pkn71.expType = 1;
     const pk72 = Pokemon1.cast(pokemonList[72]);
@@ -1118,7 +1118,7 @@ function pokemonInit(){
     const pkn72 = Pokemon2.cast(pk72.next);
     pkn72.evoTarget = 0;
     pkn72.evoCond = 0;
-    pkn72.unit = 10797;
+    pkn72.unit = 42126;
     pkn72.weapon = 512;
     pkn72.expType = 1;
     const pk73 = Pokemon1.cast(pokemonList[73]);
@@ -1133,7 +1133,7 @@ function pokemonInit(){
     const pkn73 = Pokemon2.cast(pk73.next);
     pkn73.evoTarget = 74;
     pkn73.evoCond = 195;
-    pkn73.unit = 12329;
+    pkn73.unit = 48116;
     pkn73.weapon = 512;
     pkn73.expType = 3;
     const pk74 = Pokemon1.cast(pokemonList[74]);
@@ -1148,7 +1148,7 @@ function pokemonInit(){
     const pkn74 = Pokemon2.cast(pk74.next);
     pkn74.evoTarget = 0;
     pkn74.evoCond = 0;
-    pkn74.unit = 25791;
+    pkn74.unit = 100929;
     pkn74.weapon = 512;
     pkn74.expType = 3;
     const pk75 = Pokemon1.cast(pokemonList[75]);
@@ -1163,7 +1163,7 @@ function pokemonInit(){
     const pkn75 = Pokemon2.cast(pk75.next);
     pkn75.evoTarget = 76;
     pkn75.evoCond = 610;
-    pkn75.unit = 5135;
+    pkn75.unit = 20054;
     pkn75.weapon = 512;
     pkn75.expType = 1;
     const pk76 = Pokemon1.cast(pokemonList[76]);
@@ -1178,7 +1178,7 @@ function pokemonInit(){
     const pkn76 = Pokemon2.cast(pk76.next);
     pkn76.evoTarget = 0;
     pkn76.evoCond = 0;
-    pkn76.unit = 5646;
+    pkn76.unit = 22050;
     pkn76.weapon = 512;
     pkn76.expType = 1;
     const pk77 = Pokemon1.cast(pokemonList[77]);
@@ -1193,7 +1193,7 @@ function pokemonInit(){
     const pkn77 = Pokemon2.cast(pk77.next);
     pkn77.evoTarget = 78;
     pkn77.evoCond = 530;
-    pkn77.unit = 7680;
+    pkn77.unit = 29013;
     pkn77.weapon = 512;
     pkn77.expType = 2;
     const pk78 = Pokemon1.cast(pokemonList[78]);
@@ -1208,7 +1208,7 @@ function pokemonInit(){
     const pkn78 = Pokemon2.cast(pk78.next);
     pkn78.evoTarget = 0;
     pkn78.evoCond = 0;
-    pkn78.unit = 7680;
+    pkn78.unit = 28046;
     pkn78.weapon = 512;
     pkn78.expType = 2;
     const pk79 = Pokemon1.cast(pokemonList[79]);
@@ -1223,7 +1223,7 @@ function pokemonInit(){
     const pkn79 = Pokemon2.cast(pk79.next);
     pkn79.evoTarget = 80;
     pkn79.evoCond = 482;
-    pkn79.unit = 7680;
+    pkn79.unit = 18036;
     pkn79.weapon = 512;
     pkn79.expType = 2;
     const pk80 = Pokemon1.cast(pokemonList[80]);
@@ -1238,7 +1238,7 @@ function pokemonInit(){
     const pkn80 = Pokemon2.cast(pk80.next);
     pkn80.evoTarget = 0;
     pkn80.evoCond = 0;
-    pkn80.unit = 6919;
+    pkn80.unit = 27025;
     pkn80.weapon = 512;
     pkn80.expType = 2;
     const pk81 = Pokemon1.cast(pokemonList[81]);
@@ -1253,7 +1253,7 @@ function pokemonInit(){
     const pkn81 = Pokemon2.cast(pk81.next);
     pkn81.evoTarget = 82;
     pkn81.evoCond = 1;
-    pkn81.unit = 7680;
+    pkn81.unit = 57147;
     pkn81.weapon = 512;
     pkn81.expType = 1;
     const pk82 = Pokemon1.cast(pokemonList[82]);
@@ -1268,7 +1268,7 @@ function pokemonInit(){
     const pkn82 = Pokemon2.cast(pk82.next);
     pkn82.evoTarget = 0;
     pkn82.evoCond = 0;
-    pkn82.unit = 7680;
+    pkn82.unit = 55148;
     pkn82.weapon = 512;
     pkn82.expType = 1;
     const pk83 = Pokemon1.cast(pokemonList[83]);
@@ -1283,7 +1283,7 @@ function pokemonInit(){
     const pkn83 = Pokemon2.cast(pk83.next);
     pkn83.evoTarget = 84;
     pkn83.evoCond = 546;
-    pkn83.unit = 7680;
+    pkn83.unit = 3256;
     pkn83.weapon = 512;
     pkn83.expType = 2;
     const pk84 = Pokemon1.cast(pokemonList[84]);
@@ -1298,7 +1298,7 @@ function pokemonInit(){
     const pkn84 = Pokemon2.cast(pk84.next);
     pkn84.evoTarget = 0;
     pkn84.evoCond = 0;
-    pkn84.unit = 7680;
+    pkn84.unit = 6250;
     pkn84.weapon = 512;
     pkn84.expType = 2;
     const pk85 = Pokemon1.cast(pokemonList[85]);
@@ -1313,7 +1313,7 @@ function pokemonInit(){
     const pkn85 = Pokemon2.cast(pk85.next);
     pkn85.evoTarget = 86;
     pkn85.evoCond = 594;
-    pkn85.unit = 10289;
+    pkn85.unit = 40151;
     pkn85.weapon = 512;
     pkn85.expType = 2;
     const pk86 = Pokemon1.cast(pokemonList[86]);
@@ -1328,7 +1328,7 @@ function pokemonInit(){
     const pkn86 = Pokemon2.cast(pk86.next);
     pkn86.evoTarget = 0;
     pkn86.evoCond = 0;
-    pkn86.unit = 7680;
+    pkn86.unit = 21029;
     pkn86.weapon = 512;
     pkn86.expType = 2;
     const pk87 = Pokemon1.cast(pokemonList[87]);
@@ -1343,7 +1343,7 @@ function pokemonInit(){
     const pkn87 = Pokemon2.cast(pk87.next);
     pkn87.evoTarget = 88;
     pkn87.evoCond = 530;
-    pkn87.unit = 7680;
+    pkn87.unit = 9936;
     pkn87.weapon = 512;
     pkn87.expType = 2;
     const pk88 = Pokemon1.cast(pokemonList[88]);
@@ -1358,7 +1358,7 @@ function pokemonInit(){
     const pkn88 = Pokemon2.cast(pk88.next);
     pkn88.evoTarget = 0;
     pkn88.evoCond = 0;
-    pkn88.unit = 7680;
+    pkn88.unit = 56144;
     pkn88.weapon = 512;
     pkn88.expType = 2;
     const pk89 = Pokemon1.cast(pokemonList[89]);
@@ -1373,7 +1373,7 @@ function pokemonInit(){
     const pkn89 = Pokemon2.cast(pk89.next);
     pkn89.evoTarget = 90;
     pkn89.evoCond = 642;
-    pkn89.unit = 7680;
+    pkn89.unit = 3256;
     pkn89.weapon = 512;
     pkn89.expType = 2;
     const pk90 = Pokemon1.cast(pokemonList[90]);
@@ -1388,7 +1388,7 @@ function pokemonInit(){
     const pkn90 = Pokemon2.cast(pk90.next);
     pkn90.evoTarget = 0;
     pkn90.evoCond = 0;
-    pkn90.unit = 7680;
+    pkn90.unit = 63342;
     pkn90.weapon = 512;
     pkn90.expType = 2;
     const pk91 = Pokemon1.cast(pokemonList[91]);
@@ -1403,7 +1403,7 @@ function pokemonInit(){
     const pkn91 = Pokemon2.cast(pk91.next);
     pkn91.evoTarget = 92;
     pkn91.evoCond = 258;
-    pkn91.unit = 7680;
+    pkn91.unit = 4638;
     pkn91.weapon = 512;
     pkn91.expType = 2;
     const pk92 = Pokemon1.cast(pokemonList[92]);
@@ -1418,7 +1418,7 @@ function pokemonInit(){
     const pkn92 = Pokemon2.cast(pk92.next);
     pkn92.evoTarget = 0;
     pkn92.evoCond = 0;
-    pkn92.unit = 7680;
+    pkn92.unit = 4634;
     pkn92.weapon = 512;
     pkn92.expType = 2;
     const pk93 = Pokemon1.cast(pokemonList[93]);
@@ -1433,7 +1433,7 @@ function pokemonInit(){
     const pkn93 = Pokemon2.cast(pk93.next);
     pkn93.evoTarget = 94;
     pkn93.evoCond = 514;
-    pkn93.unit = 7680;
+    pkn93.unit = 42126;
     pkn93.weapon = 512;
     pkn93.expType = 2;
     const pk94 = Pokemon1.cast(pokemonList[94]);
@@ -1448,7 +1448,7 @@ function pokemonInit(){
     const pkn94 = Pokemon2.cast(pk94.next);
     pkn94.evoTarget = 0;
     pkn94.evoCond = 0;
-    pkn94.unit = 7680;
+    pkn94.unit = 41122;
     pkn94.weapon = 512;
     pkn94.expType = 2;
     const pk95 = Pokemon1.cast(pokemonList[95]);

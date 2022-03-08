@@ -258,3 +258,7 @@ function updateLight(cp){
         if(IsUserCP()){SetMemoryEPD(EPD(0x657A9C), Subtract, 1);}
     }
 }
+
+function SelCircle(epd, sprite){
+    SetMemoryXEPD(epdread_epd(epd+0xC/4)+0x8/4, SetTo, sprite, 0xFFFF);
+}

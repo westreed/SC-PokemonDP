@@ -8,10 +8,16 @@ import Variables.language as vl;
 import dataTable as dt;
 
 const playerPokemonUnit     = PVariable(list(1, 2, 8, 19, 22, 21, 43, 44));
+const playerPokemonSprite   = PVariable(list(381, 382, 383, 384, 304, 385, 305, 306));
 
 function returnPokemonUnit(cp, type){
     if(type){return playerPokemonUnit[cp];}
     else{return playerPokemonUnit[cp+4];}
+}
+
+function returnPokemonSprite(cp, type){
+    if(type){return playerPokemonSprite[cp];}
+    else{return playerPokemonSprite[cp+4];}
 }
 
 function returnPokemonWeapon(cp, type){
@@ -55,6 +61,7 @@ function settingPokemon(cp, type, pokemon){
     const z = StringBuffer(1024);
     const unitType = returnPokemonUnit(cp, type);
     const weaponType = returnPokemonWeapon(cp, type);
+    const spriteType = returnPokemonSprite(cp, type);
 
     const mk = pmp.myPokemon.cast(retrunPokemonList(cp, type, pokemon));
     const mkn = pmp.myPokemon2.cast(mk.next);
@@ -62,7 +69,7 @@ function settingPokemon(cp, type, pokemon){
     const pkn = ppi.Pokemon2.cast(pk.next);
     if(type){mkn.battle = 1;}
 
-    const unitGrp, portrait = pcm.divideData256(pkn.unit);
+    const imgGrp, portrait = pcm.divideData1000(pkn.unit);
     const hp, atk, amr, spd = pcm.divideStats(pk.BTs);
     const vhp,vatk,vamr,vspd= pcm.divideIVs(mk.IVs);
     const weapon, range = pcm.divideData256(pkn.weapon);
@@ -74,7 +81,8 @@ function settingPokemon(cp, type, pokemon){
     const unitSpeed = pcm.returnSpeed(cp, mk.level, spd, vspd);
     const attackSpd = dt.attackSpeed[pcm.settingSpeed(unitSpeed)];
 
-    bwrite(0x6644F8 + unitType, unitGrp); //유닛외형
+    //bwrite(0x6644F8 + unitType, unitGrp); //유닛외형
+    wwrite(0x666160 + 2*spriteType, imgGrp); //스프라이트의 이미지변경
     wwrite(0x662F88 + 2*unitType, portrait); //유닛포트레잇
     dwwrite(0x662350 + 4*unitType, unitHP*256); //유닛체력
     bwrite(0x65FEC8 + unitType, unitArmor); //유닛아머

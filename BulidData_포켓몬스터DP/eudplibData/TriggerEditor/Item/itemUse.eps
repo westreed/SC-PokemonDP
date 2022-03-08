@@ -78,7 +78,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
                 if(state && bbs.pokemonNumber[cp]+1 == pokemonSelect){
                     const curHP = bbg.pokemonCurHP[cp];
                     if(curHP != maxHP){
-                        if(curHP + healing < mpk.hitpoint){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, healing*256);}
+                        if(curHP + healing < maxHP){SetMemoryEPD(bbs.battleEPD[cp]+2, Add, healing*256);}
                         else{SetMemoryEPD(bbs.battleEPD[cp]+2, SetTo, maxHP*256);}
                     }else{
                         DisplayText("\x07！\x04포켓몬이 건강한 상태입니다.");
@@ -88,7 +88,7 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
                 }
                 else{
                     if(mpk.hitpoint != maxHP){
-                        if(mpk.hitpoint + healing < mpk.hitpoint){mpk.hitpoint += healing;}
+                        if(mpk.hitpoint + healing < maxHP){mpk.hitpoint += healing;}
                         else{mpk.hitpoint = maxHP;}
                     }else{
                         DisplayText("\x07！\x04포켓몬이 건강한 상태입니다.");

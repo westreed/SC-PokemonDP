@@ -57,7 +57,7 @@ function showFieldPokemon(cp){
                         const pokeIndex = wildList[index]; //0~n
                         const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokeIndex]);
                         s.appendf("\x04{:s} ",pk.name);
-                        if(i > 0 && i % 4 == 0){s.appendf("\n\x13");}
+                        if(i > 0 && i % 3 == 0){s.appendf("\n\x13");}
                     }
                     s.DisplayAt(0);
                     return;
