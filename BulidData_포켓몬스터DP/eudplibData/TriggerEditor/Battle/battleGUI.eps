@@ -38,7 +38,9 @@ function battleTextGUI(cp){
         if(pokemonCurHP[cp] < 40 && ved.sound_HPDelay[cp] == 0){ved.sound_HPDelay[cp] = 40; PlayWAV("staredit\\wav\\emerald_low hp.wav");}
     }
     else{pokemonCurHP[cp] = 0;}
-    if(MemoryXEPD(bbs.battleEPD[cp+4]+0x4C/4, AtLeast, 0x100, 0xFF00)){pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);}
+    if(MemoryXEPD(bbs.battleEPD[cp+4]+0x4C/4, AtLeast, 0x100, 0xFF00)){
+        pokemonCurHP[cp+4] = hpread_epd(bbs.battleEPD[cp+4]+2);
+    }
     else{pokemonCurHP[cp+4] = 0;}
 
     //배틀메뉴 표시

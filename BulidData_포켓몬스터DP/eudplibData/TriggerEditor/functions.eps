@@ -260,5 +260,7 @@ function updateLight(cp){
 }
 
 function SelCircle(epd, sprite){
-    SetMemoryXEPD(epdread_epd(epd+0xC/4)+0x8/4, SetTo, sprite, 0xFFFF);
+    const csprite2epdread_epd = py_eval('f_readgen_epd(0x1FFFC, (0x188002-0x58A364//4, lambda x: x//4))');
+    epd += 3;
+    SetMemoryXEPD(csprite2epdread_epd(epd), SetTo, sprite, 0xFFFF);
 }

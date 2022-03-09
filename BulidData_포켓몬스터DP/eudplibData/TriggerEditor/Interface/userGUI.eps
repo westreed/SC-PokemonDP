@@ -60,7 +60,7 @@ function printGUI(cp){
             PlayWAV("staredit\\wav\\GUI sel cursor.wav");
         }
     }
-    if(mainMenu[cp]){
+    if(mainMenu[cp] && pmp.evoIng[cp] == 0){
         const sub = subMenu[cp];
         if(sub == 0){mainMenu_UI(cp);}
         else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감

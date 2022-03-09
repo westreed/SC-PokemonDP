@@ -103,22 +103,25 @@ function subMenu_PokemonAction(cp, index){
             const nextIndex = index+1;
             if(preIndex != nextIndex){
                 const cpPk      = cp*pmp.userPokemonNum;
-                const preMpk    = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preIndex-1]);
-                const prePk     = ppi.Pokemon1.cast(ppi.pokemonList[preMpk.index-1]);
                 const nextMpk   = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+nextIndex-1]);
-                const nextPk    = ppi.Pokemon1.cast(ppi.pokemonList[nextMpk.index-1]);
-                s.printf("\x07！\x1ELv.{} {:s}\x04와(과) \x1ELv.{} {:s}\x04의 위치를 교체합니다.",preMpk.level,prePk.name,nextMpk.level,nextPk.name);
+                if(nextMpk.index){
+                    const preMpk    = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preIndex-1]);
+                    const prePk     = ppi.Pokemon1.cast(ppi.pokemonList[preMpk.index-1]);
 
-                const tempMpk   = pmp.myPokemon.alloc();
-                preMpk.copyto(tempMpk); //preMpk  -> tempMpk
-                nextMpk.copyto(preMpk); //nextMpk -> preMpk
-                tempMpk.copyto(nextMpk);//tempMpk -> nextMpk
-                pmp.myPokemon.free(tempMpk);
+                    const nextPk    = ppi.Pokemon1.cast(ppi.pokemonList[nextMpk.index-1]);
+                    s.printf("\x07！\x1ELv.{} {:s}\x04와(과) \x1ELv.{} {:s}\x04의 위치를 교체합니다.",preMpk.level,prePk.name,nextMpk.level,nextPk.name);
 
-                iug.subMiniMenu[cp] = 0; pokeAction[cp] = 0;
-                pps.guiUpdate[cp] = 1;
-                
-                PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+                    const tempMpk   = pmp.myPokemon.alloc();
+                    preMpk.copyto(tempMpk); //preMpk  -> tempMpk
+                    nextMpk.copyto(preMpk); //nextMpk -> preMpk
+                    tempMpk.copyto(nextMpk);//tempMpk -> nextMpk
+                    pmp.myPokemon.free(tempMpk);
+
+                    iug.subMiniMenu[cp] = 0; pokeAction[cp] = 0;
+                    pps.guiUpdate[cp] = 1;
+                    
+                    PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+                }
             }
             else{
                 DisplayText("\x08！\x04같은 위치의 포켓몬과 교체할 수 없습니다.");

@@ -21,7 +21,8 @@ const trainerList   = EUDArray(4*trainerNum);
 
 function subSpeech(cp){
     const index = subIndex[cp];
-    if(Deaths(cp, Exactly, 16, "A Key")){
+    if(Deaths(cp, Exactly, 16, "A Key") || pps.forceSpeech[cp]){
+        pps.forceSpeech[cp] = 0;
         const currentLoc = pps.currentLocation[cp];
         const cpTn = cp*trainerNum;
         if(index == 0){
@@ -57,6 +58,13 @@ function subSpeech(cp){
                 } else if(Bring(P7, Exactly, 1, vni.marine, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 2;
+                }
+            }
+            //포켓몬센터
+            else if(currentLoc == 10){
+                if(Bring(P5, Exactly, 1, 46, mLoc)){
+                    pmu.changeMoveState(cp, false);
+                    subIndex[cp] = 1;
                 }
             }
         }
@@ -113,6 +121,17 @@ function subSpeech(cp){
                 if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.subLog6, subSph, true);}
                 else{vms.endStep(cp, subSph);}
             }
+        }
+        //포켓몬센터
+        else if(currentLoc == 10){
+            if(step == 0){
+                vms.waitSpeechText(cp, vli.moveLoc+cp, vsl.subLog7, subSph, true);
+                if(vms.sphDelay[cp] == 0 && vms.sphIndex[cp] == 1){
+                    vms.sphDelay[cp] = 1; pmp.healMyPokemon(cp);
+                    PlayWAV("staredit\\wav\\Pokemon Healed.ogg");
+                }
+            }
+            else{vms.endStep(cp, subSph);}
         }
     }
 }

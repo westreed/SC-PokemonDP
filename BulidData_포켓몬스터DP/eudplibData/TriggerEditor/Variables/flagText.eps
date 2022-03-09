@@ -13,66 +13,68 @@ function printFlagEnd(cp){
     }
 }
 function printFlagText(cp){
-    const currentLoc = pps.currentLocation[cp];
-    const mLoc = vli.moveLoc+cp;
-    //떡잎마을
-    if(currentLoc == 1){
-        if(Bring(P12, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02여기는 떡잎마을\n\x13\x02어린잎이 숨 쉬는 장소\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
+    if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
+        const currentLoc = pps.currentLocation[cp];
+        const mLoc = vli.moveLoc+cp;
+        //떡잎마을
+        if(currentLoc == 1){
+            if(Bring(P12, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02여기는 떡잎마을\n\x13\x02어린잎이 숨 쉬는 장소\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else if(Bring(P5, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02광휘의 집\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else if(Bring(P6, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02용식의 집\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else{printFlagEnd(cp);}
         }
-        else if(Bring(P5, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02광휘의 집\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
+        //201번도로
+        else if(currentLoc == 2){
+            if(Bring(P12, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02여기는 201번도로\n\x13\x02↓떡잎마을\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else if(Bring(P8, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02여기는 201번도로\n\x13\x02→잔모래마을\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else{printFlagEnd(cp);}
         }
-        else if(Bring(P6, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02용식의 집\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
+        //진실호수근처
+        else if(currentLoc == 3){
+            if(Bring(P5, Exactly, 1, 215, mLoc)){
+                f.insert(0);
+                f.appendf("\n\x13{:s}\n",vms.sph1);
+                f.appendf("\x13\x02↑진실호수 입구\n\x13\x02마음을 표현하는 호수\n");
+                f.appendf("\x13{:s}",vms.sph1);
+                f.DisplayAt(3);
+                printCheck[cp] = 1;
+            }
+            else{printFlagEnd(cp);}
         }
-        else{printFlagEnd(cp);}
-    }
-    //201번도로
-    else if(currentLoc == 2){
-        if(Bring(P12, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02여기는 201번도로\n\x13\x02↓떡잎마을\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
-        }
-        else if(Bring(P8, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02여기는 201번도로\n\x13\x02→잔모래마을\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
-        }
-        else{printFlagEnd(cp);}
-    }
-    //진실호수근처
-    else if(currentLoc == 3){
-        if(Bring(P5, Exactly, 1, 215, mLoc)){
-            f.insert(0);
-            f.appendf("\n\x13{:s}\n",vms.sph1);
-            f.appendf("\x13\x02↑진실호수 입구\n\x13\x02마음을 표현하는 호수\n");
-            f.appendf("\x13{:s}",vms.sph1);
-            f.DisplayAt(3);
-            printCheck[cp] = 1;
-        }
-        else{printFlagEnd(cp);}
     }
 }

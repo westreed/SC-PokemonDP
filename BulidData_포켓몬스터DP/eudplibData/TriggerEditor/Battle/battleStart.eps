@@ -239,7 +239,8 @@ function battleSystem(cp){
             //내 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp] == 0){
                 if(imp.pokeChange[cp]){imp.pokeChange[cp] = 0;}
-                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
+                const cpPk = pmp.userPokemonNum*cp;
+                const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonNumber[cp]]);
                 const mpkn = pmp.myPokemon2.cast(mpk.next);
                 mpk.state = 1; mpk.hitpoint = 0; mpkn.battle = 0; //기절부여 및 배틀상태 제거
                 iug.subMenu[cp] = 0; iug.subMiniMenu[cp] = 0;
@@ -250,11 +251,12 @@ function battleSystem(cp){
                     else{battleStep[cp] = 49;} //트레이너와의 배틀종료
                     endBattle(cp);
                 }
-                imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
+                // imb.writeSinoBook(cp, pokemonIndex[cp+4]-1);
             }
             //상대 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp+4] == 0){
-                const cpk = pmp.myPokemon.cast(pmp.computerPokemonList[pokemonNumber[cp+4]]);
+                const cp6 = cp*6;
+                const cpk = pmp.myPokemon.cast(pmp.computerPokemonList[cp6+pokemonNumber[cp+4]]);
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[cpk.index-1]);
                 cpk.state = 1; //기절상태
                 //type:야생?트레이너? exp:개체경험치 lucky:cp의포켓몬이 행운의알을 들고 있는가? level:상대레벨
@@ -445,9 +447,22 @@ function battleSystem(cp){
         //배틀종료 후 원래자리로 복귀 (패배)
         else if(step == 99){
             const lastHeal = pps.lastVisitHeal[cp];
-            MoveLocation(vli.lastLoc+cp, 46, P5, vli.mapLoc[lastHeal]);
+            const mapType1 = vli.mapType[lastHeal];
+            //포켓몬센터가 있는 마을이나 도시인 경우
+            if(mapType1 == 2 || mapType1 == 3){
+                MoveLocation(vli.lastLoc+cp, 46, P5, vli.mapLoc[10]);
+                pps.currentLocation[cp] = 10;
+                pps.settingMusic[cp] = vli.mapMusic[10];
+            }
+            //포켓몬센터가 없는 장소인 경우 (P5 디파일러에게 이동)
+            else{
+                MoveLocation(vli.lastLoc+cp, 46, P5, vli.mapLoc[lastHeal]);
+                pps.currentLocation[cp] = lastHeal;
+                pps.settingMusic[cp] = vli.mapMusic[lastHeal];
+            }
             MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.lastLoc+cp);
-            CenterView(vli.mapLoc[lastHeal]);
+            pps.forceSpeech[cp] = 1;
+            CenterView(vli.lastLoc+cp);
             battleStep[cp] = 101;
         }
         //배틀종료 후 원래자리로 복귀
@@ -455,6 +470,7 @@ function battleSystem(cp){
             const lastL = vli.lastLoc+cp;
             MoveUnit(1, pps.playerUnit[cp], cp, 64, lastL);
             CenterView(lastL);
+            pmu.changeMoveState(cp, true);
             battleStep[cp] = 101;
         }
         else if(step == 101){
@@ -462,7 +478,6 @@ function battleSystem(cp){
             RemoveUnit(ved.visionUnit, cp);
             pps.userSetLight[cp] = 31;
             pps.settingMusic[cp] = vms.restoreMusic[cp];
-            pmu.changeMoveState(cp, true);
             pps.battleState[cp] = false;
             battleStep[cp] = 0;
             vms.removeTextAll();

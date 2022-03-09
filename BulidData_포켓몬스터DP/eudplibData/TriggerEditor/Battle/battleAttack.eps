@@ -21,19 +21,21 @@ function attackAI(cp){
                 Order(cUnit, P5, battleLoc, Patrol, vli.tempMoveLoc);
             }
             else{
-                MoveLocation(vli.tempMoveLoc, 37, P5, battleLoc); //상대 포켓몬
+                //소환된 위치로 돌아가기
+                MoveLocation(vli.tempMoveLoc, 37, P5, battleLoc);
                 Order(cUnit, P5, battleLoc, Move, vli.tempMoveLoc);
             }
         }
         if(pps.setAutoBattle[cp] == 0){
             const pEPD = bbs.battleEPD[cp];
-            if(!MemoryXEPD(cEPD+0x4D/4, Exactly, 0xA00, 0xFF00)){
+            if(!MemoryXEPD(pEPD+0x4D/4, Exactly, 0xA00, 0xFF00)){
                 if(Bring(P5, Exactly, 1, cUnit, battleLoc)){
                     MoveLocation(vli.tempMoveLoc, cUnit, P5, battleLoc);
                     Order(pUnit, cp, battleLoc, Attack, vli.tempMoveLoc);
                 }
                 else{
-                    MoveLocation(vli.tempMoveLoc, 50, P5, battleLoc); //상대 포켓몬
+                    //소환된 위치로 돌아가기
+                    MoveLocation(vli.tempMoveLoc, 50, P5, battleLoc);
                     Order(pUnit, cp, battleLoc, Move, vli.tempMoveLoc);
                 }
             }
