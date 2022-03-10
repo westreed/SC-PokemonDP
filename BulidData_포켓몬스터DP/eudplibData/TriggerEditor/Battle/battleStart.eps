@@ -19,6 +19,7 @@ import BGMPlayer as BGM;
 
 const s = StringBuffer(1024);
 const battleStep    = PVariable(); //0:배틀종료 1이상:배틀시작
+const nextExpStep   = PVariable();
 const battleLoop    = PVariable();
 const battleDelay   = PVariable(); //딜레이계산용
 const battleType    = PVariable(); //0:야생 1:트레이너 2:라이벌 3:체육관장 4:갤럭시 5:갤럭시간부 6:갤럭시보스 7:디아루가펄기아 8:챔피언 9:전설 10:PVP
@@ -48,7 +49,7 @@ const battleMap     = [0,0,0,1,1,1,1]; //battleType별로 맵지정 0:battleLoc,
 */
 
 function isWild(type){
-    if(type == 0 || type == 7){return true;}
+    if(type == 0 || type == 7 || type == 9){return true;}
     return false;
 }
 
@@ -103,6 +104,25 @@ function wildSetting(cp, type, pokemon, level){
     //function setComputerData(cp, pokemon, index, lv, IV)
     pmp.setComputerData(cp, pokemon, 0, level, 0);
     battleUnit[cp] = 999;
+    battleStep[cp] = 1; //Battle Start
+}
+
+function trainerSetting(cp, type, name, unit, pokemon:EUDArray){
+    //pokemon은 총 길이 12로, pokemonIndex, pokemonLevel로 구성됨
+    pmp.resetComputerList(cp);
+    battleType[cp] = type;
+    if(battleMap[type] == 0){battleLocation[cp] = vli.battleLoc+cp;}
+    else{battleLocation[cp] = vli.gymLoc+cp;}
+
+    pokemonIndex[cp+4] = pokemon[1];
+    const pokemonLen = pokemon[0];
+    for (var i=0; i<pokemonLen; i++){
+        const j = i*2 + 1;
+        pmp.setComputerData(cp, pokemon[j], i, pokemon[j+1], 0);
+    }
+
+    battleName[cp] = name;
+    battleUnit[cp] = unit;
     battleStep[cp] = 1; //Battle Start
 }
 
@@ -211,40 +231,76 @@ function battleSystem(cp){
             MoveLocation(vli.tempMoveLoc, 50, P6, battleMapLoc); //내 트레이너
             MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
             createMyPokemon(cp, false); //상대 포켓몬
+            if(!isWild(battleType[cp])){fc.scanEffect(vli.tempMoveLoc, 391);}
             
             //트레이너가 있는 경우
             if(battleUnit[cp] != 999){
                 MoveLocation(vli.tempMoveLoc, 37, P6, battleMapLoc); //상대 트레이너
                 CreateUnit(1, battleUnit[cp], vli.tempMoveLoc, P5);
+                SetInvincibility(Enable, battleUnit[cp], P5, battleMapLoc);
             }
 
             battleStep[cp] += 1;
         }
         else if(step == 5){
-            s.insert(0, "\n\n\n");
-            s.appendf("\x13{:s}\n",vms.sph1);
-            s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n",pokemonName[cp+4]);
-            s.appendf("\x13\x04가랏! \x17{:s}\x04!\n",pokemonName[cp]);
-            s.appendf("\x13{:s}",vms.sph1);
-            s.DisplayAt(0);
-            battleDelay[cp] += 1;
-            if(battleDelay[cp] > 24*2){
-                battleDelay[cp] = 0;
-                PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-                battleStep[cp] += 1;
+            //야생 전투인 경우
+            if(isWild(battleType[cp])){
+                s.insert(0, "\n\n\n");
+                s.appendf("\x13{:s}\n",vms.sph1);
+                s.appendf("\x13\x04앗! \x1E야생 {:s}\x04이(가) 튀어나왔다!\n",pokemonName[cp+4]);
+                s.appendf("\x13\x04가랏! \x17{:s}\x04!\n",pokemonName[cp]);
+                s.appendf("\x13{:s}",vms.sph1);
+                s.DisplayAt(0);
+                battleDelay[cp] += 1;
+                if(battleDelay[cp] > 24*2){
+                    battleDelay[cp] = 0;
+                    PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+                    battleStep[cp] += 1;
+                }
+            }
+            //사람과의 전투인 경우
+            else{
+                battleDelay[cp] += 1;
+                if(battleDelay[cp] < 24*2){
+                    s.insert(0, "\n\n\n");
+                    s.appendf("\x13{:s}\n",vms.sph1);
+                    s.appendf("\x13\x17{:s}\x04(이)가\n",battleName[cp]);
+                    s.appendf("\x13\x04승부를 걸어왔다!\n");
+                    s.appendf("\x13{:s}",vms.sph1);
+                    s.DisplayAt(0);
+                }
+                else if(battleDelay[cp] < 24*4){
+                    s.insert(0, "\n\n\n");
+                    s.appendf("\x13{:s}\n",vms.sph1);
+                    s.appendf("\x13\x17{:s}\x04(은)는\n",battleName[cp]);
+                    s.appendf("\x13\x1E{:s}\x04(을)를 내보냈다!\n",pokemonName[cp+4]);
+                    s.appendf("\x13{:s}",vms.sph1);
+                    s.DisplayAt(0);
+                }
+                else{
+                    battleDelay[cp] = 0;
+                    battleStep[cp] += 1;
+                }
             }
         }
         //전투 중
         else if(step == 6){
             //내 포켓몬이 진 경우
             if(bbg.pokemonCurHP[cp] == 0){
+                //포켓몬 교체 중에 내 포켓몬이 진 경우, 교체 초기화하기
                 if(imp.pokeChange[cp]){imp.pokeChange[cp] = 0;}
+
                 const cpPk = pmp.userPokemonNum*cp;
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonNumber[cp]]);
                 const mpkn = pmp.myPokemon2.cast(mpk.next);
-                mpk.state = 1; mpk.hitpoint = 0; mpkn.battle = 0; //기절부여 및 배틀상태 제거
+                //기절부여 및 배틀상태 제거
+                mpk.state = 1; mpk.hitpoint = 0; mpkn.battle = 0;
+                //메뉴 종료
                 iug.subMenu[cp] = 0; iug.subMiniMenu[cp] = 0;
+
+                //내가 낼 수 있는 포켓몬이 존재하는지
                 const nextPokemon = pmp.returnPlayerIndex(cp);
+                //있는 경우 포켓몬 내보내기 메뉴 활성화
                 if(nextPokemon != 10){battleStep[cp] = 7; pps.guiUpdate[cp] = 1;}
                 else{
                     if(isWild(battleType[cp])){battleStep[cp] = 50;} //배틀종료
@@ -279,9 +335,51 @@ function battleSystem(cp){
         else if(step == 7){
             imp.subMenu_Pokemon(cp, 0, 2);
         }
-        //컴퓨터는 다음 포켓몬 내보내기
+        //컴퓨터는 다음 포켓몬 내보내기1
         else if(step == 8){
+            battleDelay[cp] ++;
+            if(battleDelay[cp] < 24*2){
+                s.insert(0, "\n\n\n");
+                s.appendf("\x13{:s}\n",vms.sph1);
+                s.appendf("\x13\x04상대 \x1E{:s}\x04(은)는 쓰러졌다!\n",pokemonName[cp+4]);
+                s.appendf("\x13\n");
+                s.appendf("\x13{:s}",vms.sph1);
+                s.DisplayAt(0);
+            }
+            else{
+                battleDelay[cp] = 0;
+                nextExpStep[cp] = 9;
+                battleStep[cp] = 90;
+            }
+        }
+        //컴퓨터는 다음 포켓몬 내보내기2
+        else if(step == 9){
+            battleDelay[cp] ++;
+            if(battleDelay[cp] == 1){
+                const nextPokemon = pmp.returnComputerIndex(cp);
+                pokemonNumber[cp+4] = nextPokemon;
+                const pUnit = ppst.settingPokemon(cp, false, nextPokemon);
 
+                const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemonIndex[cp]-1]);
+                const ck = ppi.Pokemon1.cast(ppi.pokemonList[pokemonIndex[cp+4]-1]);
+                pwr.calculateWeak_PVE(cp, pk.type, ck.type);
+
+            }
+            if(battleDelay[cp] < 24*2){
+                s.insert(0, "\n\n\n");
+                s.appendf("\x13{:s}\n",vms.sph1);
+                s.appendf("\x13\x17{:s}\x04(은)는\n",battleName[cp]);
+                s.appendf("\x13\x1E{:s}\x04(을)를 내보냈다!\n", pokemonName[cp+4]);
+                s.appendf("\x13{:s}",vms.sph1);
+                s.DisplayAt(0);
+            }
+            else{
+                createMyPokemon(cp, false); //상대 포켓몬 생성
+                fc.scanEffect(vli.tempMoveLoc, 391);
+                PlayWAV("staredit\\wav\\Battle recall.wav");
+                battleDelay[cp] = 0;
+                battleStep[cp] = 6; //전투로 복귀
+            }
         }
         //플레이어 패배 (야생이 아닌 경우)
         else if(step == 49){
@@ -323,7 +421,7 @@ function battleSystem(cp){
             }
             else{battleStep[cp] = 99;}
         }
-        //야생포켓몬 패배
+        //야생포켓몬의 패배
         else if(step == 51){
             battleDelay[cp] += 1;
             if(battleDelay[cp] < 24*2){
@@ -335,19 +433,24 @@ function battleSystem(cp){
             }
             else{
                 battleDelay[cp] = 0;
+                nextExpStep[cp] = 100;
                 battleStep[cp] = 90;
             }
         }
-        //도망치기
+        //트레이너의 패배
         else if(step == 52){
+
+        }
+        //도망치기
+        else if(step == 53){
             const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[pokemonNumber[cp]]);
             const mpkn = pmp.myPokemon2.cast(mpk.next);
             mpkn.battle = 0; mpk.hitpoint = bbg.pokemonCurHP[cp];
             PlayWAV("staredit\\wav\\Battle flee.wav");
             endBattle(cp);
-            battleStep[cp] = 53;
+            battleStep[cp] = 54;
         }
-        else if(step == 53){
+        else if(step == 54){
             battleDelay[cp] += 1;
             if(battleDelay[cp] < 24*4){
                 s.insert(0, "\n\n\n");
@@ -389,7 +492,7 @@ function battleSystem(cp){
                         }
                     }
                     battleDelay[cp] = 0;
-                    battleStep[cp] = 100; //복귀
+                    battleStep[cp] = nextExpStep[cp];
                 }
                 else if(battleDelay[cp] < 24*3){
                     s.insert(0, "\n\n\n");
@@ -476,6 +579,7 @@ function battleSystem(cp){
         else if(step == 101){
             SetAllianceStatus(P5, Ally);
             RemoveUnit(ved.visionUnit, cp);
+            RemoveUnitAt(1, battleUnit[cp], battleLocation[cp], P5);
             pps.userSetLight[cp] = 31;
             pps.settingMusic[cp] = vms.restoreMusic[cp];
             pps.battleState[cp] = false;

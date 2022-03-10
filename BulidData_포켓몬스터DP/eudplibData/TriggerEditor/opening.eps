@@ -50,7 +50,7 @@ function openingStep(cp){
         s.append("\n");
         s.append("\x13\x1C└─────────────────────┘");
         s.DisplayAt(0);
-        if(opDelay[cp] < 216){opDelay[cp] += 1;}
+        if(opDelay[cp] < 270){opDelay[cp] += 1;}
         else{opDelay[cp] = 0; opStep[cp] = 2;}
     }
     else if(opStep[cp] == 2){
@@ -63,20 +63,7 @@ function openingStep(cp){
         s.append("\n");
         s.append("\x13\x1C└─────────────────────┘");
         s.DisplayAt(0);
-        if(opDelay[cp] < 216){opDelay[cp] += 1;}
-        else{opDelay[cp] = 0; opStep[cp] = 3;}
-    }
-    else if(opStep[cp] == 3){
-        s.insert(0, "\x13\x1C┌─────────────────────┐\n");
-        s.append("\x13\x04포켓몬스터 DP\n");
-        s.append("\x13\x1EPokemon Diamond·Pearl\n");
-        s.append("\n");
-        s.append("\n");
-        s.append("\x13\x04ⓒ 2008 GAME FREAK Inc.\n");
-        s.append("\n");
-        s.append("\x13\x1C└─────────────────────┘");
-        s.DisplayAt(0);
-        if(opDelay[cp] < 216){opDelay[cp] += 1;}
+        if(opDelay[cp] < 270){opDelay[cp] += 1;}
         else{opDelay[cp] = 0; opStep[cp] = 4;}
     }
     else if(opStep[cp] == 4){
@@ -123,17 +110,21 @@ function openingStep(cp){
         eprintf("{:s}",vms.stickText);
     }
     else if(opStep[cp] == 6){
-        if(pps.guiUpdate[cp]){
-            pps.guiUpdate[cp] = 0;
-            t.insert(0, "\x13\x1C┌─────────────────────┐\n");
-            t.appendf("\x13\x04포켓몬스터 DP\n");
-            t.appendf("\x13\x1EPokemon Diamond·Pearl\n");
-            t.appendf("\n");
+        t.insert(0, "\x13\x1C┌─────────────────────┐\n");
+        t.appendf("\x13\x04포켓몬스터 DP\n");
+        t.appendf("\x13\x1EPokemon Diamond·Pearl\n");
+        t.appendf("\n");
+        if(scs.someoneLoad == 0 || scs.someoneLoad == cp+1){
             t.appendf("\x13\x1E{}번 슬롯\x04을 불러오고 있습니다.\n",scs.userSlot[cp]+1);
             t.appendf("\x13\x04잠시만 기다려주세요.\n");
             t.appendf("\n");
-            t.appendf("\x13\x1C└─────────────────────┘");
         }
+        else{
+            t.appendf("\x13\x1E{}번 슬롯\x04을 불러오고 있습니다.\n",scs.userSlot[cp]+1);
+            t.appendf("\x13{0:c}{0:n}\x04님의 데이터를 먼저 불러오고 있습니다.\n", scs.someoneLoad-1);
+            t.appendf("\n");
+        }
+        t.appendf("\x13\x1C└─────────────────────┘");
         t.DisplayAt(0);
         if(scs.playerLoad[cp] > 1){
             //데이터가 있는 경우, 시작할지 다른슬롯을 선택할지 물어보기
@@ -256,7 +247,6 @@ function dataSlotAction(cp, index){
         scs.userSlot[cp] = index;
         scs.loadCode[cp] = 1;
         opStep[cp] = 6;
-        pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc6.wav");
     }
 }

@@ -48,9 +48,10 @@ lastPosition (X+256*Y)
 
 
 const s = StringBuffer(1024);
-var globalStat  = 0;
-var globalStep  = 0;
-var globalPlay  = 0;
+var   globalStat    = 0;
+var   globalStep    = 0;
+var   globalPlay    = 0;
+var   someoneLoad   = 0; //누군가 로드중이면 다른 유저들은 대기
 const versionCheck  = 100; //버젼
 const userSlot      = PVariable(); //어떤 슬롯을 불러왔는가?
 const loadCode      = PVariable(); //로드명령
@@ -192,7 +193,8 @@ function userLoading(cp){
         if(loadCode[cp] == 1){
             if(sca.ConnectStatus() == 1){
                 if(playerLoad[cp] == 0){
-                    if(sca.CommandStatus() == 0){
+                    if(sca.CommandStatus() == 0 && someoneLoad == 0){
+                        someoneLoad = cp+1;
                         playerLoad[cp] = 1;
                         sca.ResetLastMessage();
                         sca.LoadData(userSlot[cp]);
@@ -205,22 +207,20 @@ function userLoading(cp){
                         returnLoad[cp] = 1;
                     }
                     if(sca.GetLastMessage() == 4){
+                        someoneLoad = 0;
+                        loadCode[cp] = 0;
                         if(returnLoad[cp] == 0){
                             if(sv.scaMain[cp] > 0){
                                 playerLoad[cp] = 2;
-                                loadCode[cp] = 0;
-                                //scr.sca2map(cp);
                                 s.printf("\x1F■\x04유저 데이터를 로드했습니다!");
                             }
                             else{
                                 playerLoad[cp] = 3;
-                                loadCode[cp] = 0;
                                 s.print("\x1F■\x1E저장된 데이터\x04가 없습니다.");
                             }
                         }
                         else{
                             playerLoad[cp] = 0;
-                            loadCode[cp] = 0;
                             s.print("\x08■\x04데이터로드 과정에서 오류가 발생했습니다.");
                         }
                     }
@@ -235,6 +235,7 @@ function userLoading(cp){
                 if(playerLoad[cp] == 1){
                     playerLoad[cp] = 0;
                     loadCode[cp] = 0;
+                    someoneLoad = 0;
                     s.print("\x08■\x04유저 데이터를 로드하는데 실패했습니다!");
                 }
             }

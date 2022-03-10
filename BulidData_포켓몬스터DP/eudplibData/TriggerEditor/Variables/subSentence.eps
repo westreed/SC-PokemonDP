@@ -4,6 +4,7 @@ import Interface.menu_Bag as imb;
 import Player.movementUnit as pmu;
 import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
+import Player.encounterTrainer as pet;
 import Pokemon.myPokemon as pmp;
 import Variables.npcInfo as vni;
 import Variables.locationInfo as vli;
@@ -15,8 +16,6 @@ import Variables.etcData as ved;
 const subIndex      = PVariable();
 const subStep       = PVariable();
 const subSph        = 2;
-const trainerNum    = 100;
-const trainerList   = EUDArray(4*trainerNum);
 
 
 function subSpeech(cp){
@@ -24,7 +23,7 @@ function subSpeech(cp){
     if(Deaths(cp, Exactly, 16, "A Key") || pps.forceSpeech[cp]){
         pps.forceSpeech[cp] = 0;
         const currentLoc = pps.currentLocation[cp];
-        const cpTn = cp*trainerNum;
+        const cpTn = cp*pet.trainerNum;
         if(index == 0){
             const mLoc = vli.moveLoc+cp;
             //광휘의 집
@@ -45,7 +44,7 @@ function subSpeech(cp){
                 } else if(Bring(P5, Exactly, 1, vni.marine, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 3;
-                } else if(trainerList[cpTn+0] == 0 && Bring(P6, Exactly, 1, vni.marine, mLoc)){
+                } else if(MemoryEPD(EPD(pet.trainerList)+cpTn+0, Exactly, 0) && Bring(P6, Exactly, 1, vni.marine, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 4;
                 } 
@@ -73,7 +72,7 @@ function subSpeech(cp){
     if(index){
         const currentLoc = pps.currentLocation[cp];
         const step = subStep[cp];
-        const cpTn = cp*trainerNum;
+        const cpTn = cp*pet.trainerNum;
         //광휘의 집
         if(currentLoc == 0){
             //집에서 엄마와 대화 (체력회복)
@@ -108,7 +107,7 @@ function subSpeech(cp){
                         vms.sphDelay[cp] = 1; imb.addItem(cp, 23, 1, true);
                     }
                 }
-                else{trainerList[cpTn+0] = 1; vms.endStep(cp, subSph);}
+                else{pet.trainerList[cpTn+0] = 1; vms.endStep(cp, subSph);}
             }
         }
         //마박사 연구소

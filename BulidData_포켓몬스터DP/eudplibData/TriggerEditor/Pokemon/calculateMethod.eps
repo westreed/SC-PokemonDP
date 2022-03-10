@@ -153,3 +153,7 @@ function divideOption(value, len){
     return vlist;
 }
 
+function subtractValue(value1, value2){
+    if(value1 > value2){return true, value1 - value2;}
+    return false, value2 - value1;
+}

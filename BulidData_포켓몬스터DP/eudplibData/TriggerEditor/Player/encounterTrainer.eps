@@ -1,0 +1,42 @@
+import Battle.battleStart as bbs;
+import Player.playerSetting as pps;
+import Player.movementUnit as pmu;
+import Pokemon.wildPokemonList as ppl;
+import Pokemon.pokemonInfo as ppi;
+import Variables.locationInfo as vli;
+import Variables.npcInfo as vni;
+import Variables.mainSentence as vms;
+import Variables.subSentence as vus;
+import Variables.sentenceLog as vsl;
+
+const trainerNum    = 100;
+const trainerList   = EUDArray(4*trainerNum);
+const subSph        = 2;
+/*
+0 : 201번도로 프렌들리숍 점원
+1 : 202번도로 반바지 꼬마 용태
+*/
+
+function encounterTrainer(cp){
+    const currentLoc = pps.currentLocation[cp];
+    const cpTn = cp*trainerNum;
+    const mLoc = vli.moveLoc+cp;
+    const step = vus.subStep[cp];
+    //202번도로
+    if(currentLoc == 6){
+        if(MemoryEPD(EPD(trainerList)+cpTn+1, Exactly, 0) && Bring(P5, Exactly, 1, 15, mLoc)){
+            if(step == 0){
+                pmu.changeMoveState(cp, false);
+                vms.nextStep(cp, subSph);
+            }
+            else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog1, subSph, false);}
+            else if(step == 2){
+                //배틀시작
+                //trainerSetting(cp, type, name, unit, pokemon:EUDArray)
+                bbs.trainerSetting(cp, 1, vni.npcName[10], 15, [3, 9, 5, 9, 5, 9, 5]);
+                trainerList[cpTn+1] = 1;
+                vms.endStep(cp, subSph);
+            }
+        }
+    }
+}

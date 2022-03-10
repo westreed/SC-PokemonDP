@@ -3,6 +3,7 @@ import Player.playerUnit as ppu;
 import Player.playerSetting as pps;
 import Player.visionMachine as pvm;
 import Player.encounterField as pef;
+import Player.encounterTrainer as pet;
 import Variables.mainSentence as vms;
 import Variables.etcData as ved;
 import Variables.locationInfo as vli;
@@ -45,31 +46,34 @@ function unitPosition(cp){
 function movePlayer(cp){
     if(ppu.playerEPD[cp]){
         MoveLocation(vli.moveLoc+cp, pps.playerUnit[cp], cp, 64);
-        if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
-            unitPosition(cp);
-            //화면고정 옵션
-            if(pps.setScreen[cp] == 0){CenterView(vli.moveLoc+cp);}
+        if(pps.battleState[cp] == 0){
+            pet.encounterTrainer(cp); //트레이너 전투
+            if(pps.moveState[cp] == 1){
+                unitPosition(cp);
+                //화면고정 옵션
+                if(pps.setScreen[cp] == 0){CenterView(vli.moveLoc+cp);}
 
-            if(ved.order_Delay[cp] == 0){
-                const pUnit = pps.playerUnit[cp];
-                for(var key = 0; key < 8; key++){
-                    if(Deaths(cp, Exactly, pps.keyInput[key], "A Stick")){
-                        const moveSt = pvm.machine_SurfingMove(cp, key); //파도타기
-                        if(moveSt){
-                            MoveLocation(vli.tempMoveLoc, pUnit, cp, 64);
-                            addloc(vli.tempMoveLoc, pps.moveDirectX[key],pps.moveDirectY[key]);
-                            RemoveUnitAt(1, ved.junkUnit, vli.tempMoveLoc, cp);
-                            if(Bring(AllPlayers, AtLeast, 2, "(any unit)", vli.tempMoveLoc)){return;}
-                            const tempEPD = fc.SetNextUnitEPD();
-                            CreateUnit(1, 13, vli.tempLoc, cp);
-                            SetMemoryEPD(tempEPD+0x110/4, Add, 1);
-                            MoveUnit(1, 13, cp, vli.tempLoc, vli.tempMoveLoc);
-                            if(pps.using_Surfing[cp] == 0 && Bring(cp, Exactly, 1, 13, vli.tempLoc)){return;}
-                            if(pps.using_Surfing[cp]){Order(ved.surfingUnit, cp, 64, Move, vli.tempMoveLoc); ved.order_Delay[cp] = 2;}
-                            else{Order(pUnit, cp, 64, Move, vli.tempMoveLoc);}
-                            return;
+                if(ved.order_Delay[cp] == 0){
+                    const pUnit = pps.playerUnit[cp];
+                    for(var key = 0; key < 8; key++){
+                        if(Deaths(cp, Exactly, pps.keyInput[key], "A Stick")){
+                            const moveSt = pvm.machine_SurfingMove(cp, key); //파도타기
+                            if(moveSt){
+                                MoveLocation(vli.tempMoveLoc, pUnit, cp, 64);
+                                addloc(vli.tempMoveLoc, pps.moveDirectX[key],pps.moveDirectY[key]);
+                                RemoveUnitAt(1, ved.junkUnit, vli.tempMoveLoc, cp);
+                                if(Bring(AllPlayers, AtLeast, 2, "(any unit)", vli.tempMoveLoc)){return;}
+                                const tempEPD = fc.SetNextUnitEPD();
+                                CreateUnit(1, 13, vli.tempLoc, cp);
+                                SetMemoryEPD(tempEPD+0x110/4, Add, 1);
+                                MoveUnit(1, 13, cp, vli.tempLoc, vli.tempMoveLoc);
+                                if(pps.using_Surfing[cp] == 0 && Bring(cp, Exactly, 1, 13, vli.tempLoc)){return;}
+                                if(pps.using_Surfing[cp]){Order(ved.surfingUnit, cp, 64, Move, vli.tempMoveLoc); ved.order_Delay[cp] = 2;}
+                                else{Order(pUnit, cp, 64, Move, vli.tempMoveLoc);}
+                                return;
+                            }
+                            else{return;}
                         }
-                        else{return;}
                     }
                 }
             }

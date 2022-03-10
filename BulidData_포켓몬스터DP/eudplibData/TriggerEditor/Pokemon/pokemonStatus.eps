@@ -26,7 +26,7 @@ function returnPokemonWeapon(cp, type){
 }
 
 function retrunPokemonList(cp, type, pokemon){
-    if(type){return pmp.playerPokemonList[cp*18+pokemon];}
+    if(type){return pmp.playerPokemonList[cp*pmp.userPokemonNum+pokemon];}
     else{return pmp.computerPokemonList[cp*6+pokemon];}
 }
 

@@ -22,7 +22,10 @@ const pokemonCurHP  = PVariable();
 const hpread_epd    = py_eval('f_readgen_epd(0xFFFFFF00, (0, lambda x: x>>8))');
 
 function returnRun(cp){
-    return 128 + bbs.battleRun[cp]*16;
+    const runValue = 128 + bbs.battleRun[cp]*16;
+    const sign, lv = pcm.subtractValue(bbs.pokemonLevel[cp], bbs.pokemonLevel[cp+4]);
+    if(sign){return runValue + 2*lv;}
+    else{return runValue - 2*lv;}
 }
 
 function selectBattleGUI(cp, index);
@@ -111,7 +114,7 @@ function selectBattleGUI(cp, index){
                     const runRand = dwrand() % 256; //0~255
                     if(run >= runRand){
                         //도망성공
-                        bbs.battleStep[cp] = 52;
+                        bbs.battleStep[cp] = 53;
                     }
                     else{
                         //도망실패
