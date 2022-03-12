@@ -1,3 +1,4 @@
+import Battle.battleStart as bbs;
 import Interface.userGUI as iug;
 import Interface.menu_Pokemon as imp;
 import Item.itemInfo as iif;
@@ -127,11 +128,11 @@ function subMenu_BagInfo(cp, height){
         t.appendf("\t\t\x04{:s}\n\n",it.text);
         t.appendf("\t\t\x04타입 : {:s}\n",iif.itemTypeText[it.type]);
         if(pps.battleState[cp]){
-            if(iiu.isNotBattleType(bagType[cp])){t.appendf("\t\t\x1E사용하기 (D)\n");}
-            else{t.appendf("\t\t\x17사용하기 (D)\n");}
+            if(iiu.isBattleType(bagType[cp], bbs.battleType[cp])){t.appendf("\t\t\x17사용하기 (D)\n");}
+            else{t.appendf("\t\t\x1E사용하기 (D)\n");}
         }else{
-            if(iiu.isNotBagType(bagType[cp])){t.appendf("\t\t\x1E사용하기 (D)\n");}
-            else{t.appendf("\t\t\x17사용하기 (D)\n");}
+            if(iiu.isBagType(bagType[cp])){t.appendf("\t\t\x17사용하기 (D)\n");}
+            else{t.appendf("\t\t\x1E사용하기 (D)\n");}
         }
         t.appendf("\t\t\x1E뒤로가기 (A)");
     }
@@ -148,7 +149,7 @@ function subMenu_BagInfoAction(cp){
     //사용하기
     if(Deaths(cp, Exactly, 8, "A Stick")){
         if(pps.battleState[cp]){
-            if(iiu.isNotBattleType(bagType[cp])){
+            if(iiu.isBagType(bagType[cp])){
                 DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
                 PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }
@@ -166,7 +167,7 @@ function subMenu_BagInfoAction(cp){
             }
         }
         else{
-            if(iiu.isNotBagType(bagType[cp])){
+            if(iiu.isBattleType(bagType[cp], bbs.battleType[cp])){
                 DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
                 PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }

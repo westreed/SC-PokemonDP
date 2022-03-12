@@ -109,21 +109,24 @@ function selectBattleGUI(cp, index){
             }
             //도망가기
             else if(index == 2){
-                if(ved.etc_Delay[cp] == 0){
-                    const run = returnRun(cp); //128~256
-                    const runRand = dwrand() % 256; //0~255
-                    if(run >= runRand){
-                        //도망성공
-                        bbs.battleStep[cp] = 53;
+                if(bbs.isWild(bbs.battleType[cp])){
+                    if(ved.etc_Delay[cp] == 0){
+                        const run = returnRun(cp); //128~256
+                        const runRand = dwrand() % 256; //0~255
+                        if(run >= runRand){
+                            //도망성공
+                            bbs.battleStep[cp] = 53;
+                        }
+                        else{
+                            //도망실패
+                            DisplayText("\x08！\x04광휘는 도망치는데 실패했다.");
+                            ved.etc_Delay[cp] = 24*5;
+                            bbs.battleRun[cp] += 1;
+                        }
                     }
-                    else{
-                        //도망실패
-                        DisplayText("\x08！\x04광휘는 도망치는데 실패했다.");
-                        ved.etc_Delay[cp] = 24*5;
-                        bbs.battleRun[cp] += 1;
-                    }
+                    else{b.printf("\x08！\x04재사용시간 {}초 남았습니다.", (ved.etc_Delay[cp]/24)+1);}
                 }
-                else{b.printf("\x08！\x04재사용시간 {}초 남았습니다.", (ved.etc_Delay[cp]/24)+1);}
+                else{DisplayText("\x08！\x04트레이너배틀에서는 불가능합니다.");}
             }
         }
     }

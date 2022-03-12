@@ -61,7 +61,7 @@ function map2sca(cp){
     sv.scaPosition[cp] = ppu.playerPosX[cp] + ppu.playerPosY[cp]*8192;
 
     //옵션 데이터를 sca 데이터로 변환하기
-    sv.scaOption[cp] = pps.setMusic[cp] + pps.setScreen[cp]*2;
+    sv.scaOption[cp] = pps.setMusic[cp] + pps.setScreen[cp]*2 + pps.setAutoBattle[cp]*4;
     //스타팅 포켓몬 정보를 sca 데이터로 변환하기
     sv.scaStarting[cp] = pps.setStartingPokemon[cp];
     //도감에 저장된 포켓몬수 저장하기
@@ -118,9 +118,10 @@ function sca2map(cp){
     ppu.playerPosY[cp] = scaPosY;
 
     //sca 옵션정보
-    const optionArray = EUDArray.cast(pcm.divideOption(sv.scaOption[cp], 2));
+    const optionArray = EUDArray.cast(pcm.divideOption(sv.scaOption[cp], 3));
     pps.setMusic[cp] = optionArray[0];
     pps.setScreen[cp] = optionArray[1];
+    pps.setAutoBattle[cp] = optionArray[2];
 
     //sca 스타팅 포켓몬 데이터
     pps.setStartingPokemon[cp] = sv.scaStarting[cp];

@@ -8,6 +8,7 @@ import Variables.npcInfo as vni;
 import Variables.mainSentence as vms;
 import Variables.subSentence as vus;
 import Variables.sentenceLog as vsl;
+import BGMPlayer as BGM;
 
 const trainerNum    = 100;
 const trainerList   = EUDArray(4*trainerNum);
@@ -16,6 +17,9 @@ const subSph        = 2;
 0 : 201번도로 프렌들리숍 점원
 1 : 202번도로 반바지 꼬마 용태
 */
+
+//trainerSetting(cp, type, name, unit, pokemon:EUDArray) 안에서
+//pokemon:EUDArray의 내용 :: 트레이너번호, 상금, 포켓몬숫자 [포켓몬인덱스, 포켓몬레벨]*포켓몬숫자
 
 function encounterTrainer(cp){
     const currentLoc = pps.currentLocation[cp];
@@ -26,15 +30,43 @@ function encounterTrainer(cp){
     if(currentLoc == 6){
         if(MemoryEPD(EPD(trainerList)+cpTn+1, Exactly, 0) && Bring(P5, Exactly, 1, 15, mLoc)){
             if(step == 0){
+                pps.settingMusic[cp] = 31;
+                BGM.instantPlay();
                 pmu.changeMoveState(cp, false);
                 vms.nextStep(cp, subSph);
             }
             else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog1, subSph, false);}
             else if(step == 2){
                 //배틀시작
-                //trainerSetting(cp, type, name, unit, pokemon:EUDArray)
-                bbs.trainerSetting(cp, 1, vni.npcName[10], 15, [3, 9, 5, 9, 5, 9, 5]);
-                trainerList[cpTn+1] = 1;
+                bbs.trainerSetting(cp, 1, vni.npcName[10], 15, [1, 80, 1, 9, 5]);
+                vms.endStep(cp, subSph);
+            }
+        }
+        if(MemoryEPD(EPD(trainerList)+cpTn+2, Exactly, 0) && Bring(P5, Exactly, 1, 34, mLoc)){
+            if(step == 0){
+                pps.settingMusic[cp] = 33;
+                BGM.instantPlay();
+                pmu.changeMoveState(cp, false);
+                vms.nextStep(cp, subSph);
+            }
+            else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog2, subSph, false);}
+            else if(step == 2){
+                //배틀시작
+                bbs.trainerSetting(cp, 1, vni.npcName[11], 15, [2, 48, 2, 12, 3, 12, 3]);
+                vms.endStep(cp, subSph);
+            }
+        }
+        if(MemoryEPD(EPD(trainerList)+cpTn+3, Exactly, 0) && Bring(P6, Exactly, 1, 15, mLoc)){
+            if(step == 0){
+                pps.settingMusic[cp] = 31;
+                BGM.instantPlay();
+                pmu.changeMoveState(cp, false);
+                vms.nextStep(cp, subSph);
+            }
+            else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog3, subSph, false);}
+            else if(step == 2){
+                //배틀시작
+                bbs.trainerSetting(cp, 1, vni.npcName[12], 15, [3, 80, 1, 16, 5]);
                 vms.endStep(cp, subSph);
             }
         }

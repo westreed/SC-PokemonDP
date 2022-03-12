@@ -180,9 +180,12 @@ function changePokemon(cp){
         pokeChange[cp] += 1;
         const changeDelay = pokeChange[cp];
         const step = bbs.battleStep[cp];
+        const preUnit = ppst.playerPokemonUnit[cp];
+        const battleLoc = bbs.battleLocation[cp];
         if(changeDelay == 2){
-            if(step != 7){
-                MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
+            if(step != 10){
+                SetInvincibility(Enable, preUnit, cp, battleLoc);
+                MoveLocation(vli.tempMoveLoc, preUnit, cp, battleLoc);
                 fc.scanEffect(vli.tempMoveLoc, 980);
             }
             PlayWAV("staredit\\wav\\emerald_ball throw.wav");
@@ -194,16 +197,16 @@ function changePokemon(cp){
             t.appendf("\x13\x04가랏! \x1F{:s}!\n",changeName[cp]);
             t.appendf("\x13{:s}",vms.sph1);
             t.DisplayAt(0);
-            if(step != 7){
-                MoveLocation(vli.tempMoveLoc, ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp]);
-                Order(ppst.playerPokemonUnit[cp], cp, bbs.battleLocation[cp], Move, vli.tempMoveLoc);
+            if(step != 10){
+                MoveLocation(vli.tempMoveLoc, preUnit, cp, battleLoc);
+                Order(preUnit, cp, battleLoc, Move, vli.tempMoveLoc);
             }
         }
         else{
             const cpPk = cp*pmp.userPokemonNum;
             const pkNumber = iug.subMiniMenu[cp]-1; //교체할 포켓몬의 볼번호
             const preNumber = bbs.pokemonNumber[cp];
-            if(step != 7){
+            if(step != 10){
                 //현재 전투중인 포켓몬 설정
                 const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+preNumber]);
                 mpk.hitpoint = bbg.pokemonCurHP[cp];
@@ -217,7 +220,7 @@ function changePokemon(cp){
             const ck = ppi.Pokemon1.cast(ppi.pokemonList[bbs.pokemonIndex[cp+4]-1]);
             pwr.calculateWeak_PVE(cp, pk.type, ck.type);
 
-            RemoveUnitAt(1, ppst.playerPokemonUnit[cp], bbs.battleLocation[cp], cp);
+            RemoveUnitAt(1, preUnit, battleLoc, cp);
             bbs.createMyPokemon(cp, true); //내 포켓몬 생성
             // MoveLocation(vli.tempMoveLoc, 50, P5, bbs.battleLocation[cp]); //내 포켓몬
             // bbs.battleEPD[cp] = fc.SetNextUnitEPD();
@@ -231,7 +234,7 @@ function changePokemon(cp){
 
             iug.subMiniMenu[cp] = 0;
             pokeChange[cp] = 0;
-            if(step == 7){bbs.battleStep[cp] = 6;}
+            if(step == 10){bbs.battleStep[cp] = 6;}
         }
     }
 }

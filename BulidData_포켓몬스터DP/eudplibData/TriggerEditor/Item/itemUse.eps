@@ -26,14 +26,18 @@ function isPokemonItem(type){
 }
 
 //전투중일 때 안되는 타입들
-function isNotBattleType(type){
+function isBagType(type){
     if(type == 0 || type == 1 || type == 3 || type == 4 || type == 8 || type == 9 || type == 10 || type == 11){return true;}
     return false;
 }
 
 //가방에서 사용할 수 없는 타입들 (보통 배틀상황 같이 특정 상황에서만 활성화)
-function isNotBagType(type){
-    if(type == 2 || type == 4 || type == 8 || type == 11){return true;}
+function isBattleType(type, battleType){
+    if(type == 2){
+        if(!bbs.isWild(battleType)){return true;}
+        else{return false;}
+    }
+    else if(type == 4 || type == 8 || type == 11){return true;}
     return false;
 }
 
