@@ -33,6 +33,15 @@ function restrictAction(cp){
                 restrictIndex[cp] = 2;
             }
         }
+        //엄마와 모험에 대한 이야기를 하기 전인 경우
+        // else if(13 <= main && main <= 14){
+        //     if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Map]202")){
+        //         vms.moveLocationPlayer(cp, vli.tempMoveLoc, 0, 32); //플레이어기준으로 로케이션 이동
+        //         pmu.changeMoveState(cp, false);
+        //         Order(pps.playerUnit[cp], cp, 64, Move, vli.tempMoveLoc);
+        //         restrictIndex[cp] = 2;
+        //     }
+        // }
     }
     else{
         const step = restrictStep[cp];
@@ -40,6 +49,7 @@ function restrictAction(cp){
             if(step == 0){vms.speechText(cp, vli.moveLoc+cp, vsl.storyLog4, restrict, true);}
             else{vms.endStep(cp,restrict);}
         }
+        //2번은 일정시간 뒤에 다시 이동가능하게 해제해주는 index임
         else if(index == 2){
             if(step < 12){restrictStep[cp] += 1;}
             else{vms.endStep(cp,restrict); pmu.changeMoveState(cp, true);}

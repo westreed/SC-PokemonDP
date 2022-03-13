@@ -2,17 +2,17 @@ import PluginVariables as msqcvar;
 import Interface.menu_Book as imk;
 import Interface.menu_Bag as imb;
 import Pokemon.myPokemon as pmp;
+import Player.encounterTrainer as pet;
 
 //SCA를 통해, 저장해야할 데이터들
 
 const scaMain		= PVariable();
-const scaSub		= EUDArray(8*5);
-const scaTrainer	= EUDArray(8*5);
-const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); //(index + 256*level)
+const scaSub		= EUDArray(8*pet.scaSubNum);
+const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); //(index + 256*level + 65536*item + 16777216*state)
 const scaPokemonHP	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonIVs	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonEXP	= EUDArray(8*pmp.userPokemonNum);
-const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
+//const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
 const scaBag		= EUDArray(8*imb.bagMax);
 const scaBook		= EUDArray(8*imk.bookSCANum);
 const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal

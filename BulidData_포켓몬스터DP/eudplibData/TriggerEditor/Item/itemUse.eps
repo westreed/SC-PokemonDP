@@ -25,32 +25,33 @@ function isPokemonItem(type){
     return false;
 }
 
-//전투중일 때 안되는 타입들
+//일반 가방에서 사용할 수 있는 타입
 function isBagType(type){
-    if(type == 0 || type == 1 || type == 3 || type == 4 || type == 8 || type == 9 || type == 10 || type == 11){return true;}
+    if(type == 0 || type == 1 || type == 3 || type == 4 || type == 5 || type == 7 || type == 8 || type == 9 || type == 10 || type == 11){return true;}
     return false;
 }
 
-//가방에서 사용할 수 없는 타입들 (보통 배틀상황 같이 특정 상황에서만 활성화)
+//전투중에 사용할 수 있는 타입들 (보통 배틀상황 같이 특정 상황에서만 활성화)
 function isBattleType(type, battleType){
+    //야생배틀에서만 사용할 수 있는 아이템
     if(type == 2){
-        if(!bbs.isWild(battleType)){return true;}
+        if(bbs.isWild(battleType)){return true;}
         else{return false;}
     }
-    else if(type == 4 || type == 8 || type == 11){return true;}
+    else if(type == 4 || type == 5 || type == 7 || type == 8 || type == 11){return true;}
     return false;
 }
 
 //state 0:가방 1:배틀
 function item_useFunction(cp, bagSelect, pokemonSelect){
-    const cpPk = cp*pmp.userPokemonNum;
-    const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonSelect]);
+    const cpPk  = cp*pmp.userPokemonNum;
+    const mpk   = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+pokemonSelect]);
     if(mpk.index == 0){return false;}
-    const state = pps.battleState[cp]; //0:false 1:true
+    const state     = pps.battleState[cp]; //0:false 1:true
     const itemIndex = imb.bagItemList[bagSelect]-1;
     const itemNum   = imb.bagNumList[bagSelect];
-    const it = iif.Item.cast(iif.itemList[itemIndex]);
-    const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
+    const it        = iif.Item.cast(iif.itemList[itemIndex]);
+    const pk        = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
 
     //진화의돌
     const itType = it.type;
@@ -67,8 +68,8 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
             PlayWAV("staredit\\wav\\se_gui_choose.wav");
             return false;
         }
-    }//진화도구
-    else if(itType == 1){
+    }//진화도구 && 경험치조절도구
+    else if(itType == 1 || itType == 10){
         imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
         const preItem = mpk.item;
         mpk.item = itemIndex+1;
@@ -144,11 +145,25 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
     }
     //영양제
     else if(itType == 9){
-
-    }
-    //경험치조절도구
-    else if(itType == 10){
-
+        //이상한 사탕
+        if(it.index == 29){
+            //레벨이 100이하일 때
+            if(mpk.level < 100){
+                //기절한 상태가 아닐때
+                if(mpk.state == 0){
+                    imb.subItem(cp, itemIndex, 1); //아이템 1개 제거
+                    iug.subMiniMenu[cp] = 0;
+                    mpk.level += 1;
+                    pmp.evolvePokemon(cp, pokemonSelect, 0, 1);
+                    s.printf("\x07！\x04{:s}은(는) \x1E이상한 사탕\x04을 먹고 레벨이 증가했다!",pk.name);
+                    PlayWAV("staredit\\wav\\Level Up!.ogg");
+                }
+                else{
+                    DisplayText("\x08！\x04이상한사탕은 \x1E기절하지 않은\x04 포켓몬에게 사용할 수 있습니다.");
+                    PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                }
+            }
+        }
     }
     if(state){iug.subMenu[cp] = 0; iug.subMiniMenu[cp] = 0;}
     imp.pokeAction[cp] = 0;
@@ -156,10 +171,10 @@ function item_useFunction(cp, bagSelect, pokemonSelect){
 }
 
 function item_useFunctionNoPoke(cp, bagSelect){
-    const state = pps.battleState[cp]; //0:false 1:true
+    const state     = pps.battleState[cp]; //0:false 1:true
     const itemIndex = imb.bagItemList[bagSelect]-1;
     const itemNum   = imb.bagNumList[bagSelect];
-    const it = iif.Item.cast(iif.itemList[itemIndex]);
+    const it        = iif.Item.cast(iif.itemList[itemIndex]);
 
     const itType = it.type;
     //몬스터볼

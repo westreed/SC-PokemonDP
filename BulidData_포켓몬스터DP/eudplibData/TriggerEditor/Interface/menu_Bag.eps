@@ -149,11 +149,7 @@ function subMenu_BagInfoAction(cp){
     //사용하기
     if(Deaths(cp, Exactly, 8, "A Stick")){
         if(pps.battleState[cp]){
-            if(iiu.isBagType(bagType[cp])){
-                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
-                PlayWAV("staredit\\wav\\se_gui_choose.wav");
-            }
-            else{
+            if(iiu.isBattleType(bagType[cp], bbs.battleType[cp])){
                 if(iiu.isPokemonItem(bagType[cp])){
                     imp.pokeAction[cp] = 1;
                     PlayWAV("staredit\\wav\\se_gui_misc6.wav");
@@ -164,15 +160,14 @@ function subMenu_BagInfoAction(cp){
                     iiu.item_useFunctionNoPoke(cp, select);
                 }
                 pps.guiUpdate[cp] = 1;
+            }
+            else{
+                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }
         }
         else{
-            if(iiu.isBattleType(bagType[cp], bbs.battleType[cp])){
-                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
-                PlayWAV("staredit\\wav\\se_gui_choose.wav");
-            }
-            //포켓몬 메뉴를 안거치는 타입
-            else{
+            if(iiu.isBagType(bagType[cp])){
                 if(iiu.isPokemonItem(bagType[cp])){
                     imp.pokeAction[cp] = 1;
                     PlayWAV("staredit\\wav\\se_gui_misc6.wav");
@@ -183,6 +178,10 @@ function subMenu_BagInfoAction(cp){
                     iiu.item_useFunctionNoPoke(cp, select);
                 }
                 pps.guiUpdate[cp] = 1;
+            }
+            else{
+                DisplayText("\x08！\x04사용할 수 없는 아이템입니다.");
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
             }
         }
     }

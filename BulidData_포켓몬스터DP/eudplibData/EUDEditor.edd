@@ -18,6 +18,7 @@ __lenAddr__ : 0x58D90C
 
 !새롭게시작하기 : 2
 [MSQC]
+MouseDown(L) : VMouseDown_L, 1
 MSQCSpecial.Exactly(1) : MSQCSpecialBuffer, 100
 MSQCSpecial.Exactly(2) : MSQCSpecialBuffer, 200
 MSQCSpecial.Exactly(3) : MSQCSpecialBuffer, 300

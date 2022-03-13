@@ -4,18 +4,17 @@ import Pokemon.calculateMethod as pcm;
 import Pokemon.myPokemon as pmp;
 import Player.playerSetting as pps;
 import Player.playerUnit as ppu;
+import Player.encounterTrainer as pet;
 import dataTable as dT;
 import scaVariable as sv;
 
 /*
 const scaMain		= PVariable();
 const scaSub		= EUDArray(8*5);
-const scaTrainer	= EUDArray(8*5);
-const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); //(index + 256*level)
+const scaPokemonIL	= EUDArray(8*pmp.userPokemonNum); (index + 256*level + 65536*item + 16777216*state)
 const scaPokemonHP	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonIVs	= EUDArray(8*pmp.userPokemonNum);
 const scaPokemonEXP	= EUDArray(8*pmp.userPokemonNum);
-const scaPokemonIS	= EUDArray(8*pmp.userPokemonNum); //(item + 256*state)
 const scaBag		= EUDArray(8*imb.bagMax);
 const scaBook		= EUDArray(8*5); const sinoBook      = EUDArray(4*156);
 const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal*/
@@ -23,18 +22,29 @@ const scaLocation	= PVariable(); //lastVisitVillage + 256*lastVisitHeal*/
 //유즈맵데이터를 SCA데이터로 변환하기
 function map2sca(cp){
     sv.scaMain[cp] = pps.mainStory[cp];
-    //sv.scaSub[cp]
-    //sv.scaTrainer[cp]
+    
+    //서브 데이터를 sca데이터로 변환하기 (서브퀘스트 및 트레이너)
+    const cpSk = cp*pet.scaSubNum; //sca Index
+    const cpSn = cp*pet.subNum; //sub Index
+    for (var i=0; i<pet.scaSubNum; i++){
+        const i32 = i*32;
+        var value = 0;
+        for (var j=0; j<32; j++){
+            if(MemoryEPD(EPD(pet.subList)+cpSn+i32+j, Exactly, 1)){
+                value += pet.subList[cpSn+i32+j]*dT.bit32[j];
+            }
+        }
+        sv.scaSub[cpSk + i] = value;
+    }
 
     //포켓몬 데이터를 sca데이터로 변환하기
     const cpPk = cp*pmp.userPokemonNum;
     for (var i=0; i<pmp.userPokemonNum; i++){
         const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-        sv.scaPokemonIL[cpPk+i] = mpk.index + mpk.level*256;
+        sv.scaPokemonIL[cpPk+i] = mpk.index + mpk.level*256 + mpk.item*65536 + mpk.state*16777216;
         sv.scaPokemonHP[cpPk+i] = mpk.hitpoint;
         sv.scaPokemonIVs[cpPk+i] = mpk.IVs;
         sv.scaPokemonEXP[cpPk+i] = mpk.ownEXP;
-        sv.scaPokemonIS[cpPk+i] = mpk.item + mpk.state*256;
     }
     //가방 데이터를 sca데이터로 변환하기
     const cpBg = cp*imb.bagMax;
@@ -72,26 +82,42 @@ function map2sca(cp){
 function sca2map(cp){
     pps.mainStory[cp] = sv.scaMain[cp];
 
+    //sca 서브정보 (트레이너 및 서브퀘)
+    const cpSk = cp*pet.scaSubNum; //sca Index
+    const cpSn = cp*pet.subNum; //sub Index
+    for (var i=0; i<pet.scaSubNum; i++){
+        const i32 = i*32;
+        var value = sv.scaSub[cpSk + i];
+        for (var j=32; j>0; j--){
+            const j1 = j-1;
+            const skIndex = cpSn+i32+j1;
+            const bit = dT.bit32[j1];
+            if(value >= bit){value -= bit; pet.subList[skIndex] = 1;}
+            else{pet.subList[skIndex] = 0;}
+        }
+    }
+
     //sca 포켓몬정보
     const cpPk = cp*pmp.userPokemonNum;
     for (var i=0; i<pmp.userPokemonNum; i++){
-        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
-        const scaPokemonIndex, scaPokemonLevel = pcm.divideData256(sv.scaPokemonIL[cpPk+i]);
+        const index = cpPk+i;
+        const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[index]);
+        const scaPokemonIndex, scaPokemonLevel, scaPokemonItem, scaPokemonState = pcm.divideStats(sv.scaPokemonIL[index]);
         mpk.index = scaPokemonIndex;
         mpk.level = scaPokemonLevel;
-        mpk.hitpoint = sv.scaPokemonHP[cpPk+i];
-        mpk.IVs = sv.scaPokemonIVs[cpPk+i];
-        mpk.ownEXP = sv.scaPokemonEXP[cpPk+i];
-        const scaPokemonItem, scaPokemonState = pcm.divideData256(sv.scaPokemonIS[cpPk+i]);
         mpk.item = scaPokemonItem;
         mpk.state = scaPokemonState;
+        mpk.hitpoint = sv.scaPokemonHP[index];
+        mpk.IVs = sv.scaPokemonIVs[index];
+        mpk.ownEXP = sv.scaPokemonEXP[index];
     }
     //sca 가방정보
     const cpBg = cp*imb.bagMax;
     for (var i=0; i<imb.bagMax; i++){
-        const scaBagItem, scaBagNum = pcm.divideData256(sv.scaBag[cpBg+i]);
-        imb.bagItemList[cpBg+i] = scaBagItem;
-        imb.bagNumList[cpBg+i] = scaBagNum;
+        const index = cpBg+i;
+        const scaBagItem, scaBagNum = pcm.divideData256(sv.scaBag[index]);
+        imb.bagItemList[index] = scaBagItem;
+        imb.bagNumList[index] = scaBagNum;
     }
     //sca 도감정보
     const cpBk = cp*imk.bookSCANum;

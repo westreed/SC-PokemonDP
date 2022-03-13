@@ -23,7 +23,7 @@ function subSpeech(cp){
     if(Deaths(cp, Exactly, 16, "A Key") || pps.forceSpeech[cp]){
         pps.forceSpeech[cp] = 0;
         const currentLoc = pps.currentLocation[cp];
-        const cpTn = cp*pet.trainerNum;
+        const cpSb = cp*pet.subNum;
         if(index == 0){
             const mLoc = vli.moveLoc+cp;
             //광휘의 집
@@ -44,7 +44,7 @@ function subSpeech(cp){
                 } else if(Bring(P5, Exactly, 1, vni.marine, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 3;
-                } else if(MemoryEPD(EPD(pet.trainerList)+cpTn+0, Exactly, 0) && Bring(P6, Exactly, 1, vni.marine, mLoc)){
+                } else if(MemoryEPD(EPD(pet.subList)+cpSb+0, Exactly, 0) && Bring(P6, Exactly, 1, vni.marine, mLoc)){
                     pmu.changeMoveState(cp, false);
                     subIndex[cp] = 4;
                 } 
@@ -72,7 +72,7 @@ function subSpeech(cp){
     if(index){
         const currentLoc = pps.currentLocation[cp];
         const step = subStep[cp];
-        const cpTn = cp*pet.trainerNum;
+        const cpSb = cp*pet.subNum;
         //광휘의 집
         if(currentLoc == 0){
             //집에서 엄마와 대화 (체력회복)
@@ -107,7 +107,7 @@ function subSpeech(cp){
                         vms.sphDelay[cp] = 1; imb.addItem(cp, 23, 1, true);
                     }
                 }
-                else{pet.trainerList[cpTn+0] = 1; vms.endStep(cp, subSph);}
+                else{pet.subList[cpSb+0] = 1; vms.endStep(cp, subSph);}
             }
         }
         //마박사 연구소

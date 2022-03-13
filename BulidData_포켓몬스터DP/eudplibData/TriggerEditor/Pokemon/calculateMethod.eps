@@ -101,19 +101,21 @@ function returnArmor(cp, level, amr, vamr){
 
 function returnSpeed(cp, level, spd, vspd){
     //=ROUNDDOWN(E2,0)+ROUNDDOWN((E3-1)/2,0)+ROUNDDOWN(G2/5,0)
-    return spd+((vspd-1)/2)+(level/5);
+    const lv = level/5;
+    if(vspd <= 2){return spd+lv;}
+    return spd+((vspd-1)/2)+lv;
 }
 
 function settingSpeed(spd){
-    if(spd <= 12) return 0;
+    if(spd <= 12){return 0;}
     return (spd-5)/8;
 }
 
-//type:야생?트레이너? exp:개체경험치 lucky:cp의포켓몬이 행운의알을 들고 있는가? level:상대레벨
-function returnEXP(type, exp, lucky, level){
+//type:야생?트레이너? exp:개체경험치 level:상대레벨
+function returnEXP(type, exp, level){
     var type2 = 1;
     if(type == 0){type2 = 2;}
-    return (type2*exp*lucky*level)/7;
+    return (type2*exp*level)/7;
 }
 
 function returnVersion(ver){

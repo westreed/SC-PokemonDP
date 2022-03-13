@@ -3,20 +3,20 @@ import scaVariable as n0;
 const ws = Db(4128);//workspace
 const EntryPointLength = 8;//EntryPointLength
 const SpaceLength = 500;//DataBufferSize
-const ObjectCount = 16;//ObjectCount
+const ObjectCount = 14;//ObjectCount
 
 function Init(){
     MPQAddFile('SCARCHIVEMAPCODE', py_open('scakeyfile', 'rb').read());
     MPQAddFile('SCARCHIVEDATA', py_open('scadatafile', 'rb').read());
     //EntryPoint
-    dwwrite_epd(EPD(ws) + 0, 3591541284);
-    dwwrite_epd(EPD(ws) + 1, 2062626791);
-    dwwrite_epd(EPD(ws) + 2, 1840576105);
-    dwwrite_epd(EPD(ws) + 3, 1596912407);
-    dwwrite_epd(EPD(ws) + 4, 1895303466);
-    dwwrite_epd(EPD(ws) + 5, 2063501531);
-    dwwrite_epd(EPD(ws) + 6, 1874967071);
-    dwwrite_epd(EPD(ws) + 7, 1910034620);
+    dwwrite_epd(EPD(ws) + 0, 1140528022);
+    dwwrite_epd(EPD(ws) + 1, 118845398);
+    dwwrite_epd(EPD(ws) + 2, 736256658);
+    dwwrite_epd(EPD(ws) + 3, 2935592082);
+    dwwrite_epd(EPD(ws) + 4, 2233041922);
+    dwwrite_epd(EPD(ws) + 5, 1778603064);
+    dwwrite_epd(EPD(ws) + 6, 846937802);
+    dwwrite_epd(EPD(ws) + 7, 3112153156);
     
 }
 
@@ -44,21 +44,13 @@ function ResetValue(tagNum, index){
     }
     case 2:
     {
-        const alen = n0.scaTrainer.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaTrainer[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 3:
-    {
         const alen = n0.scaPokemonIL.length / 8;
         for(var i = 0 ; i < alen; i++){
             n0.scaPokemonIL[alen * cp + i] = 0;
         }
         break;
     }
-    case 4:
+    case 3:
     {
         const alen = n0.scaPokemonHP.length / 8;
         for(var i = 0 ; i < alen; i++){
@@ -66,7 +58,7 @@ function ResetValue(tagNum, index){
         }
         break;
     }
-    case 5:
+    case 4:
     {
         const alen = n0.scaPokemonIVs.length / 8;
         for(var i = 0 ; i < alen; i++){
@@ -74,7 +66,7 @@ function ResetValue(tagNum, index){
         }
         break;
     }
-    case 6:
+    case 5:
     {
         const alen = n0.scaPokemonEXP.length / 8;
         for(var i = 0 ; i < alen; i++){
@@ -82,15 +74,7 @@ function ResetValue(tagNum, index){
         }
         break;
     }
-    case 7:
-    {
-        const alen = n0.scaPokemonIS.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaPokemonIS[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 8:
+    case 6:
     {
         const alen = n0.scaBag.length / 8;
         for(var i = 0 ; i < alen; i++){
@@ -98,7 +82,7 @@ function ResetValue(tagNum, index){
         }
         break;
     }
-    case 9:
+    case 7:
     {
         const alen = n0.scaBook.length / 8;
         for(var i = 0 ; i < alen; i++){
@@ -106,32 +90,32 @@ function ResetValue(tagNum, index){
         }
         break;
     }
-    case 10:
+    case 8:
     {
         n0.scaLocation[cp] = 0;
         break;
     }
-    case 11:
+    case 9:
     {
         n0.scaPosition[cp] = 0;
         break;
     }
-    case 12:
+    case 10:
     {
         n0.scaPlaytime[cp] = 0;
         break;
     }
-    case 13:
+    case 11:
     {
         n0.scaOption[cp] = 0;
         break;
     }
-    case 14:
+    case 12:
     {
         n0.scaStarting[cp] = 0;
         break;
     }
-    case 15:
+    case 13:
     {
         n0.scaBookNum[cp] = 0;
         break;
@@ -156,78 +140,66 @@ function SaveValue(tagNum, Value, index){
     }
     case 2:
     {
-        const alen = n0.scaTrainer.length / 8;
-        n0.scaTrainer[alen * cp + index] = Value;
-        break;
-    }
-    case 3:
-    {
         const alen = n0.scaPokemonIL.length / 8;
         n0.scaPokemonIL[alen * cp + index] = Value;
         break;
     }
-    case 4:
+    case 3:
     {
         const alen = n0.scaPokemonHP.length / 8;
         n0.scaPokemonHP[alen * cp + index] = Value;
         break;
     }
-    case 5:
+    case 4:
     {
         const alen = n0.scaPokemonIVs.length / 8;
         n0.scaPokemonIVs[alen * cp + index] = Value;
         break;
     }
-    case 6:
+    case 5:
     {
         const alen = n0.scaPokemonEXP.length / 8;
         n0.scaPokemonEXP[alen * cp + index] = Value;
         break;
     }
-    case 7:
-    {
-        const alen = n0.scaPokemonIS.length / 8;
-        n0.scaPokemonIS[alen * cp + index] = Value;
-        break;
-    }
-    case 8:
+    case 6:
     {
         const alen = n0.scaBag.length / 8;
         n0.scaBag[alen * cp + index] = Value;
         break;
     }
-    case 9:
+    case 7:
     {
         const alen = n0.scaBook.length / 8;
         n0.scaBook[alen * cp + index] = Value;
         break;
     }
-    case 10:
+    case 8:
     {
         n0.scaLocation[cp] = Value;
         break;
     }
-    case 11:
+    case 9:
     {
         n0.scaPosition[cp] = Value;
         break;
     }
-    case 12:
+    case 10:
     {
         n0.scaPlaytime[cp] = Value;
         break;
     }
-    case 13:
+    case 11:
     {
         n0.scaOption[cp] = Value;
         break;
     }
-    case 14:
+    case 12:
     {
         n0.scaStarting[cp] = Value;
         break;
     }
-    case 15:
+    case 13:
     {
         n0.scaBookNum[cp] = Value;
         break;
@@ -291,34 +263,6 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         break;
     case 2:
         {
-        const alen = n0.scaTrainer.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaTrainer[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 3:
-        {
         const alen = n0.scaPokemonIL.length / 8;
         for(var i = 0 ; i < alen ; i ++){
             const objValue = n0.scaPokemonIL[alen * cp + i];
@@ -345,7 +289,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 4:
+    case 3:
         {
         const alen = n0.scaPokemonHP.length / 8;
         for(var i = 0 ; i < alen ; i ++){
@@ -373,7 +317,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 5:
+    case 4:
         {
         const alen = n0.scaPokemonIVs.length / 8;
         for(var i = 0 ; i < alen ; i ++){
@@ -401,7 +345,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 6:
+    case 5:
         {
         const alen = n0.scaPokemonEXP.length / 8;
         for(var i = 0 ; i < alen ; i ++){
@@ -429,35 +373,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 7:
-        {
-        const alen = n0.scaPokemonIS.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaPokemonIS[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 8:
+    case 6:
         {
         const alen = n0.scaBag.length / 8;
         for(var i = 0 ; i < alen ; i ++){
@@ -485,7 +401,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 9:
+    case 7:
         {
         const alen = n0.scaBook.length / 8;
         for(var i = 0 ; i < alen ; i ++){
@@ -513,7 +429,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
         }
         }
         break;
-    case 10:
+    case 8:
         {
         const objValue = n0.scaLocation[cp];
         rvalue += objValue;
@@ -534,7 +450,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
          }
         }
         break;
-    case 11:
+    case 9:
         {
         const objValue = n0.scaPosition[cp];
         rvalue += objValue;
@@ -555,7 +471,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
          }
         }
         break;
-    case 12:
+    case 10:
         {
         const objValue = n0.scaPlaytime[cp];
         rvalue += objValue;
@@ -576,7 +492,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
          }
         }
         break;
-    case 13:
+    case 11:
         {
         const objValue = n0.scaOption[cp];
         rvalue += objValue;
@@ -597,7 +513,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
          }
         }
         break;
-    case 14:
+    case 12:
         {
         const objValue = n0.scaStarting[cp];
         rvalue += objValue;
@@ -618,7 +534,7 @@ function SaveDataWriteValue(tagNum, BaseAddress, index){
          }
         }
         break;
-    case 15:
+    case 13:
         {
         const objValue = n0.scaBookNum[cp];
         rvalue += objValue;

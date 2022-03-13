@@ -34,6 +34,7 @@ const battleUnit    = PVariable(); //배틀상대유닛
 const battleName    = PVariable(); //배틀상대이름
 const battleMoney   = PVariable(); //배틀머니
 const battleEXP     = PVariable(); //전투 종료후 경험치 계산
+const battleEXP2    = PVariable(); //개개인의 경험치 계산량
 const battleEPD     = PVariable(); //포켓몬 EPD (cp:유저 cp+4:적)
 const pokemonNumber = PVariable(); //포켓몬 볼 (cp:유저 cp+4:적)(지니고 있는 볼의 몇번째 포켓몬인지)
 const pokemonIndex  = PVariable(); //포켓몬 번호 (cp:유저 cp+4:적)(+1된 값임)
@@ -103,6 +104,8 @@ function wildSetting(cp, type, pokemon, level){
     battleType[cp] = type;
     if(battleMap[type] == 0){battleLocation[cp] = vli.battleLoc+cp;}
     else{battleLocation[cp] = vli.gymLoc+cp;}
+
+    s.printf("wildSetting  pokemon:{} level:{}",pokemon,level);
 
     pokemonIndex[cp+4] = pokemon;
     const pk = ppi.Pokemon1.cast(ppi.pokemonList[pokemon]);
@@ -248,6 +251,8 @@ function battleSystem(cp){
                 SetInvincibility(Enable, battleUnit[cp], P5, battleMapLoc);
             }
 
+            //학습장치가 있는 포켓몬에게 battle 값 올려주기
+            pmp.joinLearningDevicePokemon(cp);
             battleStep[cp] += 1;
         }
         else if(step == 5){
@@ -323,8 +328,8 @@ function battleSystem(cp){
                 const cpk = pmp.myPokemon.cast(pmp.computerPokemonList[cp6+pokemonNumber[cp+4]]);
                 const pk = ppi.Pokemon1.cast(ppi.pokemonList[cpk.index-1]);
                 cpk.state = 1; //기절상태
-                //type:야생?트레이너? exp:개체경험치 lucky:cp의포켓몬이 행운의알을 들고 있는가? level:상대레벨
-                battleEXP[cp] += pcm.returnEXP(isWild(battleType[cp]), pk.exp, 1, pokemonLevel[cp+4]);
+                //type:야생?트레이너? exp:개체경험치 level:상대레벨
+                battleEXP[cp] += pcm.returnEXP(isWild(battleType[cp]), pk.exp, pokemonLevel[cp+4]);
                 const nextPokemon = pmp.returnComputerIndex(cp);
                 if(nextPokemon != 10){battleStep[cp] = 41;}
                 else{
@@ -545,7 +550,11 @@ function battleSystem(cp){
                         if(mpk.index > 0 && mpkn.battle == 1){
                             const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
                             mpkn.battle = 0;
-                            mpk.ownEXP += battleEXP[cp];
+                            //행복의 알을 지닌 경우
+                            if(mpk.item == 35+1){battleEXP2[cp] = (battleEXP[cp])*3/2;}
+                            //행복의 알이 없는 경우
+                            else{battleEXP2[cp] = battleEXP[cp];}
+                            mpk.ownEXP += battleEXP2[cp];
                             expName[cp] = pk.name;
                             expNumber[cp] = i;
                             expLevel[cp] = mpk.level;
@@ -569,7 +578,7 @@ function battleSystem(cp){
                     s.insert(0, "\n\n\n");
                     s.appendf("\x13{:s}\n",vms.sph1);
                     s.appendf("\x13\x17{:s}\x04은(는)\n",expName[cp]);
-                    s.appendf("\x13\x1E{} 경험치\x04를 얻었다!\n",battleEXP[cp]);
+                    s.appendf("\x13\x1E{} 경험치\x04를 얻었다!\n",battleEXP2[cp]);
                     s.appendf("\x13{:s}",vms.sph1);
                     s.DisplayAt(0);
                 }
@@ -645,8 +654,8 @@ function battleSystem(cp){
             if(battleMoney[cp]){
                 battleMoney[cp] = 0;
                 pps.settingMusic[cp] = vli.mapMusic[pps.currentLocation[cp]];
-                const cpTn = cp*pet.trainerNum;
-                pet.trainerList[cpTn+battleUser[cp]] = 1;
+                const cpSb = cp*pet.subNum;
+                pet.subList[cpSb+battleUser[cp]] = 1;
             }
             else{pps.settingMusic[cp] = vms.restoreMusic[cp];}
             CenterView(lastL);

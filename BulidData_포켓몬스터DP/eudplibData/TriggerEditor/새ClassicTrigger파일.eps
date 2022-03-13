@@ -13,6 +13,13 @@ function ClassicTriggerExec(){
 
                 SetMemoryXEPD(EPD(0x666160 + 90 * 2), 7, 20, 0xFFFF);
         }
+        {
+
+            if (
+                MemoryEPD(EPD(msqcvar.VMouseDown_L) + getcurpl(), Exactly, 1)
+            ){
+            }
+        }
     }
     /*================End Player 1================*/
 }

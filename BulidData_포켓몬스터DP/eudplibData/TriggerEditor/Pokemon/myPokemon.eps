@@ -149,7 +149,14 @@ function returnJoinBattle(cp){
     for(var i=0; i<6; i++){
         const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
         const mpkn = myPokemon2.cast(mpk.next);
-        if(mpk.index > 0 && mpkn.battle == 1){num += 1;}
+        if(mpk.index > 0){
+            if(
+                mpkn.battle == 1 ||
+                mpk.item == 34+1    //학습장치 34
+            ){
+                num += 1;
+            }
+        }
     }
     return num;
 }
@@ -202,7 +209,7 @@ function levelupPokemon(cp, index){
     }
     return false;
 }
-
+//해당 포켓몬이 팀에 있는지
 function isTeamPokemon(cp, pokemon){
     const cpPk = cp*userPokemonNum;
     for(var i=0; i<6; i++){
@@ -212,6 +219,17 @@ function isTeamPokemon(cp, pokemon){
         }
     }
     return false;
+}
+//학습장치를 가진 포켓몬에게 battle값 넣어주기
+function joinLearningDevicePokemon(cp){
+    const cpPk = cp*userPokemonNum;
+    for(var i=0; i<6; i++){
+        const mpk = myPokemon.cast(playerPokemonList[cpPk+i]);
+        if(mpk.index > 0 && mpk.item == 34+1){
+            const mpkn = myPokemon2.cast(mpk.next);
+            mpkn.battle = 1;
+        }
+    }
 }
 
 function setEvolveData(cp, pokeIndex, lv, IVs, index1, index2, name1, name2){

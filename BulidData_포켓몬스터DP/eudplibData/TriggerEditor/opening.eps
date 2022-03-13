@@ -165,7 +165,7 @@ function openingStep(cp){
             t.appendf("\x13\x1F《 \x04{}번 슬롯 \x1F》\n",scs.userSlot[cp]+1);
             t.appendf("\x13\n\x13");
             for(var i=0; i<6; i++){
-                const scaPokemonIndex, scaPokemonLevel = pcm.divideData256(sv.scaPokemonIL[cpPk+i]);
+                const scaPokemonIndex, scaPokemonLevel, scaPokemonItem, scaPokemonState = pcm.divideStats(sv.scaPokemonIL[cpPk+i]);
                 if(i == 3){t.appendf("\n\x13");}
                 if(i != 0 && i != 3){t.appendf("\x1F│");}
                 if(scaPokemonIndex){
