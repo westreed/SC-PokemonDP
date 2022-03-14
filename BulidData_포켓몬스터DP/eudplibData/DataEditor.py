@@ -117,6 +117,9 @@ def onPluginStart():
         SetMemory(0x65FC20, Add, -1),# units:Max Air Hits  index:8    from 1 To 0
         SetMemory(0x65FC2C, Add, -256),# units:Max Air Hits  index:21    from 1 To 0
         SetMemory(0x65FC40, Add, -16777216),# units:Max Air Hits  index:43    from 1 To 0
+        SetMemory(0x660198, Add, 3),# units:AI Internal  index:32    from 0 To 3
+        SetMemory(0x660198, Add, 131072),# units:AI Internal  index:34    from 0 To 2
+        SetMemory(0x6601B8, Add, 768),# units:AI Internal  index:65    from 0 To 3
         SetMemory(0x664080, Add, 536870912),# units:Special Ability Flags  index:0    from 402718720 To 939589632
         SetMemory(0x664084, Add, -2163200),# units:Special Ability Flags  index:1    from 404816384 To 402653184
         SetMemory(0x664088, Add, -1073741824),# units:Special Ability Flags  index:2    from 1476395008 To 402653184
@@ -562,6 +565,10 @@ def onPluginStart():
         SetMemory(0x6C990C, Add, -2),# flingy:Movement Control  index:180    from 2 To 0
         SetMemory(0x6C990C, Add, -512),# flingy:Movement Control  index:181    from 2 To 0
         SetMemory(0x6C990C, Add, -131072),# flingy:Movement Control  index:182    from 2 To 0
+        SetMemory(0x6663C8, Add, 8060928),# sprites:Image File  index:309    from 422 To 545
+        SetMemory(0x66643C, Add, -9699328),# sprites:Image File  index:367    from 513 To 365
+        SetMemory(0x666448, Add, -917504),# sprites:Image File  index:373    from 443 To 429
+        SetMemory(0x666550, Add, -28508160),# sprites:Image File  index:505    from 960 To 525
         SetMemory(0x66C3C8, Add, 65536),# images:Clickable  index:634    from 0 To 1
         SetMemory(0x66C3CC, Add, 65536),# images:Clickable  index:638    from 0 To 1
         SetMemory(0x66C400, Add, 256),# images:Clickable  index:689    from 0 To 1
@@ -569,12 +576,20 @@ def onPluginStart():
         SetMemory(0x66D754, Add, 65536),# images:Use Full Iscript  index:638    from 0 To 1
         SetMemory(0x66D788, Add, 256),# images:Use Full Iscript  index:689    from 0 To 1
         SetMemory(0x66A028, Add, 262144),# images:Draw Function  index:514    from 9 To 13
+        SetMemory(0x66A02C, Add, 1792),# images:Draw Function  index:517    from 9 To 16
+        SetMemory(0x66A054, Add, 67108864),# images:Draw Function  index:559    from 9 To 13
         SetMemory(0x66EC48, Add, 155),# images:Iscript ID  index:0    from 0 To 155
         SetMemory(0x66EE98, Add, -9),# images:Iscript ID  index:148    from 165 To 156
         SetMemory(0x66F190, Add, -42),# images:Iscript ID  index:338    from 198 To 156
         SetMemory(0x66F198, Add, -43),# images:Iscript ID  index:340    from 199 To 156
         SetMemory(0x66F1A0, Add, -44),# images:Iscript ID  index:342    from 200 To 156
+        SetMemory(0x66F1FC, Add, -37),# images:Iscript ID  index:365    from 306 To 269
+        SetMemory(0x66F2FC, Add, 6),# images:Iscript ID  index:429    from 280 To 286
+        SetMemory(0x66F45C, Add, -34),# images:Iscript ID  index:517    from 298 To 264
+        SetMemory(0x66F47C, Add, 37),# images:Iscript ID  index:525    from 236 To 273
+        SetMemory(0x66F4CC, Add, 20),# images:Iscript ID  index:545    from 253 To 273
         SetMemory(0x66F4D8, Add, -182),# images:Iscript ID  index:548    from 268 To 86
+        SetMemory(0x66F504, Add, -51),# images:Iscript ID  index:559    from 321 To 270
         SetMemory(0x66F630, Add, -181),# images:Iscript ID  index:634    from 337 To 156
         SetMemory(0x66F640, Add, -181),# images:Iscript ID  index:638    from 337 To 156
         SetMemory(0x66F70C, Add, -180),# images:Iscript ID  index:689    from 336 To 156

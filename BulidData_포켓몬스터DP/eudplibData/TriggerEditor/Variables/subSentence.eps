@@ -20,54 +20,55 @@ const subSph        = 2;
 
 function subSpeech(cp){
     const index = subIndex[cp];
-    if(Deaths(cp, Exactly, 16, "A Key") || pps.forceSpeech[cp]){
-        pps.forceSpeech[cp] = 0;
-        const currentLoc = pps.currentLocation[cp];
-        const cpSb = cp*pet.subNum;
-        if(index == 0){
-            const mLoc = vli.moveLoc+cp;
-            //광휘의 집
-            if(currentLoc == 0){
-                if(pps.mainStory[cp] > 11 && Bring(P5, Exactly, 1, vni.medic, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 1;
+    if(vms.actionStep[cp] == 0){
+        if(Deaths(cp, Exactly, 16, "A Key") || pps.forceSpeech[cp]){
+            pps.forceSpeech[cp] = 0;
+            const currentLoc = pps.currentLocation[cp];
+            const cpSb = cp*pet.subNum;
+            if(index == 0){
+                const mLoc = vli.moveLoc+cp;
+                //광휘의 집
+                if(currentLoc == 0){
+                    if(pps.mainStory[cp] > 11 && Bring(P5, Exactly, 1, vni.medic, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 1;
+                    }
                 }
-            }
-            //201번도로
-            else if(currentLoc == 2){
-                if(Bring(P5, Exactly, 1, vni.medic, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 1;
-                }else if(Bring(P6, Exactly, 1, vni.medic, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 2;
-                } else if(Bring(P5, Exactly, 1, vni.marine, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 3;
-                } else if(MemoryEPD(EPD(pet.subList)+cpSb+0, Exactly, 0) && Bring(P6, Exactly, 1, vni.marine, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 4;
-                } 
-            }
-            //마박사 연구소
-            else if(currentLoc == 7){
-                if(Bring(P6, Exactly, 1, vni.marine, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 1;
-                } else if(Bring(P7, Exactly, 1, vni.marine, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 2;
+                //201번도로
+                else if(currentLoc == 2){
+                    if(Bring(P5, Exactly, 1, vni.medic, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 1;
+                    }else if(Bring(P6, Exactly, 1, vni.medic, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 2;
+                    } else if(Bring(P5, Exactly, 1, vni.marine, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 3;
+                    } else if(MemoryEPD(EPD(pet.subList)+cpSb+0, Exactly, 0) && Bring(P6, Exactly, 1, vni.marine, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 4;
+                    } 
                 }
-            }
-            //포켓몬센터
-            else if(currentLoc == 10){
-                if(Bring(P5, Exactly, 1, 46, mLoc)){
-                    pmu.changeMoveState(cp, false);
-                    subIndex[cp] = 1;
+                //마박사 연구소
+                else if(currentLoc == 7){
+                    if(Bring(P6, Exactly, 1, vni.marine, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 1;
+                    } else if(Bring(P7, Exactly, 1, vni.marine, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 2;
+                    }
+                }
+                //포켓몬센터
+                else if(currentLoc == 10){
+                    if(Bring(P5, Exactly, 1, 46, mLoc)){
+                        pmu.changeMoveState(cp, false);
+                        subIndex[cp] = 1;
+                    }
                 }
             }
         }
-        
     }
     if(index){
         const currentLoc = pps.currentLocation[cp];

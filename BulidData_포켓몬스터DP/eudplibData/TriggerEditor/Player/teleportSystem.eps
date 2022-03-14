@@ -2,8 +2,15 @@ import Player.playerSetting as pps;
 import Variables.locationInfo as vli;
 
 /*
+-------------------------------------------------
+저글링은 특수한 목적으로 사용되므로, 다른데선 사용 X
 P5 저글링 - 포켓몬센터로 이동
-P5 디파일러 - 체력회복위치
+P6 저글링 - 프렌들리숍으로 이동
+-------------------------------------------------
+P5 디파일러 - 체력회복위치 (포켓몬센터)
+P6 디파일러 - PC 이용 (포켓몬센터)
+P5 디파일러 - 상점이용 (프렌들리숍)
+-------------------------------------------------
 */
 
 function teleportPlayer(cp){
@@ -58,8 +65,29 @@ function teleportPlayer(cp){
         //포켓몬센터에서 나가기
         else{
             if(Bring(P5, Exactly, 1, 37, vli.moveLoc+cp)){
+                //마지막으로 방문했던 마을 위치
                 const lastVisit = pps.lastVisitVillage[cp];
                 MoveLocation(vli.tempMoveLoc, 37, P5, vli.mapLoc[lastVisit]);
+                MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
+                CenterView(vli.tempMoveLoc);
+                PlayWAV("staredit\\wav\\Door exit.wav");
+            }
+        }
+        //프렌들리숍으로 이동
+        if(vli.mapType[currentLoc] != 9){
+            if(Bring(P6, Exactly, 1, 37, vli.moveLoc+cp)){
+                MoveLocation(vli.tempMoveLoc, 37, P6, vli.mapLoc[11]);
+                MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
+                CenterView(vli.tempMoveLoc);
+                PlayWAV("staredit\\wav\\Door enter.wav");
+            }
+        }
+        //프렌들리숍에서 나가기
+        else{
+            if(Bring(P6, Exactly, 1, 37, vli.moveLoc+cp)){
+                //마지막으로 방문했던 마을 위치
+                const lastVisit = pps.lastVisitVillage[cp];
+                MoveLocation(vli.tempMoveLoc, 37, P6, vli.mapLoc[lastVisit]);
                 MoveUnit(1, pps.playerUnit[cp], cp, 64, vli.tempMoveLoc);
                 CenterView(vli.tempMoveLoc);
                 PlayWAV("staredit\\wav\\Door exit.wav");

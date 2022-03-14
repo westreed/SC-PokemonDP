@@ -8,6 +8,16 @@ object Weapon {
     var icon;   //무기아이콘
 };
 
+/*
+무기이펙트에 Trail이 있는 것들
+뮤탈 쓰리쿠션 (스테이시스필드)(얼음, 물, 강철) (0~3프레임)
+스카웃 안티매터미사일 (마인폭발)(화염, 격투, ) (0~7프레임)
+발키리 할로우로켓 (스톰)(전기속성?) (0~7프레임)
+야마토 야마토건 ()() (단점 : 야마토 소리가 들림) (17, 34, 51 프레임)
+Longbolt 미사일 (반짝이)(에스퍼) (0~7프레임)
+스포어 Seeker Spores (할루이펙 초록색)(독?, 고스트?, 악, 벌레, 풀) (0~6프레임)
+*/
+
 const weaponList    = EUDArray(50);
 
 function weaponInit(){
@@ -21,4 +31,67 @@ function weaponInit(){
     wp0.bullet = 1;
     wp0.splash = 0;
     wp0.icon = 323;
+    //드론무기
+    const wp1 = Weapon.cast(weaponList[1]);
+    wp1.grp = 171;
+    wp1.action = 2;
+    wp1.bullet = 1;
+    wp1.splash = 0;
+    wp1.icon = 342;
+    //SCV
+    const wp2 = Weapon.cast(weaponList[2]);
+    wp2.grp = 141;
+    wp2.action = 5;
+    wp2.bullet = 1;
+    wp2.splash = 0;
+    wp2.icon = 330;
+    //프로브
+    const wp3 = Weapon.cast(weaponList[3]);
+    wp3.grp = 153;
+    wp3.action = 2;
+    wp3.bullet = 1;
+    wp3.splash = 0;
+    wp3.icon = 351;
+    //그래픽없음 (저글링무기)
+    const wp4 = Weapon.cast(weaponList[4]);
+    wp4.grp = 0;
+    wp4.action = 5;
+    wp4.bullet = 1;
+    wp4.splash = 0;
+    wp4.icon = 338;
+    //파이어벳
+    const wp5 = Weapon.cast(weaponList[5]);
+    wp5.grp = 172;
+    wp5.action = 5;
+    wp5.bullet = 1;
+    wp5.splash = 5;
+    wp5.icon = 355;
+    //안티메타미사일 (화염)
+    const wp6 = Weapon.cast(weaponList[6]);
+    wp6.grp = 154;
+    wp6.action = 1;
+    wp6.bullet = 1;
+    wp6.splash = 0;
+    wp6.icon = 343;
+    //드라군무기
+    const wp7 = Weapon.cast(weaponList[7]);
+    wp7.grp = 159;
+    wp7.action = 1;
+    wp7.bullet = 1;
+    wp7.splash = 0;
+    wp7.icon = 354;
+    //뮤탈쓰리쿠션무기 (얼음)
+    const wp8 = Weapon.cast(weaponList[8]);
+    wp8.grp = 163;
+    wp8.action = 1;
+    wp8.bullet = 1;
+    wp8.splash = 0;
+    wp8.icon = 278;
+    //컨슘무기 (비행)
+    const wp9 = Weapon.cast(weaponList[9]);
+    wp9.grp = 169;
+    wp9.action = 1;
+    wp9.bullet = 1;
+    wp9.splash = 0;
+    wp9.icon = 345;
 }

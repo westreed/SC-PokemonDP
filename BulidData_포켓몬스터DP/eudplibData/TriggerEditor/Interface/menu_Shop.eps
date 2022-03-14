@@ -1,0 +1,116 @@
+import Interface.menu_Bag as imb;
+import Interface.userGUI as iug;
+import Item.itemInfo as iif;
+import Player.playerSetting as pps;
+import Player.movementUnit as pmu;
+import Variables.mainSentence as vms;
+import Variables.locationInfo as vli;
+
+
+const s = StringBuffer(1024);
+const t = StringBuffer(1024);
+const shopIndex     = PVariable();
+const shopPage      = PVariable();
+const shopLastPage  = PVariable();
+const shopSelect    = PVariable(); //어떤 도시마을의 프렌들리숍인지
+
+//shop의 아이템리스트의 맨 앞은 해당 리스트의 아이템 갯수
+const shop1         = [12, 14, 15, 16, 23, 24, 25, 26, 27, 18, 20, 21, 22];
+const shopList      = [shop1,shop1];
+const shopVillage   = [$L("[Map]잔모래마을"),$L("[Map]축복시티")];
+
+function mainMenu_ShopAction(cp, index);
+function mainMenu_Shop(cp, height){
+    const index = shopIndex[cp];
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const lastLoc = pps.lastVisitVillage[cp];
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s}의 프렌들리숍\n\n", vli.mapName[lastLoc]);
+
+        const shopItemList = EUDArray.cast(shopList[shopSelect[cp]]);
+        const shopLen = shopItemList[0];
+        for (var i=0; i<6; i++){
+            const icon = EUDArray.cast(pps.selectIconList[i]);
+            const itemIndex = shopPage[cp]*6 + i + 1;
+            //아이템이 존재하는 인덱스인 경우
+            if(itemIndex <= shopLen){
+                const item = iif.Item.cast(iif.itemList[shopItemList[itemIndex]]);
+                t.appendf("\t\t{:s}\x04{:s} \x1E{}￦\n",icon[index], item.name, item.price);
+            }
+            //아이템이 없는 인덱스인 경우
+            else{
+                t.appendf("\t\t{:s}\x04없음\n",icon[index]);
+            }
+        }
+    }
+    t.DisplayAt(height);
+    eprintf("{:s}",vms.stickText);
+    mainMenu_ShopAction(cp, index);
+}
+
+function nextPage(cp, value){
+    if(value){ //1, true 페이지 증가
+        if(shopPage[cp] < shopLastPage[cp]){shopPage[cp] += 1;}
+        else{shopPage[cp] = 0;}
+    }
+    else{ //0, false 페이지 감소
+        if(shopPage[cp] > 0){shopPage[cp] -= 1;}
+        else{shopPage[cp] = shopLastPage[cp];}
+    }
+}
+
+function mainMenu_ShopAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){shopIndex[cp] = 5; nextPage(cp, 0);}
+        else{shopIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){shopIndex[cp] = 0; nextPage(cp, 1);}
+        else{shopIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 16, "A Stick")){ //PageUp
+        shopIndex[cp] = 5; nextPage(cp, 0);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 32, "A Stick")){ //PageDown
+        shopIndex[cp] = 0; nextPage(cp, 1);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.mainMenu[cp] = 0;
+        vms.removeText(); pmu.changeMoveState(cp, true);
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const itemIndex = shopPage[cp]*6 + index + 1;
+        const shopItemList = EUDArray.cast(shopList[shopSelect[cp]]);
+        const shopLen = shopItemList[0];
+        if(itemIndex <= shopLen){
+            const item = iif.Item.cast(iif.itemList[shopItemList[itemIndex]]);
+            if(Accumulate(cp, AtLeast, item.price, Ore)){
+                const num = imb.addItem(cp, item.index, 1, false);
+                if(num != 404){
+                    SetResources(cp, Subtract, item.price, Ore);
+                    s.printf("\x1C！\x04숍에서 \x17{:s}\x04(을)를 구매하셨습니다. \x1E({})",item.name, num);
+                    PlayWAV("staredit\\wav\\se_gui_misc3.wav");
+                }
+                else{
+                    DisplayText("\x08！\x04가방에 공간이 없습니다.");
+                    PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+                }
+            }
+            else{
+                DisplayText("\x08！\x04돈이 부족합니다.");
+                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+            }
+        }
+    }
+}

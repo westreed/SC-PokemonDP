@@ -12,7 +12,10 @@ import Interface.menu_Pokemon as imp;
 import Interface.menu_Help as imh;
 import Interface.menu_Option as imo;
 
+import Interface.menu_Shop as ims;
+
 import Variables.mainSentence as vms;
+import Variables.locationInfo as vli;
 
 /*
 GUI 방식
@@ -33,7 +36,7 @@ ex. 서브메뉴 인덱스가 1이면 가방 열기
 
 const t = StringBuffer(1024);
 const subMenu       = PVariable(); //서브메뉴 호출인덱스
-const mainMenu      = PVariable(); //메인메뉴 호출
+const mainMenu      = PVariable(); //메인메뉴 호출 1:메인메뉴 2:상점메뉴
 const subMiniMenu   = PVariable(); //서브메뉴의 미니메뉴
 
 function blankMenu(cp){
@@ -44,30 +47,62 @@ function blankMenu(cp){
 function mainMenu_UI(cp);
 function mainMenu_Action(cp);
 function printGUI(cp){
-    if(Deaths(cp, Exactly, 2, "A Key")){
-        if(mainMenu[cp] == 0 && pmp.evoIng[cp] == 0){
-            if(pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
+    if(pmp.evoIng[cp] == 0 && pps.battleState[cp] == 0 && pps.moveState[cp] == 1){
+        const currentLoc = pps.currentLocation[cp];
+        if(Deaths(cp, Exactly, 2, "A Key")){
+            if(mainMenu[cp] == 0){
                 mainMenu[cp] = 1;
                 pps.guiUpdate[cp] = 1;
                 pmu.changeMoveState(cp, false);
                 PlayWAV("staredit\\wav\\GUI menu open.wav");
             }
+            else{
+                mainMenu[cp] = 0; subMenu[cp] = 0;
+                subMiniMenu[cp] = 0; pps.selectMenu[cp] = 0;
+                vms.removeText(); pmu.changeMoveState(cp, true);
+                PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+            }
         }
-        else{
-            mainMenu[cp] = 0; subMenu[cp] = 0;
-            subMiniMenu[cp] = 0; pps.selectMenu[cp] = 0;
-            vms.removeText(); pmu.changeMoveState(cp, true);
-            PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        //프렌들리숍에 있는 경우
+        if(currentLoc == 11){
+            if(Deaths(cp, Exactly, 16, "A Key") && Bring(P5, Exactly, 1, 46, vli.moveLoc+cp)){
+                if(mainMenu[cp] == 0){
+                    mainMenu[cp] = 2;
+                    pps.guiUpdate[cp] = 1;
+                    ims.shopIndex[cp] = 0;
+                    ims.shopPage[cp] = 0;
+                    const lastLoc = pps.lastVisitVillage[cp];
+
+                    //현재 위치한 프렌들리숍이 어느 index인지 탐색하기
+                    for (var i=0; i<ims.shopVillage._arrlen; i++){
+                        //shopVillage[i]값과 현재위치의 mapLoc 번호가 일치하는 경우
+                        if(MemoryEPD(EPD(vli.mapLoc)+lastLoc, Exactly, ims.shopVillage[i])){
+                            //shopSelect에 i값 대입
+                            ims.shopSelect[cp] = i;
+                            const shopItemList = EUDArray.cast(ims.shopList[i]);
+                            ims.shopLastPage[cp] = shopItemList[0]/6 - 1;
+                            break;
+                        }
+                    }
+                    pmu.changeMoveState(cp, false);
+                    PlayWAV("staredit\\wav\\GUI menu open.wav");
+                }
+            }
         }
     }
-    if(mainMenu[cp] && pmp.evoIng[cp] == 0){
-        const sub = subMenu[cp];
-        if(sub == 0){mainMenu_UI(cp);}
-        else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
-        else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
-        else if(sub == 3){imp.subMenu_Pokemon(cp, 0, 0);} //포켓몬
-        else if(sub == 4){imh.subMenu_Help(cp, 0);} //도움말
-        else if(sub == 5){imo.subMenu_Option(cp, 0);} //옵션
+    if(pmp.evoIng[cp] == 0){
+        if(mainMenu[cp] == 1){
+            const sub = subMenu[cp];
+            if(sub == 0){mainMenu_UI(cp);}
+            else if(sub == 1){imk.subMenu_Book(cp, 0);} //도감
+            else if(sub == 2){imb.subMenu_Book(cp, 0);} //가방
+            else if(sub == 3){imp.subMenu_Pokemon(cp, 0, 0);} //포켓몬
+            else if(sub == 4){imh.subMenu_Help(cp, 0);} //도움말
+            else if(sub == 5){imo.subMenu_Option(cp, 0);} //옵션
+        }
+        else if(mainMenu[cp] == 2){
+            ims.mainMenu_Shop(cp, 0); //상점메뉴
+        }
     }
 }
 

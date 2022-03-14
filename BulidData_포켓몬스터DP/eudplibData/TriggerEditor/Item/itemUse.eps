@@ -27,7 +27,12 @@ function isPokemonItem(type){
 
 //일반 가방에서 사용할 수 있는 타입
 function isBagType(type){
-    if(type == 0 || type == 1 || type == 3 || type == 4 || type == 5 || type == 7 || type == 8 || type == 9 || type == 10 || type == 11){return true;}
+    if(
+        type == 0 || type == 1 || type == 3 || type == 4 || type == 5 ||
+        type == 6 || type == 7 || type == 9 || type == 10 || type == 11
+    ){
+        return true;
+    }
     return false;
 }
 
@@ -38,7 +43,7 @@ function isBattleType(type, battleType){
         if(bbs.isWild(battleType)){return true;}
         else{return false;}
     }
-    else if(type == 4 || type == 5 || type == 7 || type == 8 || type == 11){return true;}
+    else if(type == 4 || type == 5 || type == 7 || type == 11){return true;}
     return false;
 }
 
@@ -249,9 +254,8 @@ function throwPoketBall(cp){
                 throwNum[cp] += 1;
                 if(throwNum[cp] == 3){
                     const catchRate = pcm.retrunCatchRate(cp,bbg.pokemonCurHP[cp+4],bbs.pokemonHP[cp+4],throwValue[cp],bbs.battleCatch[cp]);
-                    const rand = dwrand() % 256; //255
-                    s.printf("rand {} > catchRate {}", rand, catchRate);
-                    if(catchRate < 255 && rand > catchRate){ //실패
+                    const rand = dwrand() % 256; //0~255
+                    if(rand > catchRate){ //실패
                         throwBall[cp] = 0; throwNum[cp] = 0;
                         const cUnit = ppst.playerPokemonUnit[cp+4];
                         MoveUnit(1, cUnit, P5, vli.tempLoc, vli.npcLoc+cp);
