@@ -1,6 +1,7 @@
 import Battle.battleStart as bbs;
 import Interface.userGUI as iug;
 import Interface.menu_Pokemon as imp;
+import Interface.menu_Shop as ims;
 import Item.itemInfo as iif;
 import Item.itemUse as iiu;
 import Player.playerSetting as pps;
@@ -17,10 +18,9 @@ const bagIndex      = PVariable();
 const bagPage       = PVariable();
 const bagType       = PVariable(); //아이템의 타입
 
-
 function subMenu_BagAction(cp, index);
 function subMenu_BagInfo(cp, height);
-function subMenu_BagInfoAction(cp);
+function subMenu_BagSellInfo(cp, height);
 function subMenu_ItemUseAction(cp);
 function subMenu_Book(cp, height){
     if(iug.subMiniMenu[cp] == 0){
@@ -37,7 +37,14 @@ function subMenu_Book(cp, height){
                 const icon = EUDArray.cast(pps.selectIconList[i]);
                 if(bagItemList[cpPage+i]){
                     const item = iif.Item.cast(iif.itemList[bagItemList[cpPage+i]-1]);
-                    t.appendf("\t\t{:s}\x04{:s} \x1E({})\n",icon[index],item.name, bagNumList[cpPage+i]);
+                    t.appendf("\t\t{:s}\x04{:s} ",icon[index],item.name);
+                    // 상점에서 열린 경우, 아이템의 판매가격을 보여주기
+                    if(iug.mainMenu[cp] == 2){
+                        // 아이템 가격이 0원이거나 타입이 중요한아이템인 경우
+                        if(item.price == 0 || item.type == 8){t.appendf("\x08판매불가\n");}
+                        else{t.appendf("\x1E{}￦\n", item.price/2);}
+                    }
+                    else{t.appendf("\x1E({})\n",bagNumList[cpPage+i]);}
                 }else{t.appendf("\t\t{:s}\x04없음\n",icon[index]);}
             }
 
@@ -47,17 +54,19 @@ function subMenu_Book(cp, height){
         subMenu_BagAction(cp, index);
     }
     else{
-        //아이템 정보 보기
-        if(imp.pokeAction[cp] == 0){
-            subMenu_BagInfo(cp, height);
-            subMenu_BagInfoAction(cp);
-        }
-        else{
+        
+        if(imp.pokeAction[cp]){
             //아이템 사용
             imp.subMenu_Pokemon(cp, height, 0);
             subMenu_ItemUseAction(cp);
+            eprintf("{:s}",vms.stickText4);
         }
-        eprintf("{:s}",vms.stickText4);
+        //프렌들리숍에서 가방메뉴로 접근한 경우
+        else if(iug.mainMenu[cp] == 2){
+            subMenu_BagSellInfo(cp, height);
+        }
+        //아이템 정보 보기
+        else{subMenu_BagInfo(cp, height);}
     }
 }
 
@@ -97,8 +106,14 @@ function subMenu_BagAction(cp, index){
     }
     //뒤로가기
     if(Deaths(cp, Exactly, 4, "A Stick")){
-        iug.subMenu[cp] = 0;
-        pps.guiUpdate[cp] = 1;
+        if(iug.mainMenu[cp] == 2){
+            ims.shopSub[cp] = 0;
+            pps.guiUpdate[cp] = 1;
+        }
+        else{
+            iug.subMenu[cp] = 0;
+            pps.guiUpdate[cp] = 1;
+        }
         PlayWAV("staredit\\wav\\se_gui_misc5.wav");
     }
     //결정
@@ -114,6 +129,7 @@ function subMenu_BagAction(cp, index){
     }
 }
 
+function subMenu_BagInfoAction(cp);
 function subMenu_BagInfo(cp, height){
     if(pps.guiUpdate[cp]){
         pps.guiUpdate[cp] = 0;
@@ -137,6 +153,8 @@ function subMenu_BagInfo(cp, height){
         t.appendf("\t\t\x1E뒤로가기 (A)");
     }
     t.DisplayAt(height);
+    subMenu_BagInfoAction(cp);
+    eprintf("{:s}",vms.stickText4);
 }
 
 function subMenu_BagInfoAction(cp){
@@ -228,22 +246,38 @@ function sortBag(cp){
     }
 }
 
+function searchItem(cp, item){
+    const cpBag = cp*bagMax;
+    for (var i=0; i<bagMax; i++){
+        if(MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1)){
+            return i;
+        }
+    }
+    return 404;
+}
+
 function addItem(cp, item, num, text){
     const cpBag = cp*bagMax;
     var blankIndex = bagMax+1;
     for(var i=0; i<bagMax; i++){
         //같은 아이템이 가방에 있는 경우
-        if(
-            MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1) &&
-            MemoryEPD(EPD(bagNumList)+cpBag+i, AtMost, 98-num)
-        ){
-            bagNumList[cpBag+i] += num;
-            const item = iif.Item.cast(iif.itemList[item]);
-            if(text){
-                s.printf("\x07！\x04{:s}을(를) 손에 넣었다!",item.name);
-                PlayWAV("staredit\\wav\\ObtainedanItem.wav");
+        if(MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, item+1)){
+            if(MemoryEPD(EPD(bagNumList)+cpBag+i, AtMost, 98-num)){
+                bagNumList[cpBag+i] += num;
+                const item = iif.Item.cast(iif.itemList[item]);
+                if(text){
+                    s.printf("\x07！\x04{:s}을(를) 손에 넣었다!",item.name);
+                    PlayWAV("staredit\\wav\\ObtainedanItem.wav");
+                }
+                return bagNumList[cpBag+i];
             }
-            return bagNumList[cpBag+i];
+            else{
+                if(text){
+                    DisplayText("\x08！\x04아이템은 종류마다 최대 99개까지 소유할 수 있습니다.");
+                    PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+                }
+                return 405;
+            }
         }
         //같은 아이템이 없는 경우를 대비해서 빈공간도 수색하기
         if(blankIndex == bagMax+1 && MemoryEPD(EPD(bagItemList)+cpBag+i, Exactly, 0)){
@@ -253,7 +287,10 @@ function addItem(cp, item, num, text){
     //같은 아이템이 없는 경우
     if(blankIndex == bagMax+1){
         //빈 공간이 없음
-        DisplayText("\x08！\x04가방에 공간이 없습니다.");
+        if(text){
+            DisplayText("\x08！\x04가방에 공간이 없습니다.");
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
         return 404;
     }
     else{
@@ -283,6 +320,87 @@ function subItem(cp, item, num){
                 sortBag(cp); //인벤정렬
                 return 0;
             }
+        }
+    }
+}
+
+function subItemIndex(cp, index, num){
+    // 해당 인덱스의 아이템 갯수가 1개 이상 있는지
+    if(MemoryEPD(EPD(bagNumList)+index, AtLeast, 1)){
+        // 해당 인덱스의 아이템 갯수가 num+1개 이상 있는지
+        if(MemoryEPD(EPD(bagNumList)+index, AtLeast, num+1)){
+            bagNumList[index] -= num;
+            return bagNumList[index];
+        }
+        // 아닌 경우 해당 아이템을 인벤에서 제거하고 정렬하기
+        else{
+            const sellNum = bagNumList[index];
+            bagItemList[index] = 0;
+            bagNumList[index] = 0;
+            sortBag(cp); //인벤정렬
+            return 0;
+        }
+    }
+}
+
+function subMenu_BagSellAction(cp);
+function subMenu_BagSellInfo(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const select = iug.subMiniMenu[cp]-1;
+        const itemIndex = bagItemList[select]-1;
+        const itemNum   = bagNumList[select];
+        const it = iif.Item.cast(iif.itemList[itemIndex]);
+
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}개 보유)\n\n",it.name, itemNum);
+        t.appendf("\t\t\x04{:s}\n",it.text);
+        if(it.type != 8 && it.price != 0){t.appendf("\t\t\x04가격 : {}￦\n", it.price/2);}
+        else{t.appendf("\t\t\x04가격 : \x08판매불가\n");}
+        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemTypeText[it.type]);
+        t.appendf("\t\t\x17판매하기 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)");
+    }
+    t.DisplayAt(height);
+    subMenu_BagSellAction(cp);
+}
+
+function subMenu_BagSellAction(cp){
+    const index = imp.pokeIndex[cp];
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){imp.pokeIndex[cp] = 5;}
+        else{imp.pokeIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){imp.pokeIndex[cp] = 0;}
+        else{imp.pokeIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.subMiniMenu[cp] = 0; pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //아이템 판매
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const select = iug.subMiniMenu[cp]-1;
+        const itemIndex = bagItemList[select]-1;
+        const it = iif.Item.cast(iif.itemList[itemIndex]);
+        if(it.type != 8 && it.price != 0){
+            const sell = subItemIndex(cp, select, 1);
+            const sellPrice = it.price/2;
+            SetResources(cp, Add, sellPrice, Ore);
+            s.printf("\x1C！\x17{:s}\x04(을)를 숍에 판매하셨습니다. \x1E+{}￦",it.name, sellPrice);
+            PlayWAV("staredit\\wav\\se_gui_misc3.wav");
+            if(sell == 0){iug.subMiniMenu[cp] = 0;}
+            pps.guiUpdate[cp] = 1;
+        }
+        else{
+            s.printf("\x08！\x1E{:s}\x04은(는) 판매가 불가능합니다.",it.name);
+            PlayWAV("staredit\\wav\\se_gui_misc2.wav");
         }
     }
 }

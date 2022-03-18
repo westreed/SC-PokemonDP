@@ -10,6 +10,7 @@ import Variables.locationInfo as vli;
 const s = StringBuffer(1024);
 const t = StringBuffer(1024);
 const shopIndex     = PVariable();
+const shopSub       = PVariable();
 const shopPage      = PVariable();
 const shopLastPage  = PVariable();
 const shopSelect    = PVariable(); //어떤 도시마을의 프렌들리숍인지
@@ -20,7 +21,132 @@ const shopList      = [shop1,shop1];
 const shopVillage   = [$L("[Map]잔모래마을"),$L("[Map]축복시티")];
 
 function mainMenu_ShopAction(cp, index);
+function mainMenu_ShopBuy(cp, height);
+function mainMenu_ShopInfo(cp, height);
 function mainMenu_Shop(cp, height){
+    const index = shopIndex[cp];
+    if(shopSub[cp] == 0){
+        if(pps.guiUpdate[cp]){
+            pps.guiUpdate[cp] = 0;
+            const lastLoc = pps.lastVisitVillage[cp];
+            t.insert(0);
+            t.appendf("\t\t\x1D{:s}의 프렌들리숍\n\n", vli.mapName[lastLoc]);
+
+            t.appendf("\t\t{:s}사러 왔다\n",pps.selectIcon1[index]);
+            t.appendf("\t\t{:s}팔러 왔다\n",pps.selectIcon2[index]);
+            t.appendf("\t\t{:s}아무것도 아닙니다\n",pps.selectIcon3[index]);
+            t.appendf("\n");
+            t.appendf("\n");
+            t.appendf("\n");
+        }
+        t.DisplayAt(height);
+        eprintf("{:s}",vms.stickText);
+        mainMenu_ShopAction(cp, index);
+    }
+    else if(shopSub[cp] == 1){
+        if(iug.subMiniMenu[cp] == 0){mainMenu_ShopBuy(cp, height);}
+        else{mainMenu_ShopInfo(cp, height);}
+    }
+    else if(shopSub[cp] == 2){
+        imb.subMenu_Book(cp, height);
+    }
+}
+
+function mainMenu_ShopAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){shopIndex[cp] = 2;}
+        else{shopIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 2){shopIndex[cp] = 0;}
+        else{shopIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        iug.mainMenu[cp] = 0;
+        vms.removeText(); pmu.changeMoveState(cp, true);
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    //결정
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        //사러 왔다
+        if(index == 0){
+            shopSub[cp] = 1; shopIndex[cp] = 0;
+            shopPage[cp] = 0; pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+        //팔러 왔다
+        else if(index == 1){
+            shopSub[cp] = 2; shopIndex[cp] = 1;
+            shopPage[cp] = 0; pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+        //아무것도 아닙니다
+        else if(index == 2){
+            iug.mainMenu[cp] = 0;
+            vms.removeText(); pmu.changeMoveState(cp, true);
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+        }
+    }
+}
+
+function nextPage(cp, value){
+    if(value){ //1, true 페이지 증가
+        if(shopPage[cp] < shopLastPage[cp]){shopPage[cp] += 1;}
+        else{shopPage[cp] = 0;}
+    }
+    else{ //0, false 페이지 감소
+        if(shopPage[cp] > 0){shopPage[cp] -= 1;}
+        else{shopPage[cp] = shopLastPage[cp];}
+    }
+}
+
+function mainMenu_ShopBuyAction(cp, index){
+    if(Deaths(cp, Exactly, 1, "A Stick")){
+        if(index == 0){shopIndex[cp] = 5; nextPage(cp, 0);}
+        else{shopIndex[cp] -= 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 2, "A Stick")){
+        if(index == 5){shopIndex[cp] = 0; nextPage(cp, 1);}
+        else{shopIndex[cp] += 1;}
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 16, "A Stick")){ //PageUp
+        shopIndex[cp] = 5; nextPage(cp, 0);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    if(Deaths(cp, Exactly, 32, "A Stick")){ //PageDown
+        shopIndex[cp] = 0; nextPage(cp, 1);
+        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
+        pps.guiUpdate[cp] = 1;
+    }
+    //뒤로가기
+    if(Deaths(cp, Exactly, 4, "A Stick")){
+        shopSub[cp] = 0; shopIndex[cp] = 0;
+        pps.guiUpdate[cp] = 1;
+        PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+    }
+    if(Deaths(cp, Exactly, 8, "A Stick")){
+        const itemIndex = shopPage[cp]*6 + index + 1;
+        const shopItemList = EUDArray.cast(shopList[shopSelect[cp]]);
+        const shopLen = shopItemList[0];
+        if(itemIndex <= shopLen){
+            iug.subMiniMenu[cp] = itemIndex;
+            pps.guiUpdate[cp] = 1;
+            PlayWAV("staredit\\wav\\se_gui_misc6.wav");
+        }
+    }
+}
+
+function mainMenu_ShopBuy(cp, height){
     const index = shopIndex[cp];
     if(pps.guiUpdate[cp]){
         pps.guiUpdate[cp] = 0;
@@ -46,71 +172,63 @@ function mainMenu_Shop(cp, height){
     }
     t.DisplayAt(height);
     eprintf("{:s}",vms.stickText);
-    mainMenu_ShopAction(cp, index);
+    mainMenu_ShopBuyAction(cp, index);
 }
 
-function nextPage(cp, value){
-    if(value){ //1, true 페이지 증가
-        if(shopPage[cp] < shopLastPage[cp]){shopPage[cp] += 1;}
-        else{shopPage[cp] = 0;}
-    }
-    else{ //0, false 페이지 감소
-        if(shopPage[cp] > 0){shopPage[cp] -= 1;}
-        else{shopPage[cp] = shopLastPage[cp];}
-    }
-}
-
-function mainMenu_ShopAction(cp, index){
-    if(Deaths(cp, Exactly, 1, "A Stick")){
-        if(index == 0){shopIndex[cp] = 5; nextPage(cp, 0);}
-        else{shopIndex[cp] -= 1;}
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
-    if(Deaths(cp, Exactly, 2, "A Stick")){
-        if(index == 5){shopIndex[cp] = 0; nextPage(cp, 1);}
-        else{shopIndex[cp] += 1;}
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
-    if(Deaths(cp, Exactly, 16, "A Stick")){ //PageUp
-        shopIndex[cp] = 5; nextPage(cp, 0);
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
-    if(Deaths(cp, Exactly, 32, "A Stick")){ //PageDown
-        shopIndex[cp] = 0; nextPage(cp, 1);
-        PlayWAV("staredit\\wav\\GUI sel cursor.wav");
-        pps.guiUpdate[cp] = 1;
-    }
+function mainMenu_ShopInfoAction(cp){
     //뒤로가기
     if(Deaths(cp, Exactly, 4, "A Stick")){
-        iug.mainMenu[cp] = 0;
-        vms.removeText(); pmu.changeMoveState(cp, true);
+        iug.subMiniMenu[cp] = 0; pps.guiUpdate[cp] = 1;
         PlayWAV("staredit\\wav\\se_gui_misc5.wav");
     }
+    //구매하기
     if(Deaths(cp, Exactly, 8, "A Stick")){
-        const itemIndex = shopPage[cp]*6 + index + 1;
+        const itemIndex = iug.subMiniMenu[cp];
         const shopItemList = EUDArray.cast(shopList[shopSelect[cp]]);
-        const shopLen = shopItemList[0];
-        if(itemIndex <= shopLen){
-            const item = iif.Item.cast(iif.itemList[shopItemList[itemIndex]]);
-            if(Accumulate(cp, AtLeast, item.price, Ore)){
-                const num = imb.addItem(cp, item.index, 1, false);
-                if(num != 404){
-                    SetResources(cp, Subtract, item.price, Ore);
-                    s.printf("\x1C！\x04숍에서 \x17{:s}\x04(을)를 구매하셨습니다. \x1E({})",item.name, num);
-                    PlayWAV("staredit\\wav\\se_gui_misc3.wav");
-                }
-                else{
-                    DisplayText("\x08！\x04가방에 공간이 없습니다.");
-                    PlayWAV("staredit\\wav\\se_gui_misc5.wav");
-                }
-            }
-            else{
-                DisplayText("\x08！\x04돈이 부족합니다.");
+        const item = iif.Item.cast(iif.itemList[shopItemList[itemIndex]]);
+        if(Accumulate(cp, AtLeast, item.price, Ore)){
+            const num = imb.addItem(cp, item.index, 1, false);
+            if(num == 404){
+                DisplayText("\x08！\x04가방에 공간이 없습니다.");
                 PlayWAV("staredit\\wav\\se_gui_misc5.wav");
             }
+            else if(num == 405){
+                DisplayText("\x08！\x04아이템은 종류마다 최대 99개까지 소유할 수 있습니다.");
+                PlayWAV("staredit\\wav\\se_gui_misc5.wav");
+            }
+            else{
+                SetResources(cp, Subtract, item.price, Ore);
+                s.printf("\x1C！\x04숍에서 \x17{:s}\x04(을)를 구매하셨습니다. \x1E({})",item.name, num);
+                PlayWAV("staredit\\wav\\se_gui_misc3.wav");
+                pps.guiUpdate[cp] = 1;
+            }
+        }
+        else{
+            DisplayText("\x08！\x04돈이 부족합니다.");
+            PlayWAV("staredit\\wav\\se_gui_misc5.wav");
         }
     }
+}
+
+function mainMenu_ShopInfo(cp, height){
+    if(pps.guiUpdate[cp]){
+        pps.guiUpdate[cp] = 0;
+        const cpBag = cp*imb.bagMax;
+        const itemIndex = iug.subMiniMenu[cp];
+        const shopItemList = EUDArray.cast(shopList[shopSelect[cp]]);
+        const it = iif.Item.cast(iif.itemList[shopItemList[itemIndex]]);
+        const bagIndex = imb.searchItem(cp, it.index);
+        var bagNum = 0;
+        if(bagIndex != 404){bagNum = imb.bagNumList[cpBag+bagIndex];}
+
+        t.insert(0);
+        t.appendf("\t\t\x1D{:s} \x1E({}개 보유)\n\n",it.name, bagNum);
+        t.appendf("\t\t\x04{:s}\n",it.text);
+        t.appendf("\t\t\x04가격 : {}￦\n", it.price);
+        t.appendf("\t\t\x04타입 : {:s}\n",iif.itemTypeText[it.type]);
+        t.appendf("\t\t\x17구매하기 (D)\n");
+        t.appendf("\t\t\x1E뒤로가기 (A)");
+    }
+    t.DisplayAt(height);
+    mainMenu_ShopInfoAction(cp);
 }

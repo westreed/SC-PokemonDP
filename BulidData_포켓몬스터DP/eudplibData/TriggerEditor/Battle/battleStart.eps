@@ -116,24 +116,25 @@ function wildSetting(cp, type, pokemon, level){
     battleStep[cp] = 1; //Battle Start
 }
 
-function trainerSetting(cp, type, name, unit, pokemon:EUDArray){
-    //pokemon은 총 길이 12로, pokemonIndex, pokemonLevel로 구성됨
+function trainerSetting(cp, type, name, unit, trainer, gold, pokemon:EUDArray){
+    //pokemon은 최대 길이 12+1로, len, (pokemonIndex, pokemonLevel)*6로 구성됨
     pmp.resetComputerList(cp);
     battleType[cp] = type;
     if(battleMap[type] == 0){battleLocation[cp] = vli.battleLoc+cp;}
     else{battleLocation[cp] = vli.gymLoc+cp;}
 
-    pokemonIndex[cp+4] = pokemon[3];
-    const pokemonLen = pokemon[2];
+    // 바로 출전할 첫번째 포켓몬의 index값
+    pokemonIndex[cp+4] = pokemon[1];
+    const pokemonLen = pokemon[0];
     for (var i=0; i<pokemonLen; i++){
-        const j = i*2 + 3;
+        const j = i*2 + 1;
         pmp.setComputerData(cp, pokemon[j], i, pokemon[j+1], 0);
     }
 
-    battleUser[cp] = pokemon[0]; //트레이너index
+    battleUser[cp] = trainer; //트레이너index
     battleName[cp] = name;
     battleUnit[cp] = unit;
-    battleMoney[cp] = pokemon[1];
+    battleMoney[cp] = gold;
     battleStep[cp] = 1; //Battle Start
 }
 
@@ -547,6 +548,7 @@ function battleSystem(cp){
                     for(var i=0; i<6; i++){
                         const mpk = pmp.myPokemon.cast(pmp.playerPokemonList[cpPk+i]);
                         const mpkn = pmp.myPokemon2.cast(mpk.next);
+                        //배틀에 참여한 기록이 있는 포켓몬인 경우
                         if(mpk.index > 0 && mpkn.battle == 1){
                             const pk = ppi.Pokemon1.cast(ppi.pokemonList[mpk.index-1]);
                             mpkn.battle = 0;

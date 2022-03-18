@@ -11,7 +11,6 @@ import Interface.menu_Bag as imb;
 import Interface.menu_Pokemon as imp;
 import Interface.menu_Help as imh;
 import Interface.menu_Option as imo;
-
 import Interface.menu_Shop as ims;
 
 import Variables.mainSentence as vms;
@@ -70,7 +69,6 @@ function printGUI(cp){
                     mainMenu[cp] = 2;
                     pps.guiUpdate[cp] = 1;
                     ims.shopIndex[cp] = 0;
-                    ims.shopPage[cp] = 0;
                     const lastLoc = pps.lastVisitVillage[cp];
 
                     //현재 위치한 프렌들리숍이 어느 index인지 탐색하기

@@ -512,4 +512,26 @@ function speechSystem(cp){
             endStep(cp, action);
         }
     }
+    //빛나와 축복시티 입구에서 마주침
+    else if(main == 14){
+        if(step == 0){
+            if(Bring(cp, Exactly, 1, pps.playerUnit[cp], "[Story]7")){
+                PlayWAV("staredit\\wav\\se_gui_choose.wav");
+                pmu.changeMoveState(cp, false);
+                moveLocationPlayer(cp, vli.tempMoveLoc, 0, -96);
+                createNPC(cp, P6, vli.tempMoveLoc, vni.friend, 0); //빛나
+                moveLocationPlayer(cp, vli.tempMoveLoc, 0, -32);
+                fc.COrderLocEPD(npcIndex(cp,0), 6, vli.tempMoveLoc); //6:move
+                nextStep(cp,action);
+            }
+        }else if(step == 1){
+            bangText(cp, vli.moveLoc+cp);
+        }else if(step == 2){
+            speechText(cp, vli.moveLoc+cp, vsl.storyLog18, action, true);
+        }else{
+            fc.COrderLocEPD(npcIndex(cp,0), 6, "[Map]204"); //6:move
+            SetMemoryXEPD(npcIndex(cp,0)+0x110/4, SetTo, 0x40, 0xFFFF);
+            endStep(cp, action);
+        }
+    }
 }

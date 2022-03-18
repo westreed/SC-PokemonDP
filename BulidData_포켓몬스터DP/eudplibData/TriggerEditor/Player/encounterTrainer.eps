@@ -21,8 +21,8 @@ const tnSph     = 3;
 1 : 202번도로 반바지 꼬마 용태
 */
 
-//trainerSetting(cp, type, name, unit, pokemon:EUDArray) 안에서
-//pokemon:EUDArray의 내용 :: 트레이너번호, 상금, 포켓몬숫자 [포켓몬인덱스, 포켓몬레벨]*포켓몬숫자
+//trainerSetting(cp, type, name, unit, trainer, gold, pokemon:EUDArray) 안에서
+//pokemon:EUDArray의 내용 :: 포켓몬숫자 [포켓몬인덱스, 포켓몬레벨]*포켓몬숫자
 
 function encounterTrainer(cp){
     const currentLoc = pps.currentLocation[cp];
@@ -42,7 +42,7 @@ function encounterTrainer(cp){
                 else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog1, tnSph, false);}
                 else if(step == 2){
                     //배틀시작
-                    bbs.trainerSetting(cp, 1, vni.npcName[10], 15, [1, 80, 1, 9, 5]);
+                    bbs.trainerSetting(cp, 1, vni.npcName[10], 15, 1, 80, [1, 9, 5]);
                     vms.endStep(cp, tnSph);
                 }
             }
@@ -56,7 +56,7 @@ function encounterTrainer(cp){
                 else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog2, tnSph, false);}
                 else if(step == 2){
                     //배틀시작
-                    bbs.trainerSetting(cp, 1, vni.npcName[11], 15, [2, 48, 2, 12, 3, 12, 3]);
+                    bbs.trainerSetting(cp, 1, vni.npcName[11], 34, 2, 48, [2, 12, 3, 12, 3]);
                     vms.endStep(cp, tnSph);
                 }
             }
@@ -70,7 +70,7 @@ function encounterTrainer(cp){
                 else if(step == 1){vms.speechText(cp, mLoc, vsl.battleLog3, tnSph, false);}
                 else if(step == 2){
                     //배틀시작
-                    bbs.trainerSetting(cp, 1, vni.npcName[12], 15, [3, 80, 1, 16, 5]);
+                    bbs.trainerSetting(cp, 1, vni.npcName[12], 15, 3, 80, [1, 16, 5]);
                     vms.endStep(cp, tnSph);
                 }
             }
