@@ -1,602 +1,300 @@
 import scaVariable as n0;
 
-const ws = Db(4128);//workspace
-const EntryPointLength = 8;//EntryPointLength
-const SpaceLength = 500;//DataBufferSize
-const ObjectCount = 14;//ObjectCount
+const ws = Db(4128);  // workspace
+const EntryPointLength = 8;  // EntryPointLength
+const SpaceLength = 500;  // DataBufferSize
+const ObjectCount = 14;  // ObjectCount
 
-function Init(){
+function Init() {
     MPQAddFile('SCARCHIVEMAPCODE', py_open('scakeyfile', 'rb').read());
     MPQAddFile('SCARCHIVEDATA', py_open('scadatafile', 'rb').read());
-    //EntryPoint
-    dwwrite_epd(EPD(ws) + 0, 1927924914);
-    dwwrite_epd(EPD(ws) + 1, 2216119299);
-    dwwrite_epd(EPD(ws) + 2, 1848977454);
-    dwwrite_epd(EPD(ws) + 3, 2427432728);
-    dwwrite_epd(EPD(ws) + 4, 2528835647);
-    dwwrite_epd(EPD(ws) + 5, 2886574940);
-    dwwrite_epd(EPD(ws) + 6, 312582838);
-    dwwrite_epd(EPD(ws) + 7, 1737120013);
-    
+    DoActions(list(  // EntryPoint
+        SetMemory(ws + 0, SetTo, 2664562750),
+        SetMemory(ws + 4, SetTo, 3642039576),
+        SetMemory(ws + 8, SetTo, 855753102),
+        SetMemory(ws + 12, SetTo, 2712141033),
+        SetMemory(ws + 16, SetTo, 2408394549),
+        SetMemory(ws + 20, SetTo, 2671453214),
+        SetMemory(ws + 24, SetTo, 2569525077),
+        SetMemory(ws + 28, SetTo, 4029909184),
+    ));
 }
 
-
-function Exec(){
+function Exec() {
     Init();
 }
 
-
-function ResetValue(tagNum, index){
+function ResetValue(tagNum, index) {
     const cp = getcurpl();
-    switch(tagNum){
-    case 0:
-    {
+    const ResetArray = function(alen, epd) {
+        for (var i = 0 ; i < alen ; i++) {
+            dwwrite_epd(epd + i, 0);
+        }
+    };
+    switch (tagNum) {
+    case 0: {
         n0.scaMain[cp] = 0;
-        break;
-    }
-    case 1:
-    {
+        break; }
+    case 1: {
         const alen = n0.scaSub.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaSub[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 2:
-    {
+        const aepd = alen * cp + EPD(n0.scaSub);
+        ResetArray(alen, aepd);
+        break; }
+    case 2: {
         const alen = n0.scaPokemonIL.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaPokemonIL[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 3:
-    {
+        const aepd = alen * cp + EPD(n0.scaPokemonIL);
+        ResetArray(alen, aepd);
+        break; }
+    case 3: {
         const alen = n0.scaPokemonHP.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaPokemonHP[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 4:
-    {
+        const aepd = alen * cp + EPD(n0.scaPokemonHP);
+        ResetArray(alen, aepd);
+        break; }
+    case 4: {
         const alen = n0.scaPokemonIVs.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaPokemonIVs[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 5:
-    {
+        const aepd = alen * cp + EPD(n0.scaPokemonIVs);
+        ResetArray(alen, aepd);
+        break; }
+    case 5: {
         const alen = n0.scaPokemonEXP.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaPokemonEXP[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 6:
-    {
+        const aepd = alen * cp + EPD(n0.scaPokemonEXP);
+        ResetArray(alen, aepd);
+        break; }
+    case 6: {
         const alen = n0.scaBag.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaBag[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 7:
-    {
+        const aepd = alen * cp + EPD(n0.scaBag);
+        ResetArray(alen, aepd);
+        break; }
+    case 7: {
         const alen = n0.scaBook.length / 8;
-        for(var i = 0 ; i < alen; i++){
-            n0.scaBook[alen * cp + i] = 0;
-        }
-        break;
-    }
-    case 8:
-    {
+        const aepd = alen * cp + EPD(n0.scaBook);
+        ResetArray(alen, aepd);
+        break; }
+    case 8: {
         n0.scaLocation[cp] = 0;
-        break;
-    }
-    case 9:
-    {
+        break; }
+    case 9: {
         n0.scaPosition[cp] = 0;
-        break;
-    }
-    case 10:
-    {
+        break; }
+    case 10: {
         n0.scaPlaytime[cp] = 0;
-        break;
-    }
-    case 11:
-    {
+        break; }
+    case 11: {
         n0.scaOption[cp] = 0;
-        break;
-    }
-    case 12:
-    {
+        break; }
+    case 12: {
         n0.scaStarting[cp] = 0;
-        break;
-    }
-    case 13:
-    {
+        break; }
+    case 13: {
         n0.scaBookNum[cp] = 0;
-        break;
-    }
+        break; }
     }
 }
 
-
-function SaveValue(tagNum, Value, index){
+function SaveValue(tagNum, Value, index) {
     const cp = getcurpl();
-    switch(tagNum){
-    case 0:
-    {
+    switch (tagNum) {
+    case 0: {
         n0.scaMain[cp] = Value;
-        break;
-    }
-    case 1:
-    {
+        break; }
+    case 1: {
         const alen = n0.scaSub.length / 8;
         n0.scaSub[alen * cp + index] = Value;
-        break;
-    }
-    case 2:
-    {
+        break; }
+    case 2: {
         const alen = n0.scaPokemonIL.length / 8;
         n0.scaPokemonIL[alen * cp + index] = Value;
-        break;
-    }
-    case 3:
-    {
+        break; }
+    case 3: {
         const alen = n0.scaPokemonHP.length / 8;
         n0.scaPokemonHP[alen * cp + index] = Value;
-        break;
-    }
-    case 4:
-    {
+        break; }
+    case 4: {
         const alen = n0.scaPokemonIVs.length / 8;
         n0.scaPokemonIVs[alen * cp + index] = Value;
-        break;
-    }
-    case 5:
-    {
+        break; }
+    case 5: {
         const alen = n0.scaPokemonEXP.length / 8;
         n0.scaPokemonEXP[alen * cp + index] = Value;
-        break;
-    }
-    case 6:
-    {
+        break; }
+    case 6: {
         const alen = n0.scaBag.length / 8;
         n0.scaBag[alen * cp + index] = Value;
-        break;
-    }
-    case 7:
-    {
+        break; }
+    case 7: {
         const alen = n0.scaBook.length / 8;
         n0.scaBook[alen * cp + index] = Value;
-        break;
-    }
-    case 8:
-    {
+        break; }
+    case 8: {
         n0.scaLocation[cp] = Value;
-        break;
-    }
-    case 9:
-    {
+        break; }
+    case 9: {
         n0.scaPosition[cp] = Value;
-        break;
-    }
-    case 10:
-    {
+        break; }
+    case 10: {
         n0.scaPlaytime[cp] = Value;
-        break;
-    }
-    case 11:
-    {
+        break; }
+    case 11: {
         n0.scaOption[cp] = Value;
-        break;
-    }
-    case 12:
-    {
+        break; }
+    case 12: {
         n0.scaStarting[cp] = Value;
-        break;
-    }
-    case 13:
-    {
+        break; }
+    case 13: {
         n0.scaBookNum[cp] = Value;
-        break;
-    }
+        break; }
     }
 }
 
-
-function SaveDataWriteValue(tagNum, BaseAddress, index){
+function SaveDataWriteValue(tagNum, BaseAddress, index) {
     const cp = getcurpl();
-    var rvalue = 0;
-    switch(tagNum){
-    case 0:
-        {
+    const indexQ = BaseAddress + index / 2;
+    var indexR, rvalue = 0, 0;
+    Trigger(index.ExactlyX(1, 1), indexR.SetNumber(2));
+    const AdvanceIndex = function() {
+        SetVariables(list(index, indexR), list(1, 2), list(Add, Add));
+        Trigger(indexR.AtLeast(4), list(indexR.SetNumber(0), indexQ.AddNumber(1)));
+    };
+
+    const SaveArray = function(alen, epd) {
+        for (var i = 0 ; i < alen ; i++) {
+            const objValue = dwread_epd(epd + i);
+            EUDContinueIf(objValue == 0);
+            rvalue += objValue;
+            if (objValue > 0xFFFF) {
+                wwrite_epd(indexQ, indexR, 0x3000 + tagNum);
+                AdvanceIndex();
+                wwrite_epd(indexQ, indexR, i);
+                AdvanceIndex();
+                const objQ, objR = div(objValue, 0x10000);
+                wwrite_epd(indexQ, indexR, objQ);
+                AdvanceIndex();
+                wwrite_epd(indexQ, indexR, objR);
+                AdvanceIndex();
+            } else {
+                wwrite_epd(indexQ, indexR, 0x4000 + tagNum);
+                AdvanceIndex();
+                wwrite_epd(indexQ, indexR, i);
+                AdvanceIndex();
+                wwrite_epd(indexQ, indexR, objValue);
+                AdvanceIndex();
+            }
+        }
+    };
+
+    const SaveDCV = function(objValue) {
+        if (objValue == 0) return;
+        rvalue += objValue;
+        if (objValue > 0xFFFF) {
+            wwrite_epd(indexQ, indexR, 0x1000 + tagNum);
+            AdvanceIndex();
+            const objQ, objR = div(objValue, 0x10000);
+            wwrite_epd(indexQ, indexR, objQ);
+            AdvanceIndex();
+            wwrite_epd(indexQ, indexR, objR);
+            AdvanceIndex();
+        } else {
+            wwrite_epd(indexQ, indexR, 0x2000 + tagNum);
+            AdvanceIndex();
+            wwrite_epd(indexQ, indexR, objValue);
+            AdvanceIndex();
+         }
+    };
+
+    switch (tagNum) {
+    case 0: {
         const objValue = n0.scaMain[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 1:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 1: {
         const alen = n0.scaSub.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaSub[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 2:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaSub));
+        break; }
+    case 2: {
         const alen = n0.scaPokemonIL.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaPokemonIL[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 3:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaPokemonIL));
+        break; }
+    case 3: {
         const alen = n0.scaPokemonHP.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaPokemonHP[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 4:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaPokemonHP));
+        break; }
+    case 4: {
         const alen = n0.scaPokemonIVs.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaPokemonIVs[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 5:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaPokemonIVs));
+        break; }
+    case 5: {
         const alen = n0.scaPokemonEXP.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaPokemonEXP[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 6:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaPokemonEXP));
+        break; }
+    case 6: {
         const alen = n0.scaBag.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaBag[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 7:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaBag));
+        break; }
+    case 7: {
         const alen = n0.scaBook.length / 8;
-        for(var i = 0 ; i < alen ; i ++){
-            const objValue = n0.scaBook[alen * cp + i];
-            rvalue += objValue;
-            if(objValue != 0){
-                if (objValue > 0xFFFF){
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x3000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                    index++;
-                 }else{
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x4000 + tagNum);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, i);
-                    index++;
-                    wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                    index++;
-                 }
-            }
-        }
-        }
-        break;
-    case 8:
-        {
+        SaveArray(alen, alen * cp + EPD(n0.scaBook));
+        break; }
+    case 8: {
         const objValue = n0.scaLocation[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 9:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 9: {
         const objValue = n0.scaPosition[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 10:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 10: {
         const objValue = n0.scaPlaytime[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 11:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 11: {
         const objValue = n0.scaOption[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 12:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 12: {
         const objValue = n0.scaStarting[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
-    case 13:
-        {
+        SaveDCV(objValue);
+        break; }
+    case 13: {
         const objValue = n0.scaBookNum[cp];
-        rvalue += objValue;
-        if(objValue != 0){
-            if (objValue > 0xFFFF){
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x1000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue / 0x10000);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue % 0x10000);
-                index++;
-             }else{
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, 0x2000 + tagNum);
-                index++;
-                wwrite_epd(BaseAddress + index / 2, (index % 2) * 2, objValue);
-                index++;
-             }
-         }
-        }
-        break;
+        SaveDCV(objValue);
+        break; }
     }
-    
     return index, rvalue;
 }
 
-
-function LoadDataReadValue(BaseAddress, i){
-   	const indicator = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   	
-   	if (indicator != 0){
-   		const spec = indicator / 0x1000;
-   		const ObjNum = indicator % 0x1000;
-   		var vindex = 0;
-   		var value = 0;
-   		if (spec == 1){
-   			//4바이트 지정
-   			i++;
-   			const value1 = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			i++;
-   			const value2 = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			value = value1 * 0x10000 + value2;
-   		}else if (spec == 2){
-   			//2바이트 지정
-   			i++;
-   			value = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   		}else if (spec == 3){
-   			//4바이트 지정
-   			i++;
-   			vindex = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			i++;
-   			const value1 = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			i++;
-   			const value2 = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			value = value1 * 0x10000 + value2;
-   		}else if (spec == 4){
-   			//2바이트 지정
-   			i++;
-   			vindex = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   			i++;
-   			value = wread_epd(BaseAddress + i / 2, (i % 2) * 2);
-   		}
-   		SaveValue(ObjNum, value, vindex);
-   	}
-   	return i;
+function LoadDataReadValue(BaseAddress, i) {
+    const iQ = BaseAddress + i / 2;
+    var iR = 0;
+    Trigger(i.ExactlyX(1, 1), iR.SetNumber(2));
+    const AdvanceI = function() {
+        SetVariables(list(i, iR), list(1, 2), list(Add, Add));
+        Trigger(iR.AtLeast(4), list(iR.SetNumber(0), iQ.AddNumber(1)));
+    };
+    const indicator = wread_epd(iQ, iR);
+    if (indicator == 0) return i;
+    AdvanceI();
+    const spec, ObjNum = div(indicator, 0x1000);
+    var vindex = 0;
+    var value;
+    if (spec == 1) {  // 4바이트 지정
+        const value1 = wread_epd(iQ, iR);
+        AdvanceI();
+        const value2 = wread_epd(iQ, iR);
+        value = value1 * 0x10000 + value2;
+    } else if (spec == 2) {  // 2바이트 지정
+        value = wread_epd(iQ, iR);
+    } else if (spec == 3) {  // 4바이트 지정
+        vindex = wread_epd(iQ, iR);
+        AdvanceI();
+        const value1 = wread_epd(iQ, iR);
+        AdvanceI();
+        const value2 = wread_epd(iQ, iR);
+        value = value1 * 0x10000 + value2;
+    } else if (spec == 4) {  //2바이트 지정
+        vindex = wread_epd(iQ, iR);
+        AdvanceI();
+        value = wread_epd(iQ, iR);
+    }
+    SaveValue(ObjNum, value, vindex);
+    return i;
 }
